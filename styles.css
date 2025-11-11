@@ -385,20 +385,27 @@ nav {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 1.5rem;
     width: 100%;
-    align-items: start;
+    grid-auto-flow: dense;
 }
 
-.photo-grid img {
+.photo-grid img,
+.photo-grid video {
     width: 100%;
     height: auto;
     display: block;
-    object-fit: contain;
+    object-fit: cover;
     border-radius: 4px;
     transition: transform 0.2s ease, opacity 0.2s ease;
     opacity: 0.95;
+    aspect-ratio: 3/4;
 }
 
-.photo-grid img:hover {
+.photo-grid video {
+    background-color: var(--bg-color);
+}
+
+.photo-grid img:hover,
+.photo-grid video:hover {
     transform: scale(1.02);
     opacity: 1;
 }
