@@ -1,0 +1,14 @@
+# Dependencies
+node_modules
+
+# Environment variables (use Vercel dashboard instead)
+.env
+.env.local
+
+# Development files
+server.js
+CHATBOT_SETUP.md
+
+# Git
+.git
+.gitignore
