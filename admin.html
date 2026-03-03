@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>admin</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+    <main class="container admin-container" id="admin" style="display:none;">
+        <div class="admin-header">
+            <h1>admin</h1>
+            <a href="index.html" class="admin-back">back to site</a>
+        </div>
+
+        <div class="admin-editor">
+            <input type="text" id="postTitle" class="admin-input" placeholder="Title">
+            <input type="text" id="postPreview" class="admin-input admin-input-sm" placeholder="Preview text (optional)">
+            <textarea id="postContent" class="admin-textarea" placeholder="Write your post..."></textarea>
+            <button id="publishBtn" class="admin-btn" onclick="publishPost()">publish</button>
+        </div>
+
+        <div class="admin-posts">
+            <h2>Posts</h2>
+            <div id="postList"></div>
+        </div>
+    </main>
+
+    <div id="gate" class="admin-gate">
+        <input type="password" id="passwordInput" class="admin-password" placeholder="password" autofocus>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="posts.js"></script>
+    <script>
+        const ADMIN_PASSWORD = 'REDACTED';
+
+        document.getElementById('passwordInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                if (e.target.value === ADMIN_PASSWORD) {
+                    sessionStorage.setItem('admin_auth', 'true');
+                    document.getElementById('gate').style.display = 'none';
+                    document.getElementById('admin').style.display = 'block';
+                    renderPosts();
+                } else {
+                    e.target.value = '';
+                    e.target.placeholder = 'wrong password';
+                }
+            }
+        });
+
+        if (sessionStorage.getItem('admin_auth') === 'true') {
+            document.getElementById('gate').style.display = 'none';
+            document.getElementById('admin').style.display = 'block';
+            renderPosts();
+        }
+
+        function renderPosts() {
+            const posts = getPosts();
+            const container = document.getElementById('postList');
+
+            if (posts.length === 0) {
+                container.innerHTML = '<p class="admin-empty">No posts yet.</p>';
+                return;
+            }
+
+            container.innerHTML = posts.map(post => `
+                <div class="admin-post-item">
+                    <div>
+                        <span class="admin-post-date">${new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                        <strong class="admin-post-title">${post.title}</strong>
+                    </div>
+                    <button class="admin-delete" onclick="deleteAndRefresh('${post.id}')">delete</button>
+                </div>
+            `).join('');
+        }
+
+        function publishPost() {
+            const title = document.getElementById('postTitle').value.trim();
+            const content = document.getElementById('postContent').value.trim();
+            const preview = document.getElementById('postPreview').value.trim();
+
+            if (!title || !content) return;
+
+            addPost(title, content, preview);
+
+            document.getElementById('postTitle').value = '';
+            document.getElementById('postContent').value = '';
+            document.getElementById('postPreview').value = '';
+            renderPosts();
+        }
+
+        function deleteAndRefresh(id) {
+            if (!confirm('Delete this post?')) return;
+            deletePost(id);
+            renderPosts();
+        }
+    </script>
+</body>
+</html>

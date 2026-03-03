@@ -16,6 +16,14 @@ themeToggle.addEventListener('click', () => {
     updateThemeIcon(newTheme);
 });
 
+// Easter egg: Ctrl+Shift+Y opens admin
+document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.shiftKey && e.key === 'Y') {
+        e.preventDefault();
+        window.location.href = 'admin.html';
+    }
+});
+
 function updateThemeIcon(theme) {
     const icon = themeToggle.querySelector('svg');
     if (theme === 'dark') {

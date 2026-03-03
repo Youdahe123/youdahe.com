@@ -14,10 +14,8 @@
     <nav>
         <div class="nav-links">
             <a href="index.html">home</a>
-            <a href="experience.html">experience</a>
-            <a href="projects.html">projects</a>
+            <a href="writing.html">writing</a>
             <a href="photography.html">photography</a>
-            <a href="contacts.html">talk to youdahe</a>
         </div>
         <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -28,36 +26,142 @@
 
     <main class="container">
         <section class="intro">
-            <h1>Hi, I'm Youdahe 👋</h1>
-            <p>I'm a student at Gustavus Adolphus College. I'm Ethiopian and love building stuff that actually works. Right now I'm diving into distributed systems and MCPs. When I'm not coding, you'll catch me watching anime, cooking, or shooting hoops.</p>
+            <h1>Hi, I'm Youdahe 🧑‍🚀</h1>
+            <p class="status"><span class="status-dot"></span>currently out of the country in japan</p>
+            <p class="chat-cta">I love talking about systems and startups — <a href="https://cal.com/youdahe-asfaw-np88fc/30min" target="_blank" rel="noopener noreferrer">let's chat</a></p>
+            <p>Student at Gustavus Adolphus College. I build stuff that works — currently into distributed systems and MCPs.</p>
         </section>
 
-        <section class="currently">
-            <h2>Currently...</h2>
-            
-            <div class="currently-item">
-                <h3>Reading</h3>
-                <p>The Pragmatic Programmer – Andrew Hunt & David Thomas</p>
-                <p>Akira – Katsuhiro Otomo</p>
-                <p>Chainsaw Man – Tatsuki Fujimoto</p>
-                <p>Project Hail Mary – Andy Weir</p>
+        <div class="two-col">
+        <section class="experience">
+            <h2>Experience</h2>
+
+            <div class="experience-item">
+                <div class="experience-header">
+                    <div class="experience-title">
+                        <img src="logos/libertymutual.png" alt="Liberty Mutual" class="company-logo">
+                        <h3>Incoming SWE Intern</h3>
+                    </div>
+                    <span class="experience-date">May – Aug 2026</span>
+                </div>
+                <p class="experience-company">Liberty Mutual Insurance</p>
+                <p class="experience-blurb">Building the infrastructure that every engineer at a Fortune 100 company ships code on.</p>
             </div>
 
-            <div class="currently-item">
-                <h3>Building</h3>
-                <p>Building educational software that empowers kids to learn coding, integrating AI tools, optimizing backend systems, and scaling pilot programs through funding and community outreach.</p>
+            <div class="experience-item">
+                <div class="experience-header">
+                    <div class="experience-title">
+                        <img src="logos/medica.png" alt="Medica" class="company-logo">
+                        <h3>Software Engineer Intern</h3>
+                    </div>
+                    <span class="experience-date">Aug 2025 – Present</span>
+                </div>
+                <p class="experience-company">Medica</p>
+                <p class="experience-blurb">Built Medica's first-ever AI onboarding assistant using vector DB and embeddings. Also built enrollment systems with Java and Spring Boot, boosting speed by 65%.</p>
             </div>
 
-            <div class="currently-item">
-                <h3>Interested in</h3>
-                <p>Interested in distributed systems, AGI, and philosophy. Always excited to explore new ideas, learn cutting-edge technologies, and work on projects that combine impact with technical challenge.</p>
+            <div class="experience-item">
+                <div class="experience-header">
+                    <div class="experience-title">
+                        <img src="logos/gustavus.png" alt="Gustavus Adolphus College" class="company-logo">
+                        <h3>ML Research Assistant</h3>
+                    </div>
+                    <span class="experience-date">Feb – Jun 2025</span>
+                </div>
+                <p class="experience-company">Gustavus Adolphus College</p>
+                <p class="experience-blurb">Built an ML-powered voice-guided form-completion system, reducing completion time from 60 to 15 minutes for visually impaired users.</p>
             </div>
 
-            <div class="currently-item">
-                <h3>Working on</h3>
-                <p>trying to hit the gym more, growing my hair out, expanding music taste</p>
+            <div class="experience-item">
+                <div class="experience-header">
+                    <div class="experience-title">
+                        <img src="logos/huggingface.png" alt="Hugging Face" class="company-logo">
+                        <h3>ML Researcher</h3>
+                    </div>
+                    <span class="experience-date">Sep 2024 – Jan 2025</span>
+                </div>
+                <p class="experience-company">Hugging Face</p>
+                <p class="experience-blurb">Ran LLM benchmarks across 10+ model configs and improved reproducible evaluation workflows through open-source contributions.</p>
+            </div>
+
+            <div class="experience-item">
+                <div class="experience-header">
+                    <div class="experience-title">
+                        <img src="logos/medtronic.png" alt="Medtronic" class="company-logo">
+                        <h3>Software Engineer Intern</h3>
+                    </div>
+                    <span class="experience-date">Aug 2023 – Aug 2024</span>
+                </div>
+                <p class="experience-company">Medtronic</p>
+                <p class="experience-blurb">Worked on the Touch Surgery ecosystem. Replaced manual Excel processes with Go and SQL pipelines, cutting data processing time by 50% for 8+ R&D teams.</p>
             </div>
         </section>
+
+        <section class="projects">
+            <h2>Projects</h2>
+
+            <div class="project-item">
+                <div class="project-header">
+                    <h3>docere</h3>
+                    <div class="project-links">
+                        <a href="pdf/docere_technical_report.pdf" target="_blank" class="project-link-text">report</a>
+                        <span class="project-link-sep">·</span>
+                        <button class="project-link-text" onclick="openDemo()">demo</button>
+                    </div>
+                </div>
+                <div class="project-tags">
+                    <span class="tag">Python</span>
+                    <span class="tag">FastAPI</span>
+                    <span class="tag">React</span>
+                    <span class="tag">PostgreSQL</span>
+                    <span class="tag">Qdrant</span>
+                    <span class="tag">Redis</span>
+                    <span class="tag">Claude</span>
+                    <span class="tag">LangGraph</span>
+                </div>
+                <p class="project-desc">Persistent semantic memory system — long-term context and recall for AI agents.</p>
+            </div>
+
+            <div class="project-item">
+                <div class="project-header">
+                    <h3>distributed db engine</h3>
+                    <a href="pdf/project1_distributed_database.pdf" target="_blank" class="project-link-text">report</a>
+                </div>
+                <div class="project-tags">
+                    <span class="tag">Rust</span>
+                    <span class="tag">Raft</span>
+                    <span class="tag">CRDTs</span>
+                </div>
+                <p class="project-desc">Multi-region database with LSM-tree storage, Raft consensus, configurable consistency, and automatic sharding.</p>
+            </div>
+
+            <div class="project-item">
+                <div class="project-header">
+                    <h3>container runtime</h3>
+                    <a href="pdf/project2_container_platform.pdf" target="_blank" class="project-link-text">report</a>
+                </div>
+                <div class="project-tags">
+                    <span class="tag">Go</span>
+                    <span class="tag">Linux</span>
+                    <span class="tag">Networking</span>
+                </div>
+                <p class="project-desc">Container runtime and orchestrator from scratch — namespaces, cgroups, overlay fs, scheduler, and service mesh.</p>
+            </div>
+
+            <div class="project-item">
+                <div class="project-header">
+                    <h3>event streaming platform</h3>
+                    <a href="pdf/project3_event_streaming.pdf" target="_blank" class="project-link-text">report</a>
+                </div>
+                <div class="project-tags">
+                    <span class="tag">Go</span>
+                    <span class="tag">Kafka</span>
+                    <span class="tag">Stream Processing</span>
+                </div>
+                <p class="project-desc">Globally distributed commit log with exactly-once semantics, tiered storage, and stateful stream processing.</p>
+            </div>
+        </section>
+        </div>
 
         <footer class="main-footer">
             <div class="social-links">
@@ -77,71 +181,34 @@
                         <polyline points="22,6 12,13 2,6"></polyline>
                     </svg>
                 </a>
-                <a href="https://drive.google.com/file/d/1DyZuUiUSHp1vUZLWHAyithAx7-KZ3MXG/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="resume-link">resume</a>
+                <a href="youdaheFall (1).pdf" target="_blank" rel="noopener noreferrer" class="resume-link">resume</a>
             </div>
-            <p class="copyright">© 2025 MIT Licensed</p>
+            <p class="copyright">updated 03/03/2026</p>
         </footer>
     </main>
 
     <div class="footer-bar"></div>
 
-    <!-- Preload photography media files -->
-    <div style="display: none;" aria-hidden="true">
-        <!-- Preload images -->
-        <img src="/images/IMG_2458.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_2885.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_2962.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_3040.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_3697.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_3708.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_3733.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_3774.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_3779.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_3780.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_3782.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_3790.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_3792.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_3802.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_3803.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_3888.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_3969.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_4038.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_4097.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_4323.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_4474.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_4486.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_4512.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_4519.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_4524.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_4528.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_4553.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_4756.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_4780.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_4813.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_4833.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_4860.jpeg" loading="eager" fetchpriority="high">
-        <img src="/images/IMG_5057.jpeg" loading="eager" fetchpriority="high">
-        
-        <!-- Preload videos -->
-        <video preload="auto" muted><source src="/videos/IMG_3299.mov" type="video/mp4"></video>
-        <video preload="auto" muted><source src="/videos/IMG_3732.MOV" type="video/mp4"></video>
-        <video preload="auto" muted><source src="/videos/IMG_3428.MOV" type="video/mp4"></video>
-        <video preload="auto" muted><source src="/videos/IMG_4607.mov" type="video/mp4"></video>
-        <video preload="auto" muted><source src="/videos/IMG_3745.MOV" type="video/mp4"></video>
-        <video preload="auto" muted><source src="/videos/IMG_4492.MOV" type="video/mp4"></video>
-        <video preload="auto" muted><source src="/videos/IMG_4770.MOV" type="video/mp4"></video>
-        <video preload="auto" muted><source src="/videos/IMG_4304.MOV" type="video/mp4"></video>
-        <video preload="auto" muted><source src="/videos/IMG_4818.MOV" type="video/mp4"></video>
-        <video preload="auto" muted><source src="/videos/039b03be22e6452eb3cf29cc0b12e128.MOV" type="video/mp4"></video>
-        <video preload="auto" muted><source src="/videos/IMG_4933.MOV" type="video/mp4"></video>
-        <video preload="auto" muted><source src="/videos/0723a867c5af496d842fa269927d07b2.MOV" type="video/mp4"></video>
-        <video preload="auto" muted><source src="/videos/IMG_4934.MOV" type="video/mp4"></video>
-        <video preload="auto" muted><source src="/videos/IMG_4937.MOV" type="video/mp4"></video>
-        <video preload="auto" muted><source src="/videos/IMG_5556.mov" type="video/mp4"></video>
-        <video preload="auto" muted><source src="/videos/ScreenRecording_10-21-2025 01-33-57_1.mov" type="video/mp4"></video>
+    <div class="demo-overlay" id="demoOverlay" onclick="closeDemo(event)">
+        <div class="demo-modal">
+            <button class="demo-close" onclick="closeDemo(event)">&times;</button>
+            <video id="demoVideo" controls playsinline preload="metadata">
+                <source src="thumbnails/docere-demo.mp4" type="video/mp4">
+            </video>
+        </div>
     </div>
 
     <script src="script.js"></script>
+    <script>
+        function openDemo() {
+            document.getElementById('demoOverlay').classList.add('active');
+        }
+        function closeDemo(e) {
+            if (e.target === document.getElementById('demoOverlay') || e.currentTarget.classList.contains('demo-close')) {
+                document.getElementById('demoOverlay').classList.remove('active');
+                document.getElementById('demoVideo').pause();
+            }
+        }
+    </script>
 </body>
 </html>
-
