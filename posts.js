@@ -1,27 +1,35 @@
-// Shared posts storage — used by admin.html, writing.html, and post.html
-function getPosts() {
-    const data = localStorage.getItem('youdahe_posts');
-    if (!data) return [];
-    return JSON.parse(data).sort((a, b) => new Date(b.date) - new Date(a.date));
+// Shared posts API client — used by admin.html, writing.html, and post.html
+const POSTS_API = '/api/posts';
+
+async function getPosts() {
+    try {
+        const res = await fetch(POSTS_API);
+        return await res.json();
+    } catch {
+        return [];
+    }
 }
 
-function addPost(title, content, preview) {
-    const posts = getPosts();
-    posts.push({
-        id: Date.now().toString(36),
-        title,
-        content,
-        preview: preview || content.slice(0, 200),
-        date: new Date().toISOString(),
+async function addPost(title, content, preview, password) {
+    const res = await fetch(POSTS_API, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-admin-password': password,
+        },
+        body: JSON.stringify({ title, content, preview }),
     });
-    localStorage.setItem('youdahe_posts', JSON.stringify(posts));
+    return res.json();
 }
 
-function deletePost(id) {
-    const posts = getPosts().filter(p => p.id !== id);
-    localStorage.setItem('youdahe_posts', JSON.stringify(posts));
+async function deletePost(id, password) {
+    await fetch(`${POSTS_API}?id=${id}`, {
+        method: 'DELETE',
+        headers: { 'x-admin-password': password },
+    });
 }
 
-function getPost(id) {
-    return getPosts().find(p => p.id === id) || null;
+async function getPost(id) {
+    const posts = await getPosts();
+    return posts.find(p => p.id === id) || null;
 }

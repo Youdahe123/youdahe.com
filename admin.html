@@ -36,30 +36,27 @@
     <script src="script.js"></script>
     <script src="posts.js"></script>
     <script>
-        const ADMIN_PASSWORD = 'REDACTED';
+        let adminPassword = '';
 
         document.getElementById('passwordInput').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
-                if (e.target.value === ADMIN_PASSWORD) {
-                    sessionStorage.setItem('admin_auth', 'true');
-                    document.getElementById('gate').style.display = 'none';
-                    document.getElementById('admin').style.display = 'block';
-                    renderPosts();
-                } else {
-                    e.target.value = '';
-                    e.target.placeholder = 'wrong password';
-                }
+                adminPassword = e.target.value;
+                sessionStorage.setItem('admin_password', adminPassword);
+                document.getElementById('gate').style.display = 'none';
+                document.getElementById('admin').style.display = 'block';
+                renderPosts();
             }
         });
 
-        if (sessionStorage.getItem('admin_auth') === 'true') {
+        if (sessionStorage.getItem('admin_password')) {
+            adminPassword = sessionStorage.getItem('admin_password');
             document.getElementById('gate').style.display = 'none';
             document.getElementById('admin').style.display = 'block';
             renderPosts();
         }
 
-        function renderPosts() {
-            const posts = getPosts();
+        async function renderPosts() {
+            const posts = await getPosts();
             const container = document.getElementById('postList');
 
             if (posts.length === 0) {
@@ -78,25 +75,25 @@
             `).join('');
         }
 
-        function publishPost() {
+        async function publishPost() {
             const title = document.getElementById('postTitle').value.trim();
             const content = document.getElementById('postContent').value.trim();
             const preview = document.getElementById('postPreview').value.trim();
 
             if (!title || !content) return;
 
-            addPost(title, content, preview);
+            await addPost(title, content, preview, adminPassword);
 
             document.getElementById('postTitle').value = '';
             document.getElementById('postContent').value = '';
             document.getElementById('postPreview').value = '';
-            renderPosts();
+            await renderPosts();
         }
 
-        function deleteAndRefresh(id) {
+        async function deleteAndRefresh(id) {
             if (!confirm('Delete this post?')) return;
-            deletePost(id);
-            renderPosts();
+            await deletePost(id, adminPassword);
+            await renderPosts();
         }
     </script>
 </body>
