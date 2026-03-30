@@ -33,7 +33,7 @@ export default async function handler(req, res) {
   }
 
   if (req.method === 'POST') {
-    const { title, content, preview } = req.body;
+    const { title, content, preview, date } = req.body;
 
     if (!title || !content) {
       return res.status(400).json({ error: 'title and content required' });
@@ -45,7 +45,7 @@ export default async function handler(req, res) {
       title,
       content,
       preview: preview || content.slice(0, 200),
-      date: new Date().toISOString(),
+      date: date || new Date().toISOString(),
     };
 
     await put(`posts/${id}.json`, JSON.stringify(post), {

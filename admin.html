@@ -19,6 +19,12 @@
         <div class="admin-editor">
             <input type="text" id="postTitle" class="admin-input" placeholder="Title">
             <input type="text" id="postPreview" class="admin-input admin-input-sm" placeholder="Preview text (optional)">
+            <input type="date" id="postDate" class="admin-input admin-input-sm">
+            <div class="admin-toolbar">
+                <button type="button" class="admin-toolbar-btn" onclick="document.getElementById('imageUpload').click()">+ add image</button>
+                <input type="file" id="imageUpload" accept="image/*" style="display:none" onchange="handleImageUpload(this)">
+                <span id="uploadStatus" class="admin-upload-status"></span>
+            </div>
             <textarea id="postContent" class="admin-textarea" placeholder="Write your post..."></textarea>
             <button id="publishBtn" class="admin-btn" onclick="publishPost()">publish</button>
         </div>
@@ -79,15 +85,41 @@
             const title = document.getElementById('postTitle').value.trim();
             const content = document.getElementById('postContent').value.trim();
             const preview = document.getElementById('postPreview').value.trim();
+            const dateVal = document.getElementById('postDate').value;
 
             if (!title || !content) return;
 
-            await addPost(title, content, preview, adminPassword);
+            const date = dateVal ? new Date(dateVal + 'T12:00:00').toISOString() : undefined;
+            await addPost(title, content, preview, adminPassword, date);
 
             document.getElementById('postTitle').value = '';
             document.getElementById('postContent').value = '';
             document.getElementById('postPreview').value = '';
+            document.getElementById('postDate').value = '';
             await renderPosts();
+        }
+
+        async function handleImageUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const status = document.getElementById('uploadStatus');
+            status.textContent = 'uploading...';
+
+            try {
+                const url = await uploadImage(file, adminPassword);
+                const textarea = document.getElementById('postContent');
+                const pos = textarea.selectionStart;
+                const text = textarea.value;
+                const tag = `{{img:${url}}}`;
+                textarea.value = text.slice(0, pos) + tag + '\n' + text.slice(pos);
+                status.textContent = 'uploaded!';
+            } catch {
+                status.textContent = 'upload failed';
+            }
+
+            input.value = '';
+            setTimeout(() => { status.textContent = ''; }, 2000);
         }
 
         async function deleteAndRefresh(id) {

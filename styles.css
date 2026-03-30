@@ -747,6 +747,173 @@ nav {
     opacity: 0.3;
 }
 
+/* Post images */
+.post-image {
+    width: 100%;
+    border-radius: 6px;
+    margin: 1.5rem 0;
+    display: block;
+}
+
+/* Likes */
+.post-actions {
+    margin: 2.5rem 0;
+    padding: 1.5rem 0;
+    border-top: 1px solid rgba(128, 128, 128, 0.15);
+}
+
+.like-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text-color);
+    opacity: 0.5;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.4rem 0;
+    transition: opacity 0.2s ease;
+}
+
+.like-btn:hover {
+    opacity: 0.8;
+}
+
+.like-btn.liked {
+    opacity: 1;
+    color: #ef4444;
+}
+
+/* Comments */
+.comments-section {
+    border-top: 1px solid rgba(128, 128, 128, 0.15);
+    padding-top: 2rem;
+}
+
+.comments-title {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-color-dark);
+    margin-bottom: 1.5rem;
+}
+
+.comments-list {
+    margin-bottom: 2rem;
+}
+
+.comments-empty {
+    font-size: 14px;
+    color: var(--text-color);
+    opacity: 0.4;
+}
+
+.comment-item {
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.1);
+}
+
+.comment-header {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: 0.35rem;
+}
+
+.comment-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-color-dark);
+}
+
+.comment-date {
+    font-size: 12px;
+    color: var(--text-color);
+    opacity: 0.4;
+}
+
+.comment-text {
+    font-size: 15px;
+    color: var(--text-color);
+    line-height: 1.6;
+    opacity: 0.8;
+}
+
+.comment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.comment-input {
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text-color);
+    background: none;
+    border: none;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+    padding: 0.5rem 0;
+    outline: none;
+    max-width: 250px;
+    transition: border-color 0.2s ease;
+}
+
+.comment-input:focus {
+    border-color: var(--text-color);
+}
+
+.comment-textarea {
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--text-color);
+    background: none;
+    border: 1px solid rgba(128, 128, 128, 0.2);
+    border-radius: 6px;
+    padding: 0.75rem;
+    outline: none;
+    resize: vertical;
+    min-height: 80px;
+    line-height: 1.6;
+    transition: border-color 0.2s ease;
+}
+
+.comment-textarea:focus {
+    border-color: var(--text-color);
+}
+
+/* Admin toolbar */
+.admin-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.admin-toolbar-btn {
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-color);
+    opacity: 0.5;
+    background: none;
+    border: 1px solid rgba(128, 128, 128, 0.2);
+    border-radius: 4px;
+    padding: 0.3rem 0.75rem;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.admin-toolbar-btn:hover {
+    opacity: 1;
+}
+
+.admin-upload-status {
+    font-size: 12px;
+    color: var(--text-color);
+    opacity: 0.5;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
     nav {
