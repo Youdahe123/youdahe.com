@@ -39,6 +39,9 @@
             <h1 class="writing-title">Daily Log</h1>
             <p class="writing-subtitle">Summer 2026</p>
 
+            <!-- daily quote -->
+            <div class="daily-quote" id="dailyQuote"></div>
+
             <!-- NeetCode progress -->
             <div class="nc-widget">
                 <div class="nc-header">
@@ -60,6 +63,13 @@
                 <div class="cal-grid" id="calGrid"></div>
                 <div class="cal-panel" id="calPanel"></div>
             </div>
+
+            <!-- Goals -->
+            <div class="goals-section">
+                <h2 class="goals-title">Summer Goals</h2>
+                <p class="goals-subtitle">End of summer · check things off as you land them</p>
+                <div id="goalsContainer"></div>
+            </div>
         </section>
     </main>
 
@@ -68,7 +78,187 @@
     <script src="script.js"></script>
     <script src="daily.js"></script>
     <script>
-        // sections — NeetCode handled automatically from GitHub
+        // ── quotes ────────────────────────────────────────────────────────────
+
+        const QUOTES = [
+            { text: "Hard work is worthless for those that don't believe in themselves.", source: "Naruto Uzumaki" },
+            { text: "If you don't like your destiny, don't accept it. Have the courage to change it the way you want it to be.", source: "Naruto Uzumaki" },
+            { text: "A lesson without pain is meaningless. You cannot gain something without sacrificing something else in return.", source: "Edward Elric · FMA" },
+            { text: "The world isn't perfect. But it's there for us, doing the best it can. That's what makes it so damn beautiful.", source: "Roy Mustang · FMA" },
+            { text: "Power isn't determined by your size, but the size of your heart and dreams.", source: "Monkey D. Luffy · One Piece" },
+            { text: "No matter how deep the night, it always turns to day, eventually.", source: "Brook · One Piece" },
+            { text: "Even if I'm scared, even if I want to give up — I'll keep moving forward.", source: "Izuku Midoriya · MHA" },
+            { text: "Go beyond. Plus Ultra.", source: "All Might · MHA" },
+            { text: "The only one who can beat me is me.", source: "Tobio Kageyama · Haikyuu" },
+            { text: "Believe in the me that believes in you.", source: "Kamina · TTGL" },
+            { text: "Who the hell do you think I am?", source: "Kamina · TTGL" },
+            { text: "The only thing we're allowed to do is believe that we won't regret the choice we made.", source: "Levi Ackerman · AOT" },
+            { text: "A person who cannot sacrifice anything, cannot change anything.", source: "Armin Arlert · AOT" },
+            { text: "On that day, mankind received a grim reminder — that complacency will get you nowhere.", source: "Attack on Titan" },
+            { text: "When you give up, that's when the game ends.", source: "Ichigo Kurosaki · Bleach" },
+            { text: "The moment you think of giving up, think of the reason why you held on so long.", source: "Natsu Dragneel · Fairy Tail" },
+            { text: "People become stronger because they have memories they can't forget.", source: "Tsunade · Naruto" },
+            { text: "I've failed over and over and over again in my life. And that is why I succeed.", source: "Michael Jordan" },
+            { text: "I hated every minute of training. But I said: don't quit. Suffer now and live the rest of your life as a champion.", source: "Muhammad Ali" },
+            { text: "Float like a butterfly, sting like a bee.", source: "Muhammad Ali" },
+            { text: "Don't count the days. Make the days count.", source: "Muhammad Ali" },
+            { text: "Part of the journey is the end.", source: "Tony Stark · Avengers: Endgame" },
+            { text: "I can do this all day.", source: "Steve Rogers · Captain America" },
+            { text: "Stay hungry. Stay foolish.", source: "Steve Jobs" },
+            { text: "It always seems impossible until it's done.", source: "Nelson Mandela" },
+            { text: "The future belongs to those who believe in the beauty of their dreams.", source: "Eleanor Roosevelt" },
+            { text: "You miss 100% of the shots you don't take.", source: "Wayne Gretzky" },
+            { text: "Pain is temporary. Quitting lasts forever.", source: "Lance Armstrong" },
+            { text: "Once you meet someone, you never really forget them.", source: "Zeniba · Spirited Away" },
+            { text: "No matter what happens, keep moving forward.", source: "Meet the Robinsons" },
+        ];
+
+        function renderQuote() {
+            const d    = new Date();
+            const seed = d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+            const q    = QUOTES[seed % QUOTES.length];
+            document.getElementById('dailyQuote').innerHTML = `
+                <p class="daily-quote-text">"${q.text}"</p>
+                <span class="daily-quote-source">— ${q.source}</span>`;
+        }
+
+        // ── goals ─────────────────────────────────────────────────────────────
+
+        const GOALS = [
+            {
+                track: 'Liberty Mutual',
+                logo: '/logos/libertymutual.png',
+                items: [
+                    'Ship at least one production infrastructure change',
+                    'Understand the full deployment and monitoring pipeline',
+                    'Present work at intern demo day',
+                    'Leave with a return offer or strong reference',
+                ],
+            },
+            {
+                track: 'Medica',
+                logo: '/logos/medica.png',
+                items: [
+                    'Own and ship one API integration end-to-end',
+                    'Write technical documentation for at least one API',
+                    'Leave with a return offer or strong reference',
+                ],
+            },
+            {
+                track: 'NeetCode 150',
+                logo: null,
+                items: [
+                    'Complete all 150 problems by August 15',
+                    'Master the core patterns: sliding window, two pointers, BFS/DFS, DP, binary search',
+                    'Average 2+ problems per day',
+                ],
+            },
+            {
+                track: 'youdaheDB',
+                logo: null,
+                items: [
+                    'Implement a working storage engine (B-tree or LSM — pick one)',
+                    'Support basic CRUD with a custom query interface',
+                    'Handle at least one real concurrency scenario correctly',
+                    'Write a technical blog post about the design decisions',
+                ],
+            },
+            {
+                track: 'container-runtime',
+                logo: null,
+                items: [
+                    'Implement Linux namespaces (PID, mount, network)',
+                    'Add cgroup-based resource limits',
+                    'Successfully run a real isolated process',
+                    'Write a technical blog post about the implementation',
+                ],
+            },
+            {
+                track: 'System Design',
+                logo: null,
+                items: [
+                    'Finish all 12 DDIA chapters',
+                    'Complete 6+ mock system design sessions (2 per month)',
+                    'Confidently design: distributed cache, news feed, rate limiter, ride-sharing',
+                ],
+            },
+            {
+                track: 'Startup',
+                logo: null,
+                items: [
+                    'Ship at least one meaningful thing per month (3 total)',
+                    'End the summer knowing whether to keep going or shut it down',
+                ],
+            },
+            {
+                track: 'Health & Wellness',
+                logo: null,
+                items: [
+                    'Stick to the 3-day split × 2 + Day 7 hard cardio every week',
+                    'Hit 10,000 steps every day',
+                    'Sleep 8 hours consistently',
+                    'Stay in slight deficit — ~1,800 cal/day, high protein',
+                    'Get outside for at least 20 minutes every day',
+                    'Keep at least one social commitment per week',
+                    'Take one fully offline day per week',
+                ],
+            },
+        ];
+
+        function getChecked() {
+            try { return new Set(JSON.parse(localStorage.getItem('s26_goals') || '[]')); }
+            catch { return new Set(); }
+        }
+
+        function saveChecked(set) {
+            localStorage.setItem('s26_goals', JSON.stringify([...set]));
+        }
+
+        function toggleGoal(id) {
+            const checked = getChecked();
+            checked.has(id) ? checked.delete(id) : checked.add(id);
+            saveChecked(checked);
+            renderGoals();
+        }
+
+        function renderGoals() {
+            const checked = getChecked();
+            const total   = GOALS.reduce((n, t) => n + t.items.length, 0);
+            const done    = GOALS.reduce((n, t, ti) =>
+                n + t.items.filter((_, ii) => checked.has(`${ti}_${ii}`)).length, 0);
+
+            document.getElementById('goalsContainer').innerHTML = GOALS.map((track, ti) => {
+                const trackDone = track.items.filter((_, ii) => checked.has(`${ti}_${ii}`)).length;
+
+                return `
+                <div class="goals-track">
+                    <div class="goals-track-header">
+                        <div class="daily-entry-label">
+                            ${track.logo ? `<img src="${track.logo}" class="daily-entry-logo" alt="${track.track}">` : ''}
+                            <span>${track.track}</span>
+                        </div>
+                        <span class="goals-progress">${trackDone}/${track.items.length}</span>
+                    </div>
+                    <div class="goals-list">
+                        ${track.items.map((item, ii) => {
+                            const id      = `${ti}_${ii}`;
+                            const isChecked = checked.has(id);
+                            return `
+                            <div class="goal-item${isChecked ? ' checked' : ''}" onclick="toggleGoal('${id}')">
+                                <span class="goal-box">
+                                    ${isChecked ? `<svg width="9" height="9" viewBox="0 0 9 9" fill="none">
+                                        <path d="M1.5 4.5L3.5 6.5L7.5 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>` : ''}
+                                </span>
+                                <span class="goal-text">${item}</span>
+                            </div>`;
+                        }).join('')}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // ── sections — NeetCode handled automatically from GitHub
         const SECTIONS = [
             { key: 'libertyMutual',    label: 'Liberty Mutual',   logo: '/logos/libertymutual.png' },
             { key: 'medica',           label: 'Medica',            logo: '/logos/medica.png' },
@@ -107,9 +297,11 @@
             dateMap = buildDateMap(logs);
             document.getElementById('gate').style.display    = 'none';
             document.getElementById('logFeed').style.display = 'block';
+            renderQuote();
             renderCalendar();
+            renderGoals();
             loadNeetcodeProgress();
-            loadNeetcodeCommits(); // re-renders calendar with NC dots when done
+            loadNeetcodeCommits();
         }
 
         document.getElementById('passwordInput').addEventListener('keydown', e => {
