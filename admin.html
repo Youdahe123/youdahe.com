@@ -61,11 +61,6 @@
             </div>
 
             <div class="daily-section">
-                <div class="daily-section-label"><span>NeetCode</span></div>
-                <textarea id="dailyNeetcode" class="admin-textarea daily-textarea" placeholder="Problems solved, patterns clicked, notes..."></textarea>
-            </div>
-
-            <div class="daily-section">
                 <div class="daily-section-label"><span>youdaheDB</span></div>
                 <textarea id="dailyYoudaheDB" class="admin-textarea daily-textarea" placeholder="Progress, decisions, blockers..."></textarea>
             </div>
@@ -231,7 +226,6 @@
                 date: dateVal ? new Date(dateVal + 'T12:00:00').toISOString() : new Date().toISOString(),
                 libertyMutual: document.getElementById('dailyLM').value.trim(),
                 medica: document.getElementById('dailyMedica').value.trim(),
-                neetcode: document.getElementById('dailyNeetcode').value.trim(),
                 youdaheDB: document.getElementById('dailyYoudaheDB').value.trim(),
                 containerRuntime: document.getElementById('dailyContainer').value.trim(),
                 sysDesign: document.getElementById('dailySysDesign').value.trim(),
@@ -242,7 +236,7 @@
 
             await addDailyLog(fields, adminPassword);
 
-            ['dailyLM','dailyMedica','dailyNeetcode','dailyYoudaheDB','dailyContainer','dailySysDesign','dailyStartup','dailyWins','dailyBlockers'].forEach(id => {
+            ['dailyLM','dailyMedica','dailyYoudaheDB','dailyContainer','dailySysDesign','dailyStartup','dailyWins','dailyBlockers'].forEach(id => {
                 document.getElementById(id).value = '';
             });
             const today = new Date().toISOString().slice(0, 10);
@@ -267,7 +261,6 @@
                 const sections = [
                     { label: 'Liberty Mutual', logo: '/logos/libertymutual.png', value: log.libertyMutual },
                     { label: 'Medica', logo: '/logos/medica.png', value: log.medica },
-                    { label: 'NeetCode', logo: null, value: log.neetcode },
                     { label: 'youdaheDB', logo: null, value: log.youdaheDB },
                     { label: 'container-runtime', logo: null, value: log.containerRuntime },
                     { label: 'Sys Design', logo: null, value: log.sysDesign },

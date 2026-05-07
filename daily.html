@@ -68,10 +68,10 @@
     <script src="script.js"></script>
     <script src="daily.js"></script>
     <script>
+        // sections — NeetCode handled automatically from GitHub
         const SECTIONS = [
             { key: 'libertyMutual',    label: 'Liberty Mutual',   logo: '/logos/libertymutual.png' },
             { key: 'medica',           label: 'Medica',            logo: '/logos/medica.png' },
-            { key: 'neetcode',         label: 'NeetCode',          logo: null },
             { key: 'youdaheDB',        label: 'youdaheDB',        logo: null },
             { key: 'containerRuntime', label: 'container-runtime', logo: null },
             { key: 'sysDesign',        label: 'Sys Design',        logo: null },
@@ -80,34 +80,36 @@
             { key: 'blockers',         label: 'Blockers',          logo: null },
         ];
 
-        const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        const MONTHS   = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        const NC_REPO  = 'Youdahe123/neetcode-submissions1';
 
-        let allLogs = [];
-        let dateMap  = {};
-        let calYear  = new Date().getFullYear();
-        let calMonth = new Date().getMonth();
-        let selected = null;
+        let allLogs   = [];
+        let dateMap   = {};   // date key -> daily log
+        let ncDateMap = {};   // date key -> [commit shas]
+        let ncCache   = {};   // date key -> [{slug, code}]
+        let calYear   = new Date().getFullYear();
+        let calMonth  = new Date().getMonth();
+        let selected  = null;
 
         // ── auth ─────────────────────────────────────────────────────────────
 
         async function unlock(password) {
             const err = document.getElementById('gateError');
             err.textContent = '';
-
             const logs = await getDailyLogs(password);
             if (logs === null) { err.textContent = 'wrong password'; return; }
-
             sessionStorage.setItem('daily_pw', password);
             showFeed(logs);
         }
 
         function showFeed(logs) {
-            allLogs  = logs;
-            dateMap  = buildDateMap(logs);
+            allLogs = logs;
+            dateMap = buildDateMap(logs);
             document.getElementById('gate').style.display    = 'none';
             document.getElementById('logFeed').style.display = 'block';
             renderCalendar();
-            loadNeetcode();
+            loadNeetcodeProgress();
+            loadNeetcodeCommits(); // re-renders calendar with NC dots when done
         }
 
         document.getElementById('passwordInput').addEventListener('keydown', e => {
@@ -115,19 +117,13 @@
         });
 
         const saved = sessionStorage.getItem('daily_pw');
-        if (saved) {
-            getDailyLogs(saved).then(logs => {
-                if (Array.isArray(logs)) showFeed(logs);
-            });
-        }
+        if (saved) getDailyLogs(saved).then(logs => { if (Array.isArray(logs)) showFeed(logs); });
 
-        // ── date map ──────────────────────────────────────────────────────────
+        // ── helpers ───────────────────────────────────────────────────────────
 
         function buildDateMap(logs) {
             const map = {};
-            for (const log of logs) {
-                map[toKey(new Date(log.date))] = log;
-            }
+            for (const log of logs) map[toKey(new Date(log.date))] = log;
             return map;
         }
 
@@ -135,13 +131,102 @@
             return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
         }
 
+        function slugToTitle(slug) {
+            return slug.split('-').map(w => w[0].toUpperCase() + w.slice(1)).join(' ');
+        }
+
+        function escapeHtml(s) {
+            return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        }
+
+        // ── NeetCode progress (tree API — total unique folders) ───────────────
+
+        async function loadNeetcodeProgress() {
+            const TOTAL = 150;
+            try {
+                const res  = await fetch(`https://api.github.com/repos/${NC_REPO}/git/trees/HEAD?recursive=1`);
+                const data = await res.json();
+                const folders = new Set();
+                for (const item of data.tree || []) {
+                    const m = item.path.match(/^Data Structures & Algorithms\/([^/]+)\//);
+                    if (m) folders.add(m[1]);
+                }
+                const done = folders.size;
+                const pct  = Math.round((done / TOTAL) * 100);
+                document.getElementById('ncCount').textContent = `${done} / ${TOTAL}`;
+                document.getElementById('ncFill').style.width  = `${pct}%`;
+            } catch {
+                document.getElementById('ncCount').textContent = 'unavailable';
+            }
+        }
+
+        // ── NeetCode commit dates (commits API — which days had submissions) ──
+
+        async function loadNeetcodeCommits() {
+            try {
+                const res     = await fetch(`https://api.github.com/repos/${NC_REPO}/commits?per_page=100`);
+                const commits = await res.json();
+                ncDateMap = {};
+                for (const c of commits) {
+                    const msg = c.commit?.message || '';
+                    if (msg.startsWith('Initialize') || msg.startsWith('Bulk sync')) continue;
+                    const key = c.commit.author.date.slice(0, 10);
+                    (ncDateMap[key] = ncDateMap[key] || []).push(c.sha);
+                }
+            } catch {}
+            renderCalendar(); // update dots with NC data
+        }
+
+        // ── Lazy-load submissions for a specific day ──────────────────────────
+
+        async function fetchNeetcodeForDay(dateKey) {
+            if (ncCache[dateKey]) return ncCache[dateKey];
+
+            const shas = ncDateMap[dateKey] || [];
+            if (!shas.length) return [];
+
+            // gather unique problem slugs + latest submission path per slug
+            const problemMap = new Map(); // slug -> [{n, path}]
+            for (const sha of shas) {
+                try {
+                    const res  = await fetch(`https://api.github.com/repos/${NC_REPO}/commits/${sha}`);
+                    const data = await res.json();
+                    for (const f of data.files || []) {
+                        const m = f.filename.match(/^Data Structures & Algorithms\/([^/]+)\/submission-(\d+)\.py$/);
+                        if (!m) continue;
+                        const [, slug, numStr] = m;
+                        if (!problemMap.has(slug)) problemMap.set(slug, []);
+                        problemMap.get(slug).push({ n: parseInt(numStr), path: f.filename });
+                    }
+                } catch {}
+            }
+
+            // fetch the latest submission file content for each slug
+            const results = [];
+            for (const [slug, files] of problemMap) {
+                files.sort((a, b) => b.n - a.n);
+                const encodedPath = files[0].path.split('/').map(encodeURIComponent).join('/');
+                try {
+                    const res  = await fetch(`https://api.github.com/repos/${NC_REPO}/contents/${encodedPath}`);
+                    const data = await res.json();
+                    const code = atob(data.content.replace(/\n/g, ''));
+                    results.push({ slug, code });
+                } catch {
+                    results.push({ slug, code: '# could not load code' });
+                }
+            }
+
+            ncCache[dateKey] = results;
+            return results;
+        }
+
         // ── calendar ──────────────────────────────────────────────────────────
 
         function renderCalendar() {
             document.getElementById('calLabel').textContent = `${MONTHS[calMonth]} ${calYear}`;
 
-            const todayKey   = toKey(new Date());
-            const firstDow   = new Date(calYear, calMonth, 1).getDay();
+            const todayKey    = toKey(new Date());
+            const firstDow    = new Date(calYear, calMonth, 1).getDay();
             const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
 
             let html = ['Su','Mo','Tu','We','Th','Fr','Sa']
@@ -152,15 +237,18 @@
             for (let day = 1; day <= daysInMonth; day++) {
                 const key    = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
                 const hasLog = !!dateMap[key];
-                const cls    = ['cal-cell',
-                    hasLog          ? 'has-log'  : '',
-                    key === todayKey  ? 'is-today' : '',
-                    key === selected  ? 'is-sel'   : '',
+                const hasNc  = !!(ncDateMap[key]?.length);
+                const hasAny = hasLog || hasNc;
+
+                const cls = ['cal-cell',
+                    hasAny           ? 'has-log'  : '',
+                    key === todayKey ? 'is-today'  : '',
+                    key === selected ? 'is-sel'    : '',
                 ].filter(Boolean).join(' ');
 
-                html += `<div class="${cls}"${hasLog ? ` onclick="selectDay('${key}')"` : ''}>
+                html += `<div class="${cls}"${hasAny ? ` onclick="selectDay('${key}')"` : ''}>
                     <span class="cal-num">${day}</span>
-                    ${hasLog ? '<span class="cal-dot"></span>' : ''}
+                    ${hasAny ? '<span class="cal-dot"></span>' : ''}
                 </div>`;
             }
 
@@ -176,7 +264,9 @@
             renderCalendar();
         }
 
-        function selectDay(key) {
+        // ── day panel ─────────────────────────────────────────────────────────
+
+        async function selectDay(key) {
             const panel = document.getElementById('calPanel');
 
             if (selected === key) {
@@ -190,44 +280,64 @@
             renderCalendar();
 
             const log = dateMap[key];
-            const d   = new Date(log.date);
-            const filled = SECTIONS.filter(s => log[s.key] && log[s.key].trim());
+            const d   = new Date(key + 'T12:00:00');
+            const hasNc = !!(ncDateMap[key]?.length);
 
-            panel.innerHTML = `
+            // date header
+            let html = `
                 <div class="cal-panel-date">
                     <span class="cal-panel-day">${d.toLocaleDateString('en-US',{weekday:'long'})}</span>
                     <span class="cal-panel-full">${d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</span>
-                </div>
-                <div class="cal-panel-sections">
-                    ${filled.map(s => `
-                        <div class="cal-panel-section">
-                            <div class="daily-entry-label">
-                                ${s.logo ? `<img src="${s.logo}" class="daily-entry-logo" alt="${s.label}">` : ''}
-                                <span>${s.label}</span>
-                            </div>
-                            <p class="daily-entry-text">${log[s.key].replace(/\n/g,'<br>')}</p>
-                        </div>
-                    `).join('')}
                 </div>`;
 
+            // daily log sections
+            if (log) {
+                const filled = SECTIONS.filter(s => log[s.key]?.trim());
+                if (filled.length) {
+                    html += `<div class="cal-panel-sections">
+                        ${filled.map(s => `
+                            <div class="cal-panel-section">
+                                <div class="daily-entry-label">
+                                    ${s.logo ? `<img src="${s.logo}" class="daily-entry-logo" alt="${s.label}">` : ''}
+                                    <span>${s.label}</span>
+                                </div>
+                                <p class="daily-entry-text">${log[s.key].replace(/\n/g,'<br>')}</p>
+                            </div>`).join('')}
+                    </div>`;
+                }
+            }
+
+            // NeetCode placeholder — will be filled in async below
+            if (hasNc) {
+                html += `<div id="ncDayBlock">
+                    <div class="daily-entry-label nc-day-label"><span>NeetCode</span></div>
+                    <p class="daily-entry-text nc-loading">loading submissions...</p>
+                </div>`;
+            }
+
+            panel.innerHTML = html;
             panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
 
-        // ── NeetCode via GitHub submissions repo ─────────────────────────────
+            // async: fill in the NeetCode block
+            if (hasNc) {
+                const problems = await fetchNeetcodeForDay(key);
+                const block = document.getElementById('ncDayBlock');
+                if (!block) return; // user navigated away
 
-        async function loadNeetcode() {
-            const TOTAL = 150;
-            try {
-                const res  = await fetch(
-                    'https://api.github.com/repos/Youdahe123/neetcode-submissions/contents/Data%20Structures%20%26%20Algorithms'
-                );
-                const data = await res.json();
-                const done = data.filter(e => e.type === 'dir').length;
-                const pct  = Math.round((done / TOTAL) * 100);
-                document.getElementById('ncCount').textContent = `${done} / ${TOTAL}`;
-                document.getElementById('ncFill').style.width  = `${pct}%`;
-            } catch {
-                document.getElementById('ncCount').textContent = 'unavailable';
+                if (!problems.length) {
+                    block.querySelector('.nc-loading').textContent = 'no submissions found';
+                    return;
+                }
+
+                block.innerHTML = `
+                    <div class="daily-entry-label nc-day-label">
+                        <span>NeetCode · ${problems.length} problem${problems.length !== 1 ? 's' : ''}</span>
+                    </div>
+                    ${problems.map(p => `
+                        <div class="nc-problem">
+                            <span class="nc-problem-name">${slugToTitle(p.slug)}</span>
+                            <pre class="nc-code"><code>${escapeHtml(p.code)}</code></pre>
+                        </div>`).join('')}`;
             }
         }
     </script>

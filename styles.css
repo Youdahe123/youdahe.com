@@ -1163,6 +1163,50 @@ nav {
     opacity: 0.85;
 }
 
+/* NeetCode day submissions */
+.nc-day-label {
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.nc-loading {
+    opacity: 0.4;
+    font-style: italic;
+}
+
+.nc-problem {
+    margin-bottom: 1.5rem;
+}
+
+.nc-problem-name {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-color-dark);
+    margin-bottom: 0.5rem;
+}
+
+.nc-code {
+    font-family: 'SF Mono', 'Fira Code', 'Roboto Mono', 'Courier New', monospace;
+    font-size: 12px;
+    line-height: 1.65;
+    color: var(--text-color);
+    background-color: rgba(128, 128, 128, 0.05);
+    border: 1px solid rgba(128, 128, 128, 0.12);
+    border-radius: 6px;
+    padding: 1rem;
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 320px;
+    white-space: pre;
+    margin: 0;
+}
+
+[data-theme="dark"] .nc-code {
+    background-color: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
 /* Admin tabs */
 .admin-tabs {
     display: flex;
