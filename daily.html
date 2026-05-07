@@ -28,23 +28,38 @@
     <!-- password gate -->
     <div id="gate" class="admin-gate">
         <div class="daily-gate-inner">
-            <input
-                type="password"
-                id="passwordInput"
-                class="admin-password"
-                placeholder="password"
-                autofocus
-            >
+            <input type="password" id="passwordInput" class="admin-password" placeholder="password" autofocus>
             <p id="gateError" class="daily-gate-error"></p>
         </div>
     </div>
 
-    <!-- log feed -->
+    <!-- main content -->
     <main class="container writing-container" id="logFeed" style="display:none;">
-        <section class="writing">
+        <section>
             <h1 class="writing-title">Daily Log</h1>
-            <p class="writing-subtitle">Summer 2026 — what got done, what's stuck, what's next.</p>
-            <div id="logList" class="daily-feed"></div>
+            <p class="writing-subtitle">Summer 2026</p>
+
+            <!-- NeetCode progress -->
+            <div class="nc-widget">
+                <div class="nc-header">
+                    <span class="nc-label">NeetCode 150</span>
+                    <span class="nc-count" id="ncCount">—</span>
+                </div>
+                <div class="nc-bar-track">
+                    <div class="nc-bar-fill" id="ncFill" style="width:0%"></div>
+                </div>
+            </div>
+
+            <!-- Calendar -->
+            <div class="cal-wrap">
+                <div class="cal-nav">
+                    <button class="cal-nav-btn" onclick="changeMonth(-1)">←</button>
+                    <span class="cal-month-label" id="calLabel"></span>
+                    <button class="cal-nav-btn" onclick="changeMonth(1)">→</button>
+                </div>
+                <div class="cal-grid" id="calGrid"></div>
+                <div class="cal-panel" id="calPanel"></div>
+            </div>
         </section>
     </main>
 
@@ -54,91 +69,166 @@
     <script src="daily.js"></script>
     <script>
         const SECTIONS = [
-            { key: 'libertyMutual',   label: 'Liberty Mutual',    logo: '/logos/libertymutual.png' },
-            { key: 'medica',          label: 'Medica',             logo: '/logos/medica.png' },
-            { key: 'neetcode',        label: 'NeetCode',           logo: null },
-            { key: 'youdaheDB',       label: 'youdaheDB',         logo: null },
-            { key: 'containerRuntime',label: 'container-runtime',  logo: null },
-            { key: 'sysDesign',       label: 'Sys Design',         logo: null },
-            { key: 'startup',         label: 'Startup',            logo: null },
-            { key: 'wins',            label: 'Wins',               logo: null },
-            { key: 'blockers',        label: 'Blockers',           logo: null },
+            { key: 'libertyMutual',    label: 'Liberty Mutual',   logo: '/logos/libertymutual.png' },
+            { key: 'medica',           label: 'Medica',            logo: '/logos/medica.png' },
+            { key: 'neetcode',         label: 'NeetCode',          logo: null },
+            { key: 'youdaheDB',        label: 'youdaheDB',        logo: null },
+            { key: 'containerRuntime', label: 'container-runtime', logo: null },
+            { key: 'sysDesign',        label: 'Sys Design',        logo: null },
+            { key: 'startup',          label: 'Startup',           logo: null },
+            { key: 'wins',             label: 'Wins',              logo: null },
+            { key: 'blockers',         label: 'Blockers',          logo: null },
         ];
 
-        async function tryUnlock(password) {
-            const logs = await getDailyLogs(password);
-            if (logs === null) return false;
-            return logs;
-        }
+        const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+        let allLogs = [];
+        let dateMap  = {};
+        let calYear  = new Date().getFullYear();
+        let calMonth = new Date().getMonth();
+        let selected = null;
+
+        // ── auth ─────────────────────────────────────────────────────────────
 
         async function unlock(password) {
-            const error = document.getElementById('gateError');
-            error.textContent = '';
+            const err = document.getElementById('gateError');
+            err.textContent = '';
 
             const logs = await getDailyLogs(password);
-            if (!Array.isArray(logs)) {
-                error.textContent = 'wrong password';
-                return;
-            }
+            if (logs === null) { err.textContent = 'wrong password'; return; }
 
-            sessionStorage.setItem('daily_password', password);
-            document.getElementById('gate').style.display = 'none';
+            sessionStorage.setItem('daily_pw', password);
+            showFeed(logs);
+        }
+
+        function showFeed(logs) {
+            allLogs  = logs;
+            dateMap  = buildDateMap(logs);
+            document.getElementById('gate').style.display    = 'none';
             document.getElementById('logFeed').style.display = 'block';
-            renderLogs(logs);
-        }
-
-        function renderLogs(logs) {
-            const container = document.getElementById('logList');
-
-            if (logs.length === 0) {
-                container.innerHTML = '<p class="writing-empty">Nothing logged yet.</p>';
-                return;
-            }
-
-            container.innerHTML = logs.map(log => {
-                const date = new Date(log.date);
-                const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
-                const dateStr = date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-
-                const filled = SECTIONS.filter(s => log[s.key] && log[s.key].trim());
-                if (!filled.length) return '';
-
-                return `
-                <div class="daily-entry">
-                    <div class="daily-entry-date">
-                        <span class="daily-entry-day">${dayName}</span>
-                        <span class="daily-entry-full">${dateStr}</span>
-                    </div>
-                    <div class="daily-entry-sections">
-                        ${filled.map(s => `
-                            <div class="daily-entry-section">
-                                <div class="daily-entry-label">
-                                    ${s.logo ? `<img src="${s.logo}" class="daily-entry-logo" alt="${s.label}">` : ''}
-                                    <span>${s.label}</span>
-                                </div>
-                                <p class="daily-entry-text">${log[s.key].replace(/\n/g, '<br>')}</p>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>`;
-            }).join('');
-        }
-
-        // restore session
-        const saved = sessionStorage.getItem('daily_password');
-        if (saved) {
-            getDailyLogs(saved).then(logs => {
-                if (Array.isArray(logs)) {
-                    document.getElementById('gate').style.display = 'none';
-                    document.getElementById('logFeed').style.display = 'block';
-                    renderLogs(logs);
-                }
-            });
+            renderCalendar();
+            loadNeetcode();
         }
 
         document.getElementById('passwordInput').addEventListener('keydown', e => {
             if (e.key === 'Enter') unlock(e.target.value);
         });
+
+        const saved = sessionStorage.getItem('daily_pw');
+        if (saved) {
+            getDailyLogs(saved).then(logs => {
+                if (Array.isArray(logs)) showFeed(logs);
+            });
+        }
+
+        // ── date map ──────────────────────────────────────────────────────────
+
+        function buildDateMap(logs) {
+            const map = {};
+            for (const log of logs) {
+                map[toKey(new Date(log.date))] = log;
+            }
+            return map;
+        }
+
+        function toKey(d) {
+            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        }
+
+        // ── calendar ──────────────────────────────────────────────────────────
+
+        function renderCalendar() {
+            document.getElementById('calLabel').textContent = `${MONTHS[calMonth]} ${calYear}`;
+
+            const todayKey   = toKey(new Date());
+            const firstDow   = new Date(calYear, calMonth, 1).getDay();
+            const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+
+            let html = ['Su','Mo','Tu','We','Th','Fr','Sa']
+                .map(d => `<div class="cal-dow">${d}</div>`).join('');
+
+            for (let i = 0; i < firstDow; i++) html += `<div class="cal-cell"></div>`;
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const key    = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+                const hasLog = !!dateMap[key];
+                const cls    = ['cal-cell',
+                    hasLog          ? 'has-log'  : '',
+                    key === todayKey  ? 'is-today' : '',
+                    key === selected  ? 'is-sel'   : '',
+                ].filter(Boolean).join(' ');
+
+                html += `<div class="${cls}"${hasLog ? ` onclick="selectDay('${key}')"` : ''}>
+                    <span class="cal-num">${day}</span>
+                    ${hasLog ? '<span class="cal-dot"></span>' : ''}
+                </div>`;
+            }
+
+            document.getElementById('calGrid').innerHTML = html;
+        }
+
+        function changeMonth(delta) {
+            calMonth += delta;
+            if (calMonth < 0)  { calMonth = 11; calYear--; }
+            if (calMonth > 11) { calMonth = 0;  calYear++; }
+            selected = null;
+            document.getElementById('calPanel').innerHTML = '';
+            renderCalendar();
+        }
+
+        function selectDay(key) {
+            const panel = document.getElementById('calPanel');
+
+            if (selected === key) {
+                selected = null;
+                panel.innerHTML = '';
+                renderCalendar();
+                return;
+            }
+
+            selected = key;
+            renderCalendar();
+
+            const log = dateMap[key];
+            const d   = new Date(log.date);
+            const filled = SECTIONS.filter(s => log[s.key] && log[s.key].trim());
+
+            panel.innerHTML = `
+                <div class="cal-panel-date">
+                    <span class="cal-panel-day">${d.toLocaleDateString('en-US',{weekday:'long'})}</span>
+                    <span class="cal-panel-full">${d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</span>
+                </div>
+                <div class="cal-panel-sections">
+                    ${filled.map(s => `
+                        <div class="cal-panel-section">
+                            <div class="daily-entry-label">
+                                ${s.logo ? `<img src="${s.logo}" class="daily-entry-logo" alt="${s.label}">` : ''}
+                                <span>${s.label}</span>
+                            </div>
+                            <p class="daily-entry-text">${log[s.key].replace(/\n/g,'<br>')}</p>
+                        </div>
+                    `).join('')}
+                </div>`;
+
+            panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // ── NeetCode via GitHub API ───────────────────────────────────────────
+
+        async function loadNeetcode() {
+            try {
+                const res  = await fetch('https://api.github.com/repos/Youdahe123/summer-2026/contents/neetcode-150/progress.md');
+                const data = await res.json();
+                const md   = atob(data.content.replace(/\n/g, ''));
+                const done  = (md.match(/^- \[x\]/gim) || []).length;
+                const total = (md.match(/^- \[[ x]\]/gim) || []).length;
+                const pct   = total ? Math.round((done / total) * 100) : 0;
+                document.getElementById('ncCount').textContent = `${done} / ${total}`;
+                document.getElementById('ncFill').style.width  = `${pct}%`;
+            } catch {
+                document.getElementById('ncCount').textContent = 'unavailable';
+            }
+        }
     </script>
 </body>
 </html>

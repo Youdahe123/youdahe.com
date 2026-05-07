@@ -5,6 +5,7 @@ async function getDailyLogs(password) {
         const res = await fetch(DAILY_API, {
             headers: { 'x-admin-password': password },
         });
+        if (res.status === 401) return null; // wrong password — distinct from empty list
         if (!res.ok) return [];
         return await res.json();
     } catch {
