@@ -16,7 +16,13 @@
             <a href="index.html" class="admin-back">back to site</a>
         </div>
 
-        <div class="admin-editor">
+        <div class="admin-tabs">
+            <button id="tabPost" class="admin-tab admin-tab-active" onclick="switchTab('post')">post</button>
+            <button id="tabDaily" class="admin-tab" onclick="switchTab('daily')">daily log</button>
+        </div>
+
+        <!-- Post editor -->
+        <div class="admin-editor" id="editorPost">
             <input type="text" id="postTitle" class="admin-input" placeholder="Title">
             <input type="text" id="postPreview" class="admin-input admin-input-sm" placeholder="Preview text (optional)">
             <input type="date" id="postDate" class="admin-input admin-input-sm">
@@ -29,9 +35,72 @@
             <button id="publishBtn" class="admin-btn" onclick="publishPost()">publish</button>
         </div>
 
-        <div class="admin-posts">
+        <div class="admin-posts" id="listPost">
             <h2>Posts</h2>
             <div id="postList"></div>
+        </div>
+
+        <!-- Daily log editor -->
+        <div class="admin-editor" id="editorDaily" style="display:none;">
+            <input type="date" id="dailyDate" class="admin-input admin-input-sm">
+
+            <div class="daily-section">
+                <div class="daily-section-label">
+                    <img src="/logos/libertymutual.png" class="daily-logo" alt="Liberty Mutual">
+                    <span>Liberty Mutual</span>
+                </div>
+                <textarea id="dailyLM" class="admin-textarea daily-textarea" placeholder="What did you work on today?"></textarea>
+            </div>
+
+            <div class="daily-section">
+                <div class="daily-section-label">
+                    <img src="/logos/medica.png" class="daily-logo" alt="Medica">
+                    <span>Medica</span>
+                </div>
+                <textarea id="dailyMedica" class="admin-textarea daily-textarea" placeholder="What did you work on today?"></textarea>
+            </div>
+
+            <div class="daily-section">
+                <div class="daily-section-label"><span>NeetCode</span></div>
+                <textarea id="dailyNeetcode" class="admin-textarea daily-textarea" placeholder="Problems solved, patterns clicked, notes..."></textarea>
+            </div>
+
+            <div class="daily-section">
+                <div class="daily-section-label"><span>youdaheDB</span></div>
+                <textarea id="dailyYoudaheDB" class="admin-textarea daily-textarea" placeholder="Progress, decisions, blockers..."></textarea>
+            </div>
+
+            <div class="daily-section">
+                <div class="daily-section-label"><span>container-runtime</span></div>
+                <textarea id="dailyContainer" class="admin-textarea daily-textarea" placeholder="Progress, decisions, blockers..."></textarea>
+            </div>
+
+            <div class="daily-section">
+                <div class="daily-section-label"><span>Sys Design</span></div>
+                <textarea id="dailySysDesign" class="admin-textarea daily-textarea" placeholder="Chapter notes, concepts, mock interview notes..."></textarea>
+            </div>
+
+            <div class="daily-section">
+                <div class="daily-section-label"><span>Startup</span></div>
+                <textarea id="dailyStartup" class="admin-textarea daily-textarea" placeholder="What moved forward today?"></textarea>
+            </div>
+
+            <div class="daily-section">
+                <div class="daily-section-label"><span>Wins</span></div>
+                <textarea id="dailyWins" class="admin-textarea daily-textarea" placeholder="What went well?"></textarea>
+            </div>
+
+            <div class="daily-section">
+                <div class="daily-section-label"><span>Blockers</span></div>
+                <textarea id="dailyBlockers" class="admin-textarea daily-textarea" placeholder="What's stuck?"></textarea>
+            </div>
+
+            <button id="dailyPublishBtn" class="admin-btn" onclick="publishDailyLog()">save log</button>
+        </div>
+
+        <div class="admin-posts" id="listDaily" style="display:none;">
+            <h2>Daily Logs</h2>
+            <div id="dailyLogList"></div>
         </div>
     </main>
 
@@ -41,8 +110,10 @@
 
     <script src="script.js"></script>
     <script src="posts.js"></script>
+    <script src="daily.js"></script>
     <script>
         let adminPassword = '';
+        let activeTab = 'post';
 
         document.getElementById('passwordInput').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
@@ -51,6 +122,7 @@
                 document.getElementById('gate').style.display = 'none';
                 document.getElementById('admin').style.display = 'block';
                 renderPosts();
+                renderDailyLogs();
             }
         });
 
@@ -59,7 +131,20 @@
             document.getElementById('gate').style.display = 'none';
             document.getElementById('admin').style.display = 'block';
             renderPosts();
+            renderDailyLogs();
         }
+
+        function switchTab(tab) {
+            activeTab = tab;
+            document.getElementById('tabPost').classList.toggle('admin-tab-active', tab === 'post');
+            document.getElementById('tabDaily').classList.toggle('admin-tab-active', tab === 'daily');
+            document.getElementById('editorPost').style.display = tab === 'post' ? 'flex' : 'none';
+            document.getElementById('editorDaily').style.display = tab === 'daily' ? 'flex' : 'none';
+            document.getElementById('listPost').style.display = tab === 'post' ? 'block' : 'none';
+            document.getElementById('listDaily').style.display = tab === 'daily' ? 'block' : 'none';
+        }
+
+        // ── Post tab ──────────────────────────────────────────────────────────
 
         async function renderPosts() {
             const posts = await getPosts();
@@ -126,6 +211,96 @@
             if (!confirm('Delete this post?')) return;
             await deletePost(id, adminPassword);
             await renderPosts();
+        }
+
+        // ── Daily log tab ─────────────────────────────────────────────────────
+
+        // auto-fill today's date
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date().toISOString().slice(0, 10);
+            document.getElementById('dailyDate').value = today;
+        });
+
+        async function publishDailyLog() {
+            const btn = document.getElementById('dailyPublishBtn');
+            btn.disabled = true;
+            btn.textContent = 'saving...';
+
+            const dateVal = document.getElementById('dailyDate').value;
+            const fields = {
+                date: dateVal ? new Date(dateVal + 'T12:00:00').toISOString() : new Date().toISOString(),
+                libertyMutual: document.getElementById('dailyLM').value.trim(),
+                medica: document.getElementById('dailyMedica').value.trim(),
+                neetcode: document.getElementById('dailyNeetcode').value.trim(),
+                youdaheDB: document.getElementById('dailyYoudaheDB').value.trim(),
+                containerRuntime: document.getElementById('dailyContainer').value.trim(),
+                sysDesign: document.getElementById('dailySysDesign').value.trim(),
+                startup: document.getElementById('dailyStartup').value.trim(),
+                wins: document.getElementById('dailyWins').value.trim(),
+                blockers: document.getElementById('dailyBlockers').value.trim(),
+            };
+
+            await addDailyLog(fields, adminPassword);
+
+            ['dailyLM','dailyMedica','dailyNeetcode','dailyYoudaheDB','dailyContainer','dailySysDesign','dailyStartup','dailyWins','dailyBlockers'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+            const today = new Date().toISOString().slice(0, 10);
+            document.getElementById('dailyDate').value = today;
+
+            btn.disabled = false;
+            btn.textContent = 'save log';
+            await renderDailyLogs();
+        }
+
+        async function renderDailyLogs() {
+            const logs = await getDailyLogs(adminPassword);
+            const container = document.getElementById('dailyLogList');
+
+            if (logs.length === 0) {
+                container.innerHTML = '<p class="admin-empty">No logs yet.</p>';
+                return;
+            }
+
+            container.innerHTML = logs.map(log => {
+                const dateStr = new Date(log.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+                const sections = [
+                    { label: 'Liberty Mutual', logo: '/logos/libertymutual.png', value: log.libertyMutual },
+                    { label: 'Medica', logo: '/logos/medica.png', value: log.medica },
+                    { label: 'NeetCode', logo: null, value: log.neetcode },
+                    { label: 'youdaheDB', logo: null, value: log.youdaheDB },
+                    { label: 'container-runtime', logo: null, value: log.containerRuntime },
+                    { label: 'Sys Design', logo: null, value: log.sysDesign },
+                    { label: 'Startup', logo: null, value: log.startup },
+                    { label: 'Wins', logo: null, value: log.wins },
+                    { label: 'Blockers', logo: null, value: log.blockers },
+                ].filter(s => s.value);
+
+                return `
+                <div class="daily-log-item">
+                    <div class="daily-log-header">
+                        <span class="daily-log-date">${dateStr}</span>
+                        <button class="admin-delete" onclick="deleteDailyAndRefresh('${log.id}')">delete</button>
+                    </div>
+                    <div class="daily-log-body">
+                        ${sections.map(s => `
+                            <div class="daily-log-section">
+                                <div class="daily-log-label">
+                                    ${s.logo ? `<img src="${s.logo}" class="daily-log-logo" alt="${s.label}">` : ''}
+                                    <span>${s.label}</span>
+                                </div>
+                                <p class="daily-log-text">${s.value.replace(/\n/g, '<br>')}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        async function deleteDailyAndRefresh(id) {
+            if (!confirm('Delete this log?')) return;
+            await deleteDailyLog(id, adminPassword);
+            await renderDailyLogs();
         }
     </script>
 </body>
