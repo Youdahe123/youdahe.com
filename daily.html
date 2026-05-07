@@ -213,17 +213,18 @@
             panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
-        // ── NeetCode via GitHub API ───────────────────────────────────────────
+        // ── NeetCode via GitHub submissions repo ─────────────────────────────
 
         async function loadNeetcode() {
+            const TOTAL = 150;
             try {
-                const res  = await fetch('https://api.github.com/repos/Youdahe123/summer-2026/contents/neetcode-150/progress.md');
+                const res  = await fetch(
+                    'https://api.github.com/repos/Youdahe123/neetcode-submissions/contents/Data%20Structures%20%26%20Algorithms'
+                );
                 const data = await res.json();
-                const md   = atob(data.content.replace(/\n/g, ''));
-                const done  = (md.match(/^- \[x\]/gim) || []).length;
-                const total = (md.match(/^- \[[ x]\]/gim) || []).length;
-                const pct   = total ? Math.round((done / total) * 100) : 0;
-                document.getElementById('ncCount').textContent = `${done} / ${total}`;
+                const done = data.filter(e => e.type === 'dir').length;
+                const pct  = Math.round((done / TOTAL) * 100);
+                document.getElementById('ncCount').textContent = `${done} / ${TOTAL}`;
                 document.getElementById('ncFill').style.width  = `${pct}%`;
             } catch {
                 document.getElementById('ncCount').textContent = 'unavailable';
