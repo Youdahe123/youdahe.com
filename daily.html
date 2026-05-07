@@ -34,7 +34,7 @@
     </div>
 
     <!-- main content -->
-    <main class="container writing-container" id="logFeed" style="display:none;">
+    <main class="container" id="logFeed" style="display:none;">
         <section>
             <h1 class="writing-title">Daily Log</h1>
             <p class="writing-subtitle">Summer 2026</p>
@@ -53,22 +53,23 @@
                 </div>
             </div>
 
-            <!-- Calendar -->
-            <div class="cal-wrap">
-                <div class="cal-nav">
-                    <button class="cal-nav-btn" onclick="changeMonth(-1)">←</button>
-                    <span class="cal-month-label" id="calLabel"></span>
-                    <button class="cal-nav-btn" onclick="changeMonth(1)">→</button>
+            <!-- Calendar + Goals side by side -->
+            <div class="daily-cols">
+                <div class="cal-wrap">
+                    <div class="cal-nav">
+                        <button class="cal-nav-btn" onclick="changeMonth(-1)">←</button>
+                        <span class="cal-month-label" id="calLabel"></span>
+                        <button class="cal-nav-btn" onclick="changeMonth(1)">→</button>
+                    </div>
+                    <div class="cal-grid" id="calGrid"></div>
+                    <div class="cal-panel" id="calPanel"></div>
                 </div>
-                <div class="cal-grid" id="calGrid"></div>
-                <div class="cal-panel" id="calPanel"></div>
-            </div>
 
-            <!-- Goals -->
-            <div class="goals-section">
-                <h2 class="goals-title">Summer Goals</h2>
-                <p class="goals-subtitle">End of summer · check things off as you land them</p>
-                <div id="goalsContainer"></div>
+                <div class="goals-col">
+                    <h2 class="goals-title">Summer Goals</h2>
+                    <p class="goals-subtitle">End of summer · check things off as you land them</p>
+                    <div id="goalsContainer"></div>
+                </div>
             </div>
         </section>
     </main>

@@ -1188,11 +1188,24 @@ nav {
     letter-spacing: 0.05em;
 }
 
-/* Goals section */
+/* Daily log two-column layout */
+.daily-cols {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 4rem;
+    align-items: start;
+}
+
+/* Goals section (standalone, below calendar) */
 .goals-section {
     margin-top: 3.5rem;
     padding-top: 2.5rem;
     border-top: 1px solid rgba(128, 128, 128, 0.15);
+}
+
+/* Goals column (inside two-col grid — no top border) */
+.goals-col {
+    min-width: 0;
 }
 
 .goals-title {
@@ -1442,6 +1455,11 @@ nav {
 
 /* Responsive design */
 @media (max-width: 768px) {
+    .daily-cols {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+
     nav {
         padding: 1.5rem 1.5rem;
         gap: 1rem;
