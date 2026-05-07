@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>daily log · youdahe.com</title>
+    <link rel="icon" type="image/jpeg" href="/thumbnails/757728ea03cf11b495d92a9852a9f060.jpg">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav>
+        <div class="nav-links">
+            <a href="index.html">home</a>
+            <a href="writing.html">writing</a>
+            <a href="photography.html">photography</a>
+            <a href="daily.html">daily log</a>
+        </div>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+        </button>
+    </nav>
+
+    <!-- password gate -->
+    <div id="gate" class="admin-gate">
+        <div class="daily-gate-inner">
+            <input
+                type="password"
+                id="passwordInput"
+                class="admin-password"
+                placeholder="password"
+                autofocus
+            >
+            <p id="gateError" class="daily-gate-error"></p>
+        </div>
+    </div>
+
+    <!-- log feed -->
+    <main class="container writing-container" id="logFeed" style="display:none;">
+        <section class="writing">
+            <h1 class="writing-title">Daily Log</h1>
+            <p class="writing-subtitle">Summer 2026 — what got done, what's stuck, what's next.</p>
+            <div id="logList" class="daily-feed"></div>
+        </section>
+    </main>
+
+    <div class="footer-bar"></div>
+
+    <script src="script.js"></script>
+    <script src="daily.js"></script>
+    <script>
+        const SECTIONS = [
+            { key: 'libertyMutual',   label: 'Liberty Mutual',    logo: '/logos/libertymutual.png' },
+            { key: 'medica',          label: 'Medica',             logo: '/logos/medica.png' },
+            { key: 'neetcode',        label: 'NeetCode',           logo: null },
+            { key: 'youdaheDB',       label: 'youdaheDB',         logo: null },
+            { key: 'containerRuntime',label: 'container-runtime',  logo: null },
+            { key: 'sysDesign',       label: 'Sys Design',         logo: null },
+            { key: 'startup',         label: 'Startup',            logo: null },
+            { key: 'wins',            label: 'Wins',               logo: null },
+            { key: 'blockers',        label: 'Blockers',           logo: null },
+        ];
+
+        async function tryUnlock(password) {
+            const logs = await getDailyLogs(password);
+            if (logs === null) return false;
+            return logs;
+        }
+
+        async function unlock(password) {
+            const error = document.getElementById('gateError');
+            error.textContent = '';
+
+            const logs = await getDailyLogs(password);
+            if (!Array.isArray(logs)) {
+                error.textContent = 'wrong password';
+                return;
+            }
+
+            sessionStorage.setItem('daily_password', password);
+            document.getElementById('gate').style.display = 'none';
+            document.getElementById('logFeed').style.display = 'block';
+            renderLogs(logs);
+        }
+
+        function renderLogs(logs) {
+            const container = document.getElementById('logList');
+
+            if (logs.length === 0) {
+                container.innerHTML = '<p class="writing-empty">Nothing logged yet.</p>';
+                return;
+            }
+
+            container.innerHTML = logs.map(log => {
+                const date = new Date(log.date);
+                const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+                const dateStr = date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+                const filled = SECTIONS.filter(s => log[s.key] && log[s.key].trim());
+                if (!filled.length) return '';
+
+                return `
+                <div class="daily-entry">
+                    <div class="daily-entry-date">
+                        <span class="daily-entry-day">${dayName}</span>
+                        <span class="daily-entry-full">${dateStr}</span>
+                    </div>
+                    <div class="daily-entry-sections">
+                        ${filled.map(s => `
+                            <div class="daily-entry-section">
+                                <div class="daily-entry-label">
+                                    ${s.logo ? `<img src="${s.logo}" class="daily-entry-logo" alt="${s.label}">` : ''}
+                                    <span>${s.label}</span>
+                                </div>
+                                <p class="daily-entry-text">${log[s.key].replace(/\n/g, '<br>')}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // restore session
+        const saved = sessionStorage.getItem('daily_password');
+        if (saved) {
+            getDailyLogs(saved).then(logs => {
+                if (Array.isArray(logs)) {
+                    document.getElementById('gate').style.display = 'none';
+                    document.getElementById('logFeed').style.display = 'block';
+                    renderLogs(logs);
+                }
+            });
+        }
+
+        document.getElementById('passwordInput').addEventListener('keydown', e => {
+            if (e.key === 'Enter') unlock(e.target.value);
+        });
+    </script>
+</body>
+</html>
