@@ -42,6 +42,15 @@
             <!-- daily quote -->
             <div class="daily-quote" id="dailyQuote"></div>
 
+            <!-- Daily schedule -->
+            <div class="sch-widget" id="schWidget">
+                <div class="sch-widget-header">
+                    <div class="daily-entry-label"><span>Today</span></div>
+                    <span class="sch-day-label" id="schDayLabel"></span>
+                </div>
+                <div class="sch-list" id="schList"></div>
+            </div>
+
             <!-- NeetCode progress -->
             <div class="nc-widget">
                 <div class="nc-header">
@@ -391,6 +400,7 @@
             document.getElementById('gate').style.display    = 'none';
             document.getElementById('logFeed').style.display = 'block';
             renderQuote();
+            renderSchedule();
             renderCalendar();
             renderGoals();
             loadNeetcodeProgress();
@@ -551,6 +561,61 @@
         }
 
         // ── day panel ─────────────────────────────────────────────────────────
+
+        // ── daily schedule ────────────────────────────────────────────────────
+
+        const SCHEDULE = [
+            { t: [6,  30], label: 'Wake up + Breakfast',  detail: '2–3 scoops yogurt + protein powder · diet coke or water' },
+            { t: [9,   0], label: 'Work',                  detail: 'In person or remote' },
+            { t: [17,  0], label: 'Gym',                   detail: 'Head straight from work' },
+            { t: [18, 30], label: 'Lunch',                 detail: 'Meat + a carb · last meal of the day' },
+            { t: [19, 30], label: 'LeetCode',              detail: 'One problem' },
+            { t: [20, 30], label: 'Side project',          detail: 'youdaheDB or container runtime' },
+            { t: [21, 30], label: 'Schedule seat',         detail: 'Book your work seat for tomorrow' },
+        ];
+
+        const DAY_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+        function schFmt(h, m) {
+            const p = h >= 12 ? 'pm' : 'am';
+            return `${h % 12 || 12}:${String(m).padStart(2,'0')} ${p}`;
+        }
+
+        function renderSchedule() {
+            const now     = new Date();
+            const dow     = now.getDay();
+            const nowMins = now.getHours() * 60 + now.getMinutes();
+
+            document.getElementById('schDayLabel').textContent = DAY_NAMES[dow];
+
+            const list = document.getElementById('schList');
+
+            if (dow === 0 || dow === 6) {
+                list.innerHTML = '<p class="sch-weekend">Weekend — rest up</p>';
+                return;
+            }
+
+            let curIdx = -1;
+            SCHEDULE.forEach((item, i) => {
+                if (item.t[0] * 60 + item.t[1] <= nowMins) curIdx = i;
+            });
+
+            list.innerHTML = SCHEDULE.map((item, i) => {
+                const past    = i < curIdx;
+                const current = i === curIdx;
+                return `
+                <div class="sch-item${past ? ' past' : ''}${current ? ' current' : ''}">
+                    <span class="sch-time">${schFmt(item.t[0], item.t[1])}</span>
+                    <span class="sch-dot"></span>
+                    <div class="sch-body">
+                        <span class="sch-label">${item.label}</span>
+                        ${item.detail ? `<span class="sch-detail">${item.detail}</span>` : ''}
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        setInterval(renderSchedule, 60_000);
 
         // ── notes ─────────────────────────────────────────────────────────────
 
