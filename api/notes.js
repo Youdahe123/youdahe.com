@@ -1,14 +1,32 @@
 import { put, list, del } from '@vercel/blob';
+import crypto from 'crypto';
+
+const ALLOWED_ORIGIN = 'https://youdahe.com';
+const VALID_TAGS     = new Set(['general', 'goals', 'learning', 'objectives', 'ideas']);
+const MAX_TITLE_LEN  = 200;
+const MAX_BODY_LEN   = 50_000;
+
+function checkAuth(provided) {
+  const expected = process.env.ADMIN_PASSWORD;
+  if (!provided || !expected) return false;
+  try {
+    const a = Buffer.from(provided), b = Buffer.from(expected);
+    return a.length === b.length && crypto.timingSafeEqual(a, b);
+  } catch { return false; }
+}
+
+function isValidId(id) {
+  return typeof id === 'string' && /^[a-z0-9]+$/i.test(id) && id.length <= 24;
+}
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', ALLOWED_ORIGIN);
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-admin-password');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  const password = req.headers['x-admin-password'];
-  if (password !== process.env.ADMIN_PASSWORD) {
+  if (!checkAuth(req.headers['x-admin-password'])) {
     return res.status(401).json({ error: 'unauthorized' });
   }
 
@@ -25,8 +43,14 @@ export default async function handler(req, res) {
 
   if (req.method === 'POST') {
     const { id, title, body, tag } = req.body;
+
+    if (id !== undefined && !isValidId(id)) {
+      return res.status(400).json({ error: 'invalid id' });
+    }
+
     const now    = new Date().toISOString();
     const noteId = id || Date.now().toString(36);
+    const safeTag = VALID_TAGS.has(tag) ? tag : 'general';
 
     let createdAt = now;
     if (id) {
@@ -41,10 +65,10 @@ export default async function handler(req, res) {
     }
 
     const note = {
-      id: noteId,
-      title: title || '',
-      body: body || '',
-      tag: tag || 'general',
+      id:        noteId,
+      title:     typeof title === 'string' ? title.slice(0, MAX_TITLE_LEN) : '',
+      body:      typeof body  === 'string' ? body.slice(0, MAX_BODY_LEN)   : '',
+      tag:       safeTag,
       createdAt,
       updatedAt: now,
     };
@@ -59,9 +83,14 @@ export default async function handler(req, res) {
 
   if (req.method === 'DELETE') {
     const { id } = req.query;
-    if (!id) return res.status(400).json({ error: 'id required' });
-    const { blobs } = await list({ prefix: `notes/${id}` });
+
+    if (!isValidId(id)) {
+      return res.status(400).json({ error: 'invalid id' });
+    }
+
+    const { blobs } = await list({ prefix: `notes/${id}.json` });
     for (const blob of blobs) await del(blob.url);
+
     return res.status(200).json({ deleted: id });
   }
 

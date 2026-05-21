@@ -578,11 +578,11 @@
             let html = recent.map(n => `
                 <div class="note-card" onclick="openNotes('${n.id}')">
                     <div class="note-card-header">
-                        <span class="note-card-tag">${n.tag}</span>
+                        <span class="note-card-tag">${escapeHtml(n.tag)}</span>
                         <span class="note-card-date">${noteRelDate(n.updatedAt)}</span>
                     </div>
-                    <div class="note-card-title">${n.title || 'Untitled'}</div>
-                    ${n.body ? `<div class="note-card-preview">${n.body.slice(0, 100).replace(/\n/g, ' ')}</div>` : ''}
+                    <div class="note-card-title">${escapeHtml(n.title || 'Untitled')}</div>
+                    ${n.body ? `<div class="note-card-preview">${escapeHtml(n.body.slice(0, 100)).replace(/\n/g, ' ')}</div>` : ''}
                 </div>`).join('');
             if (allNotes.length > 6)
                 html += `<button class="notes-see-all" onclick="openNotes()">see all ${allNotes.length} →</button>`;
@@ -631,9 +631,9 @@
             if (!list.length) { listEl.innerHTML = '<p class="notes-list-empty">no notes</p>'; return; }
             listEl.innerHTML = list.map(n => `
                 <div class="notes-list-item${n.id === activeNoteId ? ' active' : ''}" onclick="selectNote('${n.id}')">
-                    <div class="notes-list-item-title">${n.title || 'Untitled'}</div>
+                    <div class="notes-list-item-title">${escapeHtml(n.title || 'Untitled')}</div>
                     <div class="notes-list-item-meta">
-                        <span class="notes-list-item-tag">${n.tag}</span>
+                        <span class="notes-list-item-tag">${escapeHtml(n.tag)}</span>
                         <span class="notes-list-item-date">${noteRelDate(n.updatedAt)}</span>
                     </div>
                 </div>`).join('');
@@ -772,7 +772,7 @@
                                     ${s.logo ? `<img src="${s.logo}" class="daily-entry-logo" alt="${s.label}">` : ''}
                                     <span>${s.label}</span>
                                 </div>
-                                <p class="daily-entry-text">${log[s.key].replace(/\n/g,'<br>')}</p>
+                                <p class="daily-entry-text">${escapeHtml(log[s.key]).replace(/\n/g,'<br>')}</p>
                             </div>`).join('')}
                     </div>`;
                 }
@@ -806,7 +806,7 @@
                     </div>
                     ${problems.map(p => `
                         <div class="nc-problem">
-                            <span class="nc-problem-name">${slugToTitle(p.slug)}</span>
+                            <span class="nc-problem-name">${escapeHtml(slugToTitle(p.slug))}</span>
                             <pre class="nc-code"><code>${escapeHtml(p.code)}</code></pre>
                         </div>`).join('')}`;
             }
