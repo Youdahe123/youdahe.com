@@ -53,6 +53,17 @@
                 </div>
             </div>
 
+            <!-- Notes widget -->
+            <div class="notes-widget" id="notesWidget">
+                <div class="notes-widget-header">
+                    <div class="daily-entry-label"><span>Notes</span></div>
+                    <button class="notes-new-btn" onclick="openNotes(null, true)">+ new note</button>
+                </div>
+                <div class="notes-card-grid" id="notesCardGrid">
+                    <p class="notes-empty">no notes yet</p>
+                </div>
+            </div>
+
             <!-- Calendar + Goals side by side -->
             <div class="daily-cols">
                 <div class="cal-wrap">
@@ -128,10 +139,37 @@
         </section>
     </main>
 
+    <!-- Notes modal -->
+    <div class="notes-overlay" id="notesOverlay" style="display:none;" onclick="handleOverlayClick(event)">
+        <div class="notes-modal">
+            <div class="notes-sidebar">
+                <div class="notes-sidebar-header">
+                    <span class="notes-sidebar-title">Notes</span>
+                    <button class="notes-sidebar-new" onclick="newNote()" title="New note">+</button>
+                </div>
+                <div class="notes-tag-filter" id="notesTagFilter"></div>
+                <div class="notes-list" id="notesList"></div>
+            </div>
+            <div class="notes-editor">
+                <div class="notes-editor-top">
+                    <input class="notes-title-input" id="notesTitleInput" placeholder="Title" autocomplete="off" />
+                    <div class="notes-editor-actions">
+                        <span class="notes-save-status" id="notesSaveStatus"></span>
+                        <button class="notes-delete-btn" onclick="deleteCurrentNote()">delete</button>
+                    </div>
+                </div>
+                <div class="notes-tag-row" id="notesTagRow"></div>
+                <textarea class="notes-body-input" id="notesBodyInput" placeholder="Start writing..."></textarea>
+            </div>
+            <button class="notes-close" onclick="closeNotes()" aria-label="Close">×</button>
+        </div>
+    </div>
+
     <div class="footer-bar"></div>
 
     <script src="script.js"></script>
     <script src="daily.js"></script>
+    <script src="notes.js"></script>
     <script>
         // ── quotes ────────────────────────────────────────────────────────────
 
@@ -357,6 +395,7 @@
             renderGoals();
             loadNeetcodeProgress();
             loadNeetcodeCommits();
+            loadNotes();
         }
 
         document.getElementById('passwordInput').addEventListener('keydown', e => {
@@ -512,6 +551,191 @@
         }
 
         // ── day panel ─────────────────────────────────────────────────────────
+
+        // ── notes ─────────────────────────────────────────────────────────────
+
+        const NOTE_TAGS = ['general', 'goals', 'learning', 'objectives', 'ideas'];
+
+        let allNotes     = [];
+        let activeNoteId = null;
+        let notesFilter  = null;
+        let saveTimer    = null;
+        let noteTagData  = 'general';
+
+        async function loadNotes() {
+            const pw = sessionStorage.getItem('daily_pw');
+            allNotes = await getNotes(pw);
+            renderNotesWidget();
+        }
+
+        function renderNotesWidget() {
+            const grid = document.getElementById('notesCardGrid');
+            if (!allNotes.length) {
+                grid.innerHTML = '<p class="notes-empty">no notes yet</p>';
+                return;
+            }
+            const recent = allNotes.slice(0, 6);
+            let html = recent.map(n => `
+                <div class="note-card" onclick="openNotes('${n.id}')">
+                    <div class="note-card-header">
+                        <span class="note-card-tag">${n.tag}</span>
+                        <span class="note-card-date">${noteRelDate(n.updatedAt)}</span>
+                    </div>
+                    <div class="note-card-title">${n.title || 'Untitled'}</div>
+                    ${n.body ? `<div class="note-card-preview">${n.body.slice(0, 100).replace(/\n/g, ' ')}</div>` : ''}
+                </div>`).join('');
+            if (allNotes.length > 6)
+                html += `<button class="notes-see-all" onclick="openNotes()">see all ${allNotes.length} →</button>`;
+            grid.innerHTML = html;
+        }
+
+        function noteRelDate(iso) {
+            const d = new Date(iso), diff = Date.now() - d;
+            if (diff < 60e3)      return 'just now';
+            if (diff < 3600e3)    return `${Math.floor(diff / 60e3)}m ago`;
+            if (diff < 86400e3)   return `${Math.floor(diff / 3600e3)}h ago`;
+            if (diff < 7*86400e3) return `${Math.floor(diff / 86400e3)}d ago`;
+            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+
+        function openNotes(noteId, createNew) {
+            document.getElementById('notesOverlay').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            renderNotesSidebar();
+            if (createNew || (!noteId && !allNotes.length)) {
+                newNote();
+            } else {
+                selectNote(noteId || allNotes[0].id);
+            }
+        }
+
+        function closeNotes() {
+            if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; flushSave(); }
+            document.getElementById('notesOverlay').style.display = 'none';
+            document.body.style.overflow = '';
+            renderNotesWidget();
+        }
+
+        function handleOverlayClick(e) {
+            if (e.target.id === 'notesOverlay') closeNotes();
+        }
+
+        function renderNotesSidebar() {
+            document.getElementById('notesTagFilter').innerHTML =
+                ['all', ...NOTE_TAGS].map(t =>
+                    `<button class="notes-filter-chip${(notesFilter === t || (!notesFilter && t === 'all')) ? ' active' : ''}" onclick="setNotesFilter('${t}')">${t}</button>`
+                ).join('');
+
+            const list   = notesFilter ? allNotes.filter(n => n.tag === notesFilter) : allNotes;
+            const listEl = document.getElementById('notesList');
+            if (!list.length) { listEl.innerHTML = '<p class="notes-list-empty">no notes</p>'; return; }
+            listEl.innerHTML = list.map(n => `
+                <div class="notes-list-item${n.id === activeNoteId ? ' active' : ''}" onclick="selectNote('${n.id}')">
+                    <div class="notes-list-item-title">${n.title || 'Untitled'}</div>
+                    <div class="notes-list-item-meta">
+                        <span class="notes-list-item-tag">${n.tag}</span>
+                        <span class="notes-list-item-date">${noteRelDate(n.updatedAt)}</span>
+                    </div>
+                </div>`).join('');
+        }
+
+        function setNotesFilter(tag) {
+            notesFilter = tag === 'all' ? null : tag;
+            renderNotesSidebar();
+        }
+
+        function selectNote(id) {
+            if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; flushSave(); }
+            activeNoteId = id;
+            const n = allNotes.find(x => x.id === id);
+            if (!n) return;
+            noteTagData = n.tag;
+            document.getElementById('notesTitleInput').value          = n.title || '';
+            document.getElementById('notesBodyInput').value           = n.body  || '';
+            document.getElementById('notesSaveStatus').textContent    = '';
+            renderNoteTagRow(n.tag);
+            renderNotesSidebar();
+        }
+
+        function renderNoteTagRow(active) {
+            document.getElementById('notesTagRow').innerHTML = NOTE_TAGS.map(t =>
+                `<button class="notes-tag-chip${active === t ? ' active' : ''}" onclick="setNoteTag('${t}')">${t}</button>`
+            ).join('');
+        }
+
+        function setNoteTag(tag) {
+            noteTagData = tag;
+            renderNoteTagRow(tag);
+            scheduleSave();
+        }
+
+        function scheduleSave() {
+            document.getElementById('notesSaveStatus').textContent = '...';
+            clearTimeout(saveTimer);
+            saveTimer = setTimeout(flushSave, 1000);
+        }
+
+        async function flushSave() {
+            saveTimer = null;
+            if (!activeNoteId) return;
+            const pw      = sessionStorage.getItem('daily_pw');
+            const updated = await saveNote({
+                id:    activeNoteId,
+                title: document.getElementById('notesTitleInput').value,
+                body:  document.getElementById('notesBodyInput').value,
+                tag:   noteTagData,
+            }, pw);
+            const idx = allNotes.findIndex(n => n.id === activeNoteId);
+            if (idx >= 0) allNotes[idx] = updated;
+            document.getElementById('notesSaveStatus').textContent = 'saved';
+            setTimeout(() => {
+                if (document.getElementById('notesSaveStatus')?.textContent === 'saved')
+                    document.getElementById('notesSaveStatus').textContent = '';
+            }, 2000);
+            renderNotesSidebar();
+        }
+
+        async function newNote() {
+            if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; await flushSave(); }
+            const pw   = sessionStorage.getItem('daily_pw');
+            const note = await saveNote({ title: '', body: '', tag: 'general' }, pw);
+            allNotes.unshift(note);
+            activeNoteId = note.id;
+            noteTagData  = 'general';
+            document.getElementById('notesTitleInput').value       = '';
+            document.getElementById('notesBodyInput').value        = '';
+            document.getElementById('notesSaveStatus').textContent = '';
+            renderNoteTagRow('general');
+            renderNotesSidebar();
+            document.getElementById('notesTitleInput').focus();
+        }
+
+        async function deleteCurrentNote() {
+            if (!activeNoteId || !confirm('Delete this note?')) return;
+            clearTimeout(saveTimer);
+            saveTimer = null;
+            const pw = sessionStorage.getItem('daily_pw');
+            await deleteNote(activeNoteId, pw);
+            allNotes     = allNotes.filter(n => n.id !== activeNoteId);
+            activeNoteId = null;
+            noteTagData  = 'general';
+            document.getElementById('notesTitleInput').value       = '';
+            document.getElementById('notesBodyInput').value        = '';
+            document.getElementById('notesTagRow').innerHTML       = '';
+            document.getElementById('notesSaveStatus').textContent = '';
+            if (allNotes.length) selectNote(allNotes[0].id);
+            renderNotesSidebar();
+            renderNotesWidget();
+        }
+
+        document.getElementById('notesTitleInput').addEventListener('input', scheduleSave);
+        document.getElementById('notesBodyInput').addEventListener('input', scheduleSave);
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && document.getElementById('notesOverlay').style.display !== 'none')
+                closeNotes();
+        });
+
+        // ── calendar ──────────────────────────────────────────────────────────
 
         async function selectDay(key) {
             const panel = document.getElementById('calPanel');
