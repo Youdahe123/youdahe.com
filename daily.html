@@ -519,11 +519,23 @@
                     if (!Array.isArray(commits)) return;
                     for (const c of commits) {
                         const key = c.commit?.author?.date?.slice(0, 10);
-                        if (key) rustDateMap[key] = true;
+                        if (key) rustDateMap[key] = (rustDateMap[key] || 0) + 1;
                     }
                 } catch {}
             }));
-            renderSchedule(); // refresh checks for today
+            renderSchedule();  // refresh checks + alerts for today
+            renderCalendar();  // refresh performance dots
+        }
+
+        // ── day performance level ─────────────────────────────────────────────
+        // returns 'over' (purple) | 'met' (green) | 'bad' (red)
+
+        function getDayPerf(key) {
+            const lcCount   = ncDateMap[key]?.length || 0;
+            const rustCount = rustDateMap[key]       || 0;
+            if (lcCount >= 2 && rustCount >= 2) return 'over';
+            if (lcCount >= 1 && rustCount >= 1) return 'met';
+            return 'bad';
         }
 
         // ── Lazy-load submissions for a specific day ──────────────────────────
@@ -584,20 +596,29 @@
             for (let i = 0; i < firstDow; i++) html += `<div class="cal-cell"></div>`;
 
             for (let day = 1; day <= daysInMonth; day++) {
-                const key    = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-                const hasLog = !!dateMap[key];
-                const hasNc  = !!(ncDateMap[key]?.length);
-                const hasAny = hasLog || hasNc;
+                const key     = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+                const hasLog  = !!dateMap[key];
+                const hasNc   = !!(ncDateMap[key]?.length);
+                const hasRust = !!(rustDateMap[key]);
+                const hasAny  = hasLog || hasNc || hasRust;
+                const isPast  = key <= todayKey;
+
+                // performance dot: colored for any past/today day with activity
+                const perf    = (hasAny && isPast) ? getDayPerf(key) : null;
+                const PERF_EMOJI = { bad: '💀', met: '✓', over: '🔥' };
 
                 const cls = ['cal-cell',
-                    hasAny           ? 'has-log'  : '',
-                    key === todayKey ? 'is-today'  : '',
-                    key === selected ? 'is-sel'    : '',
+                    hasAny           ? 'has-log'        : '',
+                    key === todayKey ? 'is-today'        : '',
+                    key === selected ? 'is-sel'          : '',
+                    perf             ? `perf-${perf}`    : '',
                 ].filter(Boolean).join(' ');
 
                 html += `<div class="${cls}"${hasAny ? ` onclick="selectDay('${key}')"` : ''}>
                     <span class="cal-num">${day}</span>
-                    ${hasAny ? '<span class="cal-dot"></span>' : ''}
+                    ${perf
+                        ? `<span class="cal-perf-dot" title="${PERF_EMOJI[perf]}"></span>`
+                        : (hasAny ? '<span class="cal-dot"></span>' : '')}
                 </div>`;
             }
 
@@ -702,9 +723,12 @@
                             </span>
                         </div>`;
 
+                    const lcCount   = ncDateMap[todayKey]?.length || 0;
+                    const rustCount = rustDateMap[todayKey]       || 0;
+                    const seed      = new Date().getDate() + new Date().getMonth();
+
                     if (blockPassed && (!lcDone || !rustDone)) {
                         const missing = [!lcDone && 'leetcode', !rustDone && 'rust'].filter(Boolean).join(' + ');
-                        const seed    = new Date().getDate() + new Date().getMonth();
                         const msg     = ALERT_MSGS[seed % ALERT_MSGS.length];
                         checksHtml += `
                         <div class="sch-alert">
@@ -712,6 +736,33 @@
                             <div class="sch-alert-body">
                                 <span class="sch-alert-miss">${missing} not done</span>
                                 <span class="sch-alert-sub">${msg}</span>
+                            </div>
+                        </div>`;
+                    }
+
+                    const HYPE_MSGS = [
+                        "built different, no debate",
+                        "okay you're actually cooking 🍳",
+                        "this is the version that makes it",
+                        "two-a-day grinder behavior",
+                        "W session. keep the streak alive",
+                        "the gap between you and everyone else just got wider",
+                        "carry that energy into tomorrow",
+                        "locked in 🔒",
+                    ];
+                    const bothOver = lcCount >= 2 && rustCount >= 2;
+                    const oneOver  = (lcCount >= 2 || rustCount >= 2) && (lcDone && rustDone);
+
+                    if (bothOver || oneOver) {
+                        const overWhat = [lcCount >= 2 && `${lcCount} leetcode`, rustCount >= 2 && `${rustCount} rust commits`].filter(Boolean).join(' · ');
+                        const hypeMsg  = HYPE_MSGS[seed % HYPE_MSGS.length];
+                        checksHtml += `
+                        <div class="sch-hype${bothOver ? ' both-over' : ''}">
+                            <span class="sch-hype-icon">${bothOver ? '🔥' : '⚡'}</span>
+                            <div class="sch-hype-body">
+                                <span class="sch-hype-title">above &amp; beyond</span>
+                                <span class="sch-hype-what">${overWhat}</span>
+                                <span class="sch-hype-sub">${hypeMsg}</span>
                             </div>
                         </div>`;
                     }
