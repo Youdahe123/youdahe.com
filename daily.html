@@ -206,6 +206,17 @@
         </div>
     </div>
 
+    <!-- Summary card modal -->
+    <div class="summary-overlay" id="summaryOverlay" style="display:none;" onclick="handleSummaryClick(event)">
+        <div class="summary-modal-wrap">
+            <div class="summary-modal-bar">
+                <span class="summary-hint">⌘ shift 4 to screenshot</span>
+                <button class="summary-close" onclick="closeSummaryCard()">✕</button>
+            </div>
+            <div class="summary-card" id="summaryCard"></div>
+        </div>
+    </div>
+
     <div class="footer-bar"></div>
 
     <script src="script.js"></script>
@@ -1003,8 +1014,11 @@
             // date header
             let html = `
                 <div class="cal-panel-date">
-                    <span class="cal-panel-day">${d.toLocaleDateString('en-US',{weekday:'long'})}</span>
-                    <span class="cal-panel-full">${d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</span>
+                    <div>
+                        <span class="cal-panel-day">${d.toLocaleDateString('en-US',{weekday:'long'})}</span>
+                        <span class="cal-panel-full">${d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</span>
+                    </div>
+                    <button class="cal-summary-btn" onclick="openSummaryCard('${key}')">summary card →</button>
                 </div>`;
 
             // daily log sections
@@ -1073,6 +1087,179 @@
                             <pre class="nc-code"><code>${escapeHtml(p.code)}</code></pre>
                         </div>`).join('')}`;
             }
+        }
+
+        // ── summary card ──────────────────────────────────────────────────────
+
+        let summaryKey = null;
+
+        async function openSummaryCard(key) {
+            summaryKey = key;
+            document.getElementById('summaryOverlay').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+            await renderSummaryCard(key);
+        }
+
+        function closeSummaryCard() {
+            flushSummaryNotes();
+            document.getElementById('summaryOverlay').style.display = 'none';
+            document.body.style.overflow = '';
+            summaryKey = null;
+        }
+
+        function handleSummaryClick(e) {
+            if (e.target.id === 'summaryOverlay') closeSummaryCard();
+        }
+
+        function getSummaryNotes(key) {
+            return localStorage.getItem(`sc_notes_${key}`) || '';
+        }
+
+        function flushSummaryNotes() {
+            const el = document.getElementById('scNotesArea');
+            if (el && summaryKey) localStorage.setItem(`sc_notes_${summaryKey}`, el.innerText.trim());
+        }
+
+        async function renderSummaryCard(key) {
+            const card = document.getElementById('summaryCard');
+            card.innerHTML = '<div class="sc-spinner">building card…</div>';
+
+            const d        = new Date(key + 'T12:00:00');
+            const dow      = d.getDay();
+            const isWeekday = dow >= 1 && dow <= 5;
+            const log      = dateMap[key];
+            const ncShas   = ncDateMap[key]  || [];
+            const rustCms  = rustDateMap[key] || [];
+
+            const hasActivity = ncShas.length || rustCms.length || !!log;
+            const perf = hasActivity ? getDayPerf(key) : null;
+
+            const PERF_LABEL = { bad: 'off day', met: 'mission complete', over: 'above & beyond 🔥' };
+            const PERF_HEX   = { bad: '#ef4444', met: '#22c55e', over: '#a855f7' };
+
+            // ── sections ──────────────────────────────────────────────────────
+            let sections = '';
+
+            // GYM
+            const gymTime = isWeekday ? '7:00 – 8:00 am' : '11:00 am – 2:00 pm';
+            sections += `
+            <div class="sc-section">
+                <div class="sc-tag sc-tag-gym">GYM</div>
+                <div class="sc-body">
+                    <span class="sc-gym-time">${gymTime}</span>
+                </div>
+            </div>`;
+
+            // LEETCODE (async fill below)
+            if (ncShas.length) {
+                sections += `
+                <div class="sc-section" id="scLcSection">
+                    <div class="sc-tag sc-tag-lc">LEETCODE · ${ncShas.length} problem${ncShas.length !== 1 ? 's' : ''}</div>
+                    <div class="sc-body" id="scLcBody"><span class="sc-muted">loading…</span></div>
+                </div>`;
+            }
+
+            // RUST
+            if (rustCms.length) {
+                sections += `
+                <div class="sc-section">
+                    <div class="sc-tag sc-tag-rust">RUST · ${rustCms.length} commit${rustCms.length !== 1 ? 's' : ''}</div>
+                    <div class="sc-body">
+                        ${rustCms.map(c => `
+                        <div class="sc-rust-row">
+                            <span class="sc-rust-repo">${escapeHtml(c.repo)}</span>
+                            <span class="sc-rust-msg">${escapeHtml(c.message)}</span>
+                        </div>`).join('')}
+                    </div>
+                </div>`;
+            }
+
+            // WORK
+            if (log) {
+                const WORK_FIELDS = [
+                    { k: 'libertyMutual', label: 'Liberty Mutual' },
+                    { k: 'medica',        label: 'Medica'         },
+                    { k: 'youdaheDB',     label: 'youdaheDB'      },
+                    { k: 'startup',       label: 'Startup'         },
+                    { k: 'wins',          label: 'Wins'            },
+                ];
+                const filled = WORK_FIELDS.filter(w => log[w.k]?.trim());
+                if (filled.length) {
+                    sections += `
+                    <div class="sc-section">
+                        <div class="sc-tag sc-tag-work">WORK</div>
+                        <div class="sc-body">
+                            ${filled.map(w => `
+                            <div class="sc-work-row">
+                                <span class="sc-work-co">${w.label}</span>
+                                <p class="sc-work-text">${escapeHtml(log[w.k].slice(0, 200))}${log[w.k].length > 200 ? '…' : ''}</p>
+                            </div>`).join('')}
+                        </div>
+                    </div>`;
+                }
+            }
+
+            // NOTES (manual, persisted)
+            sections += `
+            <div class="sc-section">
+                <div class="sc-tag sc-tag-notes">+ NOTES</div>
+                <div class="sc-body">
+                    <div class="sc-notes" id="scNotesArea" contenteditable="true"
+                         data-placeholder="add anything extra — workout, wins, what you learned…"
+                         oninput="flushSummaryNotes()"></div>
+                </div>
+            </div>`;
+
+            // ── assemble card ─────────────────────────────────────────────────
+            const perfBadge = perf ? `
+                <span class="sc-perf" style="--pc:${PERF_HEX[perf]}">${PERF_LABEL[perf]}</span>` : '';
+
+            card.innerHTML = `
+            <div class="sc-bar"></div>
+            <div class="sc-inner">
+                <div class="sc-header-row">
+                    <span class="sc-brand">youdahe.com</span>
+                    <span class="sc-season">summer 2026</span>
+                </div>
+                <div class="sc-date-row">
+                    <div>
+                        <div class="sc-dow">${d.toLocaleDateString('en-US',{weekday:'long'}).toUpperCase()}</div>
+                        <div class="sc-date">${d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</div>
+                    </div>
+                    ${perfBadge}
+                </div>
+                <div class="sc-rule"></div>
+                ${sections}
+                <div class="sc-footer-text">youdahe.com · daily log · ${d.getFullYear()}</div>
+            </div>`;
+
+            // restore saved notes
+            const notesEl = document.getElementById('scNotesArea');
+            if (notesEl) notesEl.textContent = getSummaryNotes(key);
+
+            // async: fill leetcode code blocks
+            if (ncShas.length) {
+                const problems = await fetchNeetcodeForDay(key);
+                const lcBody   = document.getElementById('scLcBody');
+                if (!lcBody) return;
+                if (!problems.length) {
+                    lcBody.innerHTML = `<span class="sc-muted">${ncShas.length} commit${ncShas.length !== 1 ? 's' : ''}</span>`;
+                } else {
+                    lcBody.innerHTML = problems.map(p => {
+                        const lines   = p.code.split('\n');
+                        const snippet = lines.slice(0, 15).join('\n') + (lines.length > 15 ? '\n# …' : '');
+                        return `
+                        <div class="sc-problem">
+                            <span class="sc-problem-name">${escapeHtml(slugToTitle(p.slug))}</span>
+                            <pre class="sc-code">${escapeHtml(snippet)}</pre>
+                        </div>`;
+                    }).join('');
+                }
+            }
+
+            document.addEventListener('keydown', function scEsc(e) {
+                if (e.key === 'Escape') { closeSummaryCard(); document.removeEventListener('keydown', scEsc); }
+            });
         }
     </script>
 </body>
