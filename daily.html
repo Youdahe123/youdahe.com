@@ -39,6 +39,38 @@
             <h1 class="writing-title">Daily Log</h1>
             <p class="writing-subtitle">Summer 2026</p>
 
+            <!-- gym hours info -->
+            <div class="gym-hours-widget">
+                <div class="gym-hours-header">
+                    <div class="daily-entry-label"><span>Gym Hours</span></div>
+                    <button class="gym-hours-toggle" onclick="this.closest('.gym-hours-widget').classList.toggle('gym-open')" aria-label="Toggle gym hours">▾</button>
+                </div>
+                <div class="gym-hours-body">
+                    <div class="gym-hours-row">
+                        <span class="gym-hours-days">Mon – Fri</span>
+                        <span class="gym-hours-time">7:30 am – 8:00 pm <span class="gym-hours-note">· 7:00 am starting Tue, May 26</span></span>
+                    </div>
+                    <div class="gym-hours-row">
+                        <span class="gym-hours-days">Weekends</span>
+                        <span class="gym-hours-time">11:00 am – 6:00 pm <span class="gym-hours-note">· closed weekends until June 13</span></span>
+                    </div>
+                    <div class="gym-hours-closures">
+                        <div class="gym-hours-closure">
+                            <span class="gym-hours-closure-date">Sat May 23 – Mon May 25</span>
+                            <span class="gym-hours-closure-reason">Closed — Memorial Day</span>
+                        </div>
+                        <div class="gym-hours-closure">
+                            <span class="gym-hours-closure-date">Wed May 27</span>
+                            <span class="gym-hours-closure-reason">Closed 7:00 am – 10:00 am · maintenance</span>
+                        </div>
+                        <div class="gym-hours-closure">
+                            <span class="gym-hours-closure-date">Fri June 19</span>
+                            <span class="gym-hours-closure-reason">Closed — Juneteenth</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- daily quote -->
             <div class="daily-quote" id="dailyQuote"></div>
 
@@ -564,14 +596,27 @@
 
         // ── daily schedule ────────────────────────────────────────────────────
 
-        const SCHEDULE = [
-            { t: [6,  30], label: 'Wake up + Breakfast',  detail: '2–3 scoops yogurt + protein powder · diet coke or water' },
-            { t: [9,   0], label: 'Work',                  detail: 'In person or remote' },
-            { t: [17,  0], label: 'Gym',                   detail: 'Head straight from work' },
-            { t: [18, 30], label: 'Lunch',                 detail: 'Meat + a carb · last meal of the day' },
-            { t: [19, 30], label: 'LeetCode',              detail: 'One problem' },
-            { t: [20, 30], label: 'Side project',          detail: 'youdaheDB or container runtime' },
-            { t: [21, 30], label: 'Schedule seat',         detail: 'Book your work seat for tomorrow' },
+        // ── weekday schedule (Mon – Fri) ──────────────────────────────────────
+        const WEEKDAY_SCHEDULE = [
+            { t: [7,  0], label: 'Gym',                   detail: '7–8 am session · gym opens 7:30 am (7:00 am starting Tue May 26)' },
+            { t: [8,  0], label: 'Breakfast & Get Ready', detail: 'Protein + yogurt · prep for the day' },
+            { t: [9,  0], label: 'Work',                   detail: 'Liberty Mutual · in person or remote' },
+            { t: [17, 0], label: 'LeetCode & Rust DB',    detail: '5–7 pm · NeetCode problems + youdaheDB' },
+            { t: [19, 0], label: 'Chill',                  detail: 'Wind down — rest of the evening is yours' },
+        ];
+
+        // ── saturday schedule ─────────────────────────────────────────────────
+        const SATURDAY_SCHEDULE = [
+            { t: [11, 0], label: 'Gym',                   detail: 'Opens 11 am · train till ~2 pm (after June 13)' },
+            { t: [14, 0], label: 'LeetCode & Rust DB',    detail: 'NeetCode problems + youdaheDB' },
+            { t: [17, 0], label: 'Chill',                  detail: 'Rest — recharge for the week ahead' },
+        ];
+
+        // ── sunday schedule ───────────────────────────────────────────────────
+        const SUNDAY_SCHEDULE = [
+            { t: [11, 0], label: 'Gym',                   detail: 'Opens 11 am · train till ~2 pm (after June 13)' },
+            { t: [14, 0], label: 'LeetCode & Rust DB',    detail: 'NeetCode problems + youdaheDB' },
+            { t: [17, 0], label: 'Plan the week',         detail: 'Coordinate with roommate — meals, logistics, goals for the week' },
         ];
 
         const DAY_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
@@ -590,17 +635,17 @@
 
             const list = document.getElementById('schList');
 
-            if (dow === 0 || dow === 6) {
-                list.innerHTML = '<p class="sch-weekend">Weekend — rest up</p>';
-                return;
-            }
+            let schedule;
+            if (dow === 0)            schedule = SUNDAY_SCHEDULE;
+            else if (dow === 6)       schedule = SATURDAY_SCHEDULE;
+            else                      schedule = WEEKDAY_SCHEDULE;
 
             let curIdx = -1;
-            SCHEDULE.forEach((item, i) => {
+            schedule.forEach((item, i) => {
                 if (item.t[0] * 60 + item.t[1] <= nowMins) curIdx = i;
             });
 
-            list.innerHTML = SCHEDULE.map((item, i) => {
+            list.innerHTML = schedule.map((item, i) => {
                 const past    = i < curIdx;
                 const current = i === curIdx;
                 return `

@@ -1523,6 +1523,103 @@ nav {
     line-height: 1.6;
 }
 
+/* Gym hours widget */
+.gym-hours-widget {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.15);
+}
+
+.gym-hours-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0;
+}
+
+.gym-hours-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-color);
+    opacity: 0.35;
+    font-size: 14px;
+    padding: 2px 4px;
+    line-height: 1;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    transform: rotate(-90deg);
+}
+
+.gym-hours-widget.gym-open .gym-hours-toggle {
+    transform: rotate(0deg);
+    opacity: 0.55;
+}
+
+.gym-hours-body {
+    display: none;
+    margin-top: 1rem;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.gym-hours-widget.gym-open .gym-hours-body {
+    display: flex;
+}
+
+.gym-hours-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    align-items: baseline;
+}
+
+.gym-hours-days {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-color-dark);
+    min-width: 70px;
+}
+
+.gym-hours-time {
+    font-size: 13px;
+    color: var(--text-color);
+}
+
+.gym-hours-note {
+    font-size: 11.5px;
+    opacity: 0.5;
+}
+
+.gym-hours-closures {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(128, 128, 128, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.gym-hours-closure {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.75rem;
+    align-items: baseline;
+}
+
+.gym-hours-closure-date {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-color-dark);
+    opacity: 0.65;
+    min-width: 160px;
+}
+
+.gym-hours-closure-reason {
+    font-size: 12px;
+    color: var(--text-color);
+    opacity: 0.45;
+}
+
 /* Daily schedule widget */
 .sch-widget {
     margin-bottom: 2.5rem;
