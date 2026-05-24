@@ -669,14 +669,29 @@
             const todayKey = toKey(new Date());
             const checkSvg = `<svg width="8" height="8" viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5L3.5 6.5L7.5 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
+            const ALERT_MSGS = [
+                "bro really said 'later' 💀",
+                "the grind doesn't pause for you",
+                "future you is watching rn 👀",
+                "get off youtube. NOW.",
+                "respectfully, go do it",
+                "every day you skip is a W for someone else",
+                "this is your villain origin story",
+                "no cap this is embarrassing",
+                "the problems aren't going to solve themselves",
+            ];
+
             list.innerHTML = schedule.map((item, i) => {
                 const past    = i < curIdx;
                 const current = i === curIdx;
 
                 let checksHtml = '';
                 if (item.key === 'leetrust') {
-                    const lcDone   = !!(ncDateMap[todayKey]?.length);
-                    const rustDone = !!rustDateMap[todayKey];
+                    const lcDone      = !!(ncDateMap[todayKey]?.length);
+                    const rustDone    = !!rustDateMap[todayKey];
+                    const blockMins   = item.t[0] * 60 + item.t[1];
+                    const blockPassed = nowMins >= blockMins;
+
                     checksHtml = `
                         <div class="sch-checks">
                             <span class="sch-check${lcDone ? ' done' : ''}">
@@ -686,6 +701,20 @@
                                 <span class="sch-check-icon">${rustDone ? checkSvg : ''}</span>rust
                             </span>
                         </div>`;
+
+                    if (blockPassed && (!lcDone || !rustDone)) {
+                        const missing = [!lcDone && 'leetcode', !rustDone && 'rust'].filter(Boolean).join(' + ');
+                        const seed    = new Date().getDate() + new Date().getMonth();
+                        const msg     = ALERT_MSGS[seed % ALERT_MSGS.length];
+                        checksHtml += `
+                        <div class="sch-alert">
+                            <span class="sch-alert-icon">⚠️</span>
+                            <div class="sch-alert-body">
+                                <span class="sch-alert-miss">${missing} not done</span>
+                                <span class="sch-alert-sub">${msg}</span>
+                            </div>
+                        </div>`;
+                    }
                 }
 
                 return `

@@ -1783,6 +1783,75 @@ nav {
     color: var(--bg-color);
 }
 
+/* cartoonish alert when leetcode / rust is overdue */
+.sch-alert {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 0.45rem;
+    margin-top: 0.55rem;
+    padding: 0.45rem 0.7rem;
+    background: #fef9c3;
+    border: 2.5px solid #eab308;
+    border-radius: 6px;
+    box-shadow: 3px 3px 0 #ca8a04;
+    transform: rotate(-1.5deg);
+    animation: sch-alert-shake 5s ease-in-out infinite;
+    max-width: 260px;
+    cursor: default;
+    user-select: none;
+}
+
+[data-theme="dark"] .sch-alert {
+    background: #422006;
+    border-color: #d97706;
+    box-shadow: 3px 3px 0 #92400e;
+}
+
+.sch-alert-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.sch-alert-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.sch-alert-miss {
+    font-size: 12px;
+    font-weight: 700;
+    color: #713f12;
+    letter-spacing: 0.01em;
+}
+
+[data-theme="dark"] .sch-alert-miss {
+    color: #fde68a;
+}
+
+.sch-alert-sub {
+    font-size: 10.5px;
+    font-weight: 500;
+    color: #92400e;
+    opacity: 0.8;
+    font-style: italic;
+}
+
+[data-theme="dark"] .sch-alert-sub {
+    color: #fcd34d;
+    opacity: 0.7;
+}
+
+@keyframes sch-alert-shake {
+    0%, 65%, 100% { transform: rotate(-1.5deg); }
+    67%  { transform: rotate(2.5deg)  translateX(3px);  }
+    69%  { transform: rotate(-3deg)   translateX(-3px); }
+    71%  { transform: rotate(2deg)    translateX(2px);  }
+    73%  { transform: rotate(-2.5deg) translateX(-1px); }
+    75%  { transform: rotate(-1.5deg) translateX(0);    }
+}
+
 /* Notes widget */
 .notes-widget {
     margin-bottom: 2.5rem;
