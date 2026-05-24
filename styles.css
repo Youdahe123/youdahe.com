@@ -1424,6 +1424,46 @@ nav {
     border-color: rgba(255, 255, 255, 0.08);
 }
 
+/* Rust commit panel (calendar day view) */
+.rust-day-block {
+    margin-top: 1.25rem;
+}
+
+.rust-commits {
+    margin-top: 0.65rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.rust-commit {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4rem 0.6rem;
+}
+
+.rust-commit-repo {
+    font-size: 11px;
+    font-weight: 600;
+    color: #a855f7;
+    letter-spacing: 0.02em;
+    text-transform: lowercase;
+    flex-shrink: 0;
+    opacity: 0.85;
+}
+
+[data-theme="dark"] .rust-commit-repo {
+    color: #c084fc;
+}
+
+.rust-commit-msg {
+    font-size: 13px;
+    color: var(--text-color-dark);
+    line-height: 1.45;
+    font-family: 'SF Mono', 'Fira Code', 'Roboto Mono', monospace;
+}
+
 /* Admin tabs */
 .admin-tabs {
     display: flex;

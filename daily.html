@@ -519,7 +519,12 @@
                     if (!Array.isArray(commits)) return;
                     for (const c of commits) {
                         const key = c.commit?.author?.date?.slice(0, 10);
-                        if (key) rustDateMap[key] = (rustDateMap[key] || 0) + 1;
+                        if (!key) continue;
+                        if (!rustDateMap[key]) rustDateMap[key] = [];
+                        rustDateMap[key].push({
+                            message: c.commit.message.split('\n')[0].trim(), // first line only
+                            repo:    repo.split('/')[1],                     // 'rust-practice' | 'youdaheDB'
+                        });
                     }
                 } catch {}
             }));
@@ -531,8 +536,8 @@
         // returns 'over' (purple) | 'met' (green) | 'bad' (red)
 
         function getDayPerf(key) {
-            const lcCount   = ncDateMap[key]?.length || 0;
-            const rustCount = rustDateMap[key]       || 0;
+            const lcCount   = ncDateMap[key]?.length   || 0;
+            const rustCount = rustDateMap[key]?.length || 0;
             if (lcCount >= 2 && rustCount >= 2) return 'over';
             if (lcCount >= 1 && rustCount >= 1) return 'met';
             return 'bad';
@@ -604,7 +609,7 @@
                 const key     = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
                 const hasLog  = !!dateMap[key];
                 const hasNc   = !!(ncDateMap[key]?.length);
-                const hasRust = !!(rustDateMap[key]);
+                const hasRust = !!(rustDateMap[key]?.length);
                 const hasAny  = hasLog || hasNc || hasRust;
                 const isPast  = key <= todayKey;
 
@@ -718,7 +723,7 @@
                 let checksHtml = '';
                 if (item.key === 'leetrust') {
                     const lcDone      = !!(ncDateMap[todayKey]?.length);
-                    const rustDone    = !!rustDateMap[todayKey];
+                    const rustDone    = !!(rustDateMap[todayKey]?.length);
                     const blockMins   = item.t[0] * 60 + item.t[1];
                     const blockPassed = nowMins >= blockMins;
 
@@ -732,8 +737,8 @@
                             </span>
                         </div>`;
 
-                    const lcCount   = ncDateMap[todayKey]?.length || 0;
-                    const rustCount = rustDateMap[todayKey]       || 0;
+                    const lcCount   = ncDateMap[todayKey]?.length   || 0;
+                    const rustCount = rustDateMap[todayKey]?.length || 0;
                     const seed      = new Date().getDate() + new Date().getMonth();
 
                     if (blockPassed && (!lcDone || !rustDone)) {
@@ -990,9 +995,10 @@
             selected = key;
             renderCalendar();
 
-            const log = dateMap[key];
-            const d   = new Date(key + 'T12:00:00');
-            const hasNc = !!(ncDateMap[key]?.length);
+            const log     = dateMap[key];
+            const d       = new Date(key + 'T12:00:00');
+            const hasNc   = !!(ncDateMap[key]?.length);
+            const hasRust = !!(rustDateMap[key]?.length);
 
             // date header
             let html = `
@@ -1023,6 +1029,23 @@
                 html += `<div id="ncDayBlock">
                     <div class="daily-entry-label nc-day-label"><span>NeetCode</span></div>
                     <p class="daily-entry-text nc-loading">loading submissions...</p>
+                </div>`;
+            }
+
+            // Rust commits — messages already in memory, render immediately
+            if (hasRust) {
+                const commits = rustDateMap[key];
+                html += `<div class="rust-day-block">
+                    <div class="daily-entry-label">
+                        <span>Rust · ${commits.length} commit${commits.length !== 1 ? 's' : ''}</span>
+                    </div>
+                    <div class="rust-commits">
+                        ${commits.map(c => `
+                        <div class="rust-commit">
+                            <span class="rust-commit-repo">${escapeHtml(c.repo)}</span>
+                            <span class="rust-commit-msg">${escapeHtml(c.message)}</span>
+                        </div>`).join('')}
+                    </div>
                 </div>`;
             }
 
