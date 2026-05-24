@@ -1086,6 +1086,9 @@ nav {
     opacity: 0;
 }
 
+/* past-30-day cells with no activity still get a visible number */
+.cal-cell.has-perf .cal-num { opacity: 0.55; }
+
 /* ── performance dots (red / green / purple) ─────────────────────── */
 .cal-perf-dot {
     width: 7px;

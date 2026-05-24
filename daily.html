@@ -595,6 +595,11 @@
 
             for (let i = 0; i < firstDow; i++) html += `<div class="cal-cell"></div>`;
 
+            // show perf dots on all days in the past 30-day window
+            const perfWindow = new Date();
+            perfWindow.setDate(perfWindow.getDate() - 30);
+            const perfStartKey = toKey(perfWindow);
+
             for (let day = 1; day <= daysInMonth; day++) {
                 const key     = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
                 const hasLog  = !!dateMap[key];
@@ -603,21 +608,25 @@
                 const hasAny  = hasLog || hasNc || hasRust;
                 const isPast  = key <= todayKey;
 
-                // performance dot: colored for any past/today day with activity
-                const perf    = (hasAny && isPast) ? getDayPerf(key) : null;
-                const PERF_EMOJI = { bad: '💀', met: '✓', over: '🔥' };
+                // within 30-day window → always show perf (even empty days = red)
+                // outside window       → only show perf if there was activity
+                const inWindow = key >= perfStartKey && key <= todayKey;
+                const perf     = inWindow ? getDayPerf(key)
+                               : (hasAny && isPast) ? getDayPerf(key)
+                               : null;
 
                 const cls = ['cal-cell',
-                    hasAny           ? 'has-log'        : '',
-                    key === todayKey ? 'is-today'        : '',
-                    key === selected ? 'is-sel'          : '',
-                    perf             ? `perf-${perf}`    : '',
+                    hasAny            ? 'has-log'      : '',
+                    (perf && !hasAny) ? 'has-perf'     : '',   // empty past day — still show num
+                    key === todayKey  ? 'is-today'     : '',
+                    key === selected  ? 'is-sel'       : '',
+                    perf              ? `perf-${perf}` : '',
                 ].filter(Boolean).join(' ');
 
                 html += `<div class="${cls}"${hasAny ? ` onclick="selectDay('${key}')"` : ''}>
                     <span class="cal-num">${day}</span>
                     ${perf
-                        ? `<span class="cal-perf-dot" title="${PERF_EMOJI[perf]}"></span>`
+                        ? `<span class="cal-perf-dot"></span>`
                         : (hasAny ? '<span class="cal-dot"></span>' : '')}
                 </div>`;
             }
