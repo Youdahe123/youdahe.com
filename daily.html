@@ -78,7 +78,10 @@
             <div class="sch-widget" id="schWidget">
                 <div class="sch-widget-header">
                     <div class="daily-entry-label"><span>Today</span></div>
-                    <span class="sch-day-label" id="schDayLabel"></span>
+                    <div class="sch-header-right">
+                        <span class="sch-day-label" id="schDayLabel"></span>
+                        <button class="sch-summary-btn" onclick="openSummaryCard(toKey(new Date()))">summary card →</button>
+                    </div>
                 </div>
                 <div class="sch-list" id="schList"></div>
             </div>

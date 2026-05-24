@@ -1719,10 +1719,34 @@ nav {
     margin-bottom: 1.25rem;
 }
 
+.sch-header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
 .sch-day-label {
     font-size: 13px;
     color: var(--text-color);
     opacity: 0.35;
+}
+
+.sch-summary-btn {
+    background: none;
+    border: 1px solid rgba(128,128,128,0.2);
+    color: var(--text-color);
+    opacity: 0.5;
+    font-size: 11px;
+    font-family: inherit;
+    padding: 0.22rem 0.6rem;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.15s ease, border-color 0.15s ease;
+}
+.sch-summary-btn:hover {
+    opacity: 0.9;
+    border-color: rgba(128,128,128,0.45);
 }
 
 .sch-weekend {
