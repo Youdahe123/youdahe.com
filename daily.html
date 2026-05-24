@@ -404,16 +404,18 @@
             { key: 'blockers',         label: 'Blockers',          logo: null },
         ];
 
-        const MONTHS   = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-        const NC_REPO  = 'Youdahe123/neetcode-submissions1';
+        const MONTHS      = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        const NC_REPO     = 'Youdahe123/neetcode-submissions1';
+        const RUST_REPOS  = ['Youdahe123/rust-practice', 'Youdahe123/youdaheDB'];
 
-        let allLogs   = [];
-        let dateMap   = {};   // date key -> daily log
-        let ncDateMap = {};   // date key -> [commit shas]
-        let ncCache   = {};   // date key -> [{slug, code}]
-        let calYear   = new Date().getFullYear();
-        let calMonth  = new Date().getMonth();
-        let selected  = null;
+        let allLogs    = [];
+        let dateMap    = {};   // date key -> daily log
+        let ncDateMap  = {};   // date key -> [commit shas]
+        let ncCache    = {};   // date key -> [{slug, code}]
+        let rustDateMap = {};  // date key -> true (any rust commit that day)
+        let calYear    = new Date().getFullYear();
+        let calMonth   = new Date().getMonth();
+        let selected   = null;
 
         // ── auth ─────────────────────────────────────────────────────────────
 
@@ -437,6 +439,7 @@
             renderGoals();
             loadNeetcodeProgress();
             loadNeetcodeCommits();
+            loadRustCommits();
             loadNotes();
         }
 
@@ -503,6 +506,24 @@
                 }
             } catch {}
             renderCalendar(); // update dots with NC data
+        }
+
+        // ── Rust commit dates (rust-practice + youdaheDB) ────────────────────
+
+        async function loadRustCommits() {
+            rustDateMap = {};
+            await Promise.all(RUST_REPOS.map(async repo => {
+                try {
+                    const res     = await fetch(`https://api.github.com/repos/${repo}/commits?per_page=100`);
+                    const commits = await res.json();
+                    if (!Array.isArray(commits)) return;
+                    for (const c of commits) {
+                        const key = c.commit?.author?.date?.slice(0, 10);
+                        if (key) rustDateMap[key] = true;
+                    }
+                } catch {}
+            }));
+            renderSchedule(); // refresh checks for today
         }
 
         // ── Lazy-load submissions for a specific day ──────────────────────────
@@ -601,21 +622,21 @@
             { t: [7,  0], label: 'Gym',                   detail: '7–8 am session · gym opens 7:30 am (7:00 am starting Tue May 26)' },
             { t: [8,  0], label: 'Breakfast & Get Ready', detail: 'Protein + yogurt · prep for the day' },
             { t: [9,  0], label: 'Work',                   detail: 'Liberty Mutual · in person or remote' },
-            { t: [17, 0], label: 'LeetCode & Rust DB',    detail: '5–7 pm · NeetCode problems + youdaheDB' },
+            { t: [17, 0], label: 'LeetCode & Rust DB',    detail: '5–7 pm · NeetCode problems + youdaheDB', key: 'leetrust' },
             { t: [19, 0], label: 'Chill',                  detail: 'Wind down — rest of the evening is yours' },
         ];
 
         // ── saturday schedule ─────────────────────────────────────────────────
         const SATURDAY_SCHEDULE = [
             { t: [11, 0], label: 'Gym',                   detail: 'Opens 11 am · train till ~2 pm (after June 13)' },
-            { t: [14, 0], label: 'LeetCode & Rust DB',    detail: 'NeetCode problems + youdaheDB' },
+            { t: [14, 0], label: 'LeetCode & Rust DB',    detail: 'NeetCode problems + youdaheDB', key: 'leetrust' },
             { t: [17, 0], label: 'Chill',                  detail: 'Rest — recharge for the week ahead' },
         ];
 
         // ── sunday schedule ───────────────────────────────────────────────────
         const SUNDAY_SCHEDULE = [
             { t: [11, 0], label: 'Gym',                   detail: 'Opens 11 am · train till ~2 pm (after June 13)' },
-            { t: [14, 0], label: 'LeetCode & Rust DB',    detail: 'NeetCode problems + youdaheDB' },
+            { t: [14, 0], label: 'LeetCode & Rust DB',    detail: 'NeetCode problems + youdaheDB', key: 'leetrust' },
             { t: [17, 0], label: 'Plan the week',         detail: 'Coordinate with roommate — meals, logistics, goals for the week' },
         ];
 
@@ -645,9 +666,28 @@
                 if (item.t[0] * 60 + item.t[1] <= nowMins) curIdx = i;
             });
 
+            const todayKey = toKey(new Date());
+            const checkSvg = `<svg width="8" height="8" viewBox="0 0 9 9" fill="none"><path d="M1.5 4.5L3.5 6.5L7.5 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
             list.innerHTML = schedule.map((item, i) => {
                 const past    = i < curIdx;
                 const current = i === curIdx;
+
+                let checksHtml = '';
+                if (item.key === 'leetrust') {
+                    const lcDone   = !!(ncDateMap[todayKey]?.length);
+                    const rustDone = !!rustDateMap[todayKey];
+                    checksHtml = `
+                        <div class="sch-checks">
+                            <span class="sch-check${lcDone ? ' done' : ''}">
+                                <span class="sch-check-icon">${lcDone ? checkSvg : ''}</span>leetcode
+                            </span>
+                            <span class="sch-check${rustDone ? ' done' : ''}">
+                                <span class="sch-check-icon">${rustDone ? checkSvg : ''}</span>rust
+                            </span>
+                        </div>`;
+                }
+
                 return `
                 <div class="sch-item${past ? ' past' : ''}${current ? ' current' : ''}">
                     <span class="sch-time">${schFmt(item.t[0], item.t[1])}</span>
@@ -655,6 +695,7 @@
                     <div class="sch-body">
                         <span class="sch-label">${item.label}</span>
                         ${item.detail ? `<span class="sch-detail">${item.detail}</span>` : ''}
+                        ${checksHtml}
                     </div>
                 </div>`;
             }).join('');

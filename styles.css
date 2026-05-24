@@ -1743,6 +1743,46 @@ nav {
     opacity: 0.55;
 }
 
+/* leetcode / rust check badges */
+.sch-checks {
+    display: flex;
+    gap: 0.65rem;
+    margin-top: 0.35rem;
+}
+
+.sch-check {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 11px;
+    color: var(--text-color);
+    opacity: 0.28;
+    transition: opacity 0.2s ease;
+}
+
+.sch-check.done {
+    opacity: 0.75;
+    color: var(--text-color-dark);
+}
+
+.sch-check-icon {
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    border: 1.5px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s ease;
+}
+
+.sch-check.done .sch-check-icon {
+    background: var(--text-color-dark);
+    border-color: var(--text-color-dark);
+    color: var(--bg-color);
+}
+
 /* Notes widget */
 .notes-widget {
     margin-bottom: 2.5rem;
