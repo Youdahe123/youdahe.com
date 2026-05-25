@@ -515,7 +515,7 @@
                 for (const c of commits) {
                     const msg = c.commit?.message || '';
                     if (msg.startsWith('Initialize') || msg.startsWith('Bulk sync')) continue;
-                    const key = c.commit.author.date.slice(0, 10);
+                    const key = toKey(new Date(c.commit.author.date)); // local date, not UTC slice
                     (ncDateMap[key] = ncDateMap[key] || []).push(c.sha);
                 }
             } catch {}
@@ -532,8 +532,9 @@
                     const commits = await res.json();
                     if (!Array.isArray(commits)) return;
                     for (const c of commits) {
-                        const key = c.commit?.author?.date?.slice(0, 10);
-                        if (!key) continue;
+                        const raw = c.commit?.author?.date;
+                        if (!raw) continue;
+                        const key = toKey(new Date(raw)); // local date, not UTC slice
                         if (!rustDateMap[key]) rustDateMap[key] = [];
                         rustDateMap[key].push({
                             message: c.commit.message.split('\n')[0].trim(), // first line only
