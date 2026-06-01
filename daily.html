@@ -1128,57 +1128,55 @@
             const card = document.getElementById('summaryCard');
             card.innerHTML = '<div class="sc-spinner">building card…</div>';
 
-            const d        = new Date(key + 'T12:00:00');
-            const dow      = d.getDay();
+            const d         = new Date(key + 'T12:00:00');
+            const dow       = d.getDay();
             const isWeekday = dow >= 1 && dow <= 5;
-            const log      = dateMap[key];
-            const ncShas   = ncDateMap[key]  || [];
-            const rustCms  = rustDateMap[key] || [];
+            const log       = dateMap[key];
+            const ncShas    = ncDateMap[key]  || [];
+            const rustCms   = rustDateMap[key] || [];
 
             const hasActivity = ncShas.length || rustCms.length || !!log;
             const perf = hasActivity ? getDayPerf(key) : null;
 
             const PERF_LABEL = { bad: 'off day', met: 'mission complete', over: 'above & beyond 🔥' };
             const PERF_HEX   = { bad: '#ef4444', met: '#22c55e', over: '#a855f7' };
+            const perfBadge  = perf
+                ? `<span class="sc-perf" style="--pc:${PERF_HEX[perf]}">${PERF_LABEL[perf]}</span>`
+                : '';
 
-            // ── sections ──────────────────────────────────────────────────────
-            let sections = '';
-
-            // GYM
+            // ── build tiles ───────────────────────────────────────────────────
             const gymTime = isWeekday ? '7:00 – 8:00 am' : '11:00 am – 2:00 pm';
-            sections += `
-            <div class="sc-section">
-                <div class="sc-tag sc-tag-gym">GYM</div>
-                <div class="sc-body">
-                    <span class="sc-gym-time">${gymTime}</span>
-                </div>
+            const gymTile = `
+            <div class="sc-tile sc-tile-gym">
+                <div class="sc-tile-head"><span class="sc-tile-icon">💪</span><span>gym</span></div>
+                <div class="sc-tile-body">${gymTime}</div>
             </div>`;
 
-            // LEETCODE (async fill below)
-            if (ncShas.length) {
-                sections += `
-                <div class="sc-section" id="scLcSection">
-                    <div class="sc-tag sc-tag-lc">LEETCODE · ${ncShas.length} problem${ncShas.length !== 1 ? 's' : ''}</div>
-                    <div class="sc-body" id="scLcBody"><span class="sc-muted">loading…</span></div>
-                </div>`;
-            }
+            const lcTile = ncShas.length ? `
+            <div class="sc-tile sc-tile-lc">
+                <div class="sc-tile-head">
+                    <span class="sc-tile-icon">🧩</span><span>leetcode</span>
+                    <span class="sc-tile-count">${ncShas.length} problem${ncShas.length !== 1 ? 's' : ''}</span>
+                </div>
+                <div class="sc-tile-body" id="scLcBody"><span class="sc-muted">loading…</span></div>
+            </div>` : '';
 
-            // RUST
-            if (rustCms.length) {
-                sections += `
-                <div class="sc-section">
-                    <div class="sc-tag sc-tag-rust">RUST · ${rustCms.length} commit${rustCms.length !== 1 ? 's' : ''}</div>
-                    <div class="sc-body">
-                        ${rustCms.map(c => `
-                        <div class="sc-rust-row">
-                            <span class="sc-rust-repo">${escapeHtml(c.repo)}</span>
-                            <span class="sc-rust-msg">${escapeHtml(c.message)}</span>
-                        </div>`).join('')}
-                    </div>
-                </div>`;
-            }
+            const rustTile = rustCms.length ? `
+            <div class="sc-tile sc-tile-rust">
+                <div class="sc-tile-head">
+                    <span class="sc-tile-icon">🦀</span><span>rust</span>
+                    <span class="sc-tile-count">${rustCms.length} commit${rustCms.length !== 1 ? 's' : ''}</span>
+                </div>
+                <div class="sc-tile-body">
+                    ${rustCms.map(c => `
+                    <div class="sc-rust-row">
+                        <span class="sc-rust-repo">${escapeHtml(c.repo)}</span>
+                        <span class="sc-rust-msg">${escapeHtml(c.message)}</span>
+                    </div>`).join('')}
+                </div>
+            </div>` : '';
 
-            // WORK
+            let workTile = '';
             if (log) {
                 const WORK_FIELDS = [
                     { k: 'libertyMutual', label: 'Liberty Mutual' },
@@ -1189,51 +1187,47 @@
                 ];
                 const filled = WORK_FIELDS.filter(w => log[w.k]?.trim());
                 if (filled.length) {
-                    sections += `
-                    <div class="sc-section">
-                        <div class="sc-tag sc-tag-work">WORK</div>
-                        <div class="sc-body">
+                    workTile = `
+                    <div class="sc-tile sc-tile-work">
+                        <div class="sc-tile-head">
+                            <span class="sc-tile-icon">💼</span><span>work</span>
+                            <span class="sc-tile-count">${filled.length} area${filled.length !== 1 ? 's' : ''}</span>
+                        </div>
+                        <div class="sc-tile-body">
                             ${filled.map(w => `
                             <div class="sc-work-row">
                                 <span class="sc-work-co">${w.label}</span>
-                                <p class="sc-work-text">${escapeHtml(log[w.k].slice(0, 200))}${log[w.k].length > 200 ? '…' : ''}</p>
+                                <p class="sc-work-text">${escapeHtml(log[w.k].slice(0, 120))}${log[w.k].length > 120 ? '…' : ''}</p>
                             </div>`).join('')}
                         </div>
                     </div>`;
                 }
             }
 
-            // NOTES (manual, persisted)
-            sections += `
-            <div class="sc-section">
-                <div class="sc-tag sc-tag-notes">+ NOTES</div>
-                <div class="sc-body">
+            // ── assemble card ─────────────────────────────────────────────────
+            card.innerHTML = `
+            <div class="sc-bar"></div>
+            <div class="sc-inner">
+                <div class="sc-header">
+                    <div class="sc-header-left">
+                        <span class="sc-brand">youdahe.com</span>
+                        <div class="sc-dow">${d.toLocaleDateString('en-US',{weekday:'long'}).toUpperCase()}</div>
+                        <div class="sc-date">${d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</div>
+                    </div>
+                    <div class="sc-header-right">
+                        ${perfBadge}
+                        <span class="sc-season">summer 2026</span>
+                    </div>
+                </div>
+                <div class="sc-tiles">
+                    ${gymTile}${lcTile}${rustTile}${workTile}
+                </div>
+                <div class="sc-notes-row">
+                    <div class="sc-notes-head"><span class="sc-tile-icon">📝</span><span>notes</span></div>
                     <div class="sc-notes" id="scNotesArea" contenteditable="true"
                          data-placeholder="add anything extra — workout, wins, what you learned…"
                          oninput="flushSummaryNotes()"></div>
                 </div>
-            </div>`;
-
-            // ── assemble card ─────────────────────────────────────────────────
-            const perfBadge = perf ? `
-                <span class="sc-perf" style="--pc:${PERF_HEX[perf]}">${PERF_LABEL[perf]}</span>` : '';
-
-            card.innerHTML = `
-            <div class="sc-bar"></div>
-            <div class="sc-inner">
-                <div class="sc-header-row">
-                    <span class="sc-brand">youdahe.com</span>
-                    <span class="sc-season">summer 2026</span>
-                </div>
-                <div class="sc-date-row">
-                    <div>
-                        <div class="sc-dow">${d.toLocaleDateString('en-US',{weekday:'long'}).toUpperCase()}</div>
-                        <div class="sc-date">${d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</div>
-                    </div>
-                    ${perfBadge}
-                </div>
-                <div class="sc-rule"></div>
-                ${sections}
                 <div class="sc-footer-text">youdahe.com · daily log · ${d.getFullYear()}</div>
             </div>`;
 
@@ -1241,7 +1235,7 @@
             const notesEl = document.getElementById('scNotesArea');
             if (notesEl) notesEl.textContent = getSummaryNotes(key);
 
-            // async: fill leetcode code blocks
+            // async: fill leetcode — show problem name chips, no code blocks
             if (ncShas.length) {
                 const problems = await fetchNeetcodeForDay(key);
                 const lcBody   = document.getElementById('scLcBody');
@@ -1249,15 +1243,9 @@
                 if (!problems.length) {
                     lcBody.innerHTML = `<span class="sc-muted">${ncShas.length} commit${ncShas.length !== 1 ? 's' : ''}</span>`;
                 } else {
-                    lcBody.innerHTML = problems.map(p => {
-                        const lines   = p.code.split('\n');
-                        const snippet = lines.slice(0, 15).join('\n') + (lines.length > 15 ? '\n# …' : '');
-                        return `
-                        <div class="sc-problem">
-                            <span class="sc-problem-name">${escapeHtml(slugToTitle(p.slug))}</span>
-                            <pre class="sc-code">${escapeHtml(snippet)}</pre>
-                        </div>`;
-                    }).join('');
+                    lcBody.innerHTML = `<div class="sc-chips">${
+                        problems.map(p => `<span class="sc-chip">${escapeHtml(slugToTitle(p.slug))}</span>`).join('')
+                    }</div>`;
                 }
             }
 
