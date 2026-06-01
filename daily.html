@@ -1138,24 +1138,23 @@
             const hasActivity = ncShas.length || rustCms.length || !!log;
             const perf = hasActivity ? getDayPerf(key) : null;
 
-            const PERF_LABEL = { bad: 'off day', met: 'mission complete', over: 'above & beyond 🔥' };
-            const PERF_HEX   = { bad: '#ef4444', met: '#22c55e', over: '#a855f7' };
+            const PERF_LABEL = { bad: 'off day', met: 'mission complete', over: 'above & beyond' };
             const perfBadge  = perf
-                ? `<span class="sc-perf" style="--pc:${PERF_HEX[perf]}">${PERF_LABEL[perf]}</span>`
+                ? `<span class="sc-perf">${PERF_LABEL[perf]}</span>`
                 : '';
 
             // ── build tiles ───────────────────────────────────────────────────
             const gymTime = isWeekday ? '7:00 – 8:00 am' : '11:00 am – 2:00 pm';
             const gymTile = `
             <div class="sc-tile sc-tile-gym">
-                <div class="sc-tile-head"><span class="sc-tile-icon">💪</span><span>gym</span></div>
+                <div class="sc-tile-head">gym</div>
                 <div class="sc-tile-body">${gymTime}</div>
             </div>`;
 
             const lcTile = ncShas.length ? `
             <div class="sc-tile sc-tile-lc">
                 <div class="sc-tile-head">
-                    <span class="sc-tile-icon">🧩</span><span>leetcode</span>
+                    leetcode
                     <span class="sc-tile-count">${ncShas.length} problem${ncShas.length !== 1 ? 's' : ''}</span>
                 </div>
                 <div class="sc-tile-body" id="scLcBody"><span class="sc-muted">loading…</span></div>
@@ -1164,7 +1163,7 @@
             const rustTile = rustCms.length ? `
             <div class="sc-tile sc-tile-rust">
                 <div class="sc-tile-head">
-                    <span class="sc-tile-icon">🦀</span><span>rust</span>
+                    rust
                     <span class="sc-tile-count">${rustCms.length} commit${rustCms.length !== 1 ? 's' : ''}</span>
                 </div>
                 <div class="sc-tile-body">
@@ -1190,7 +1189,7 @@
                     workTile = `
                     <div class="sc-tile sc-tile-work">
                         <div class="sc-tile-head">
-                            <span class="sc-tile-icon">💼</span><span>work</span>
+                            work
                             <span class="sc-tile-count">${filled.length} area${filled.length !== 1 ? 's' : ''}</span>
                         </div>
                         <div class="sc-tile-body">
@@ -1223,7 +1222,7 @@
                     ${gymTile}${lcTile}${rustTile}${workTile}
                 </div>
                 <div class="sc-notes-row">
-                    <div class="sc-notes-head"><span class="sc-tile-icon">📝</span><span>notes</span></div>
+                    <div class="sc-notes-head">notes</div>
                     <div class="sc-notes" id="scNotesArea" contenteditable="true"
                          data-placeholder="add anything extra — workout, wins, what you learned…"
                          oninput="flushSummaryNotes()"></div>
