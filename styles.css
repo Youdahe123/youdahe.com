@@ -983,6 +983,7 @@ nav {
     margin-bottom: 1.25rem;
 }
 
+
 .cal-month-label {
     font-family: 'Lora', Georgia, serif;
     font-size: 1.1rem;
@@ -1108,6 +1109,89 @@ nav {
 .cal-cell.perf-over .cal-num { opacity: 0.85; }
 
 .cal-cell.is-sel .cal-perf-dot { opacity: 0; }
+
+/* ── GCA prep calendar indicators ───────────────────────────── */
+.cal-gca-badge {
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-color);
+    opacity: 0.35;
+    line-height: 1;
+}
+
+.cal-cell.gca-expiry .cal-gca-badge {
+    opacity: 0.6;
+}
+
+.cal-cell.has-gca .cal-num {
+    opacity: 0.85;
+}
+
+.cal-cell.has-gca:hover .cal-gca-badge {
+    opacity: 0.6;
+}
+
+/* ── GCA prep day panel ──────────────────────────────────────── */
+.cal-gca-block {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(128,128,128,0.1);
+}
+
+.cal-gca-problem {
+    display: flex;
+    align-items: baseline;
+    gap: 0.65rem;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid rgba(128,128,128,0.07);
+}
+
+.cal-gca-problem:last-of-type {
+    border-bottom: none;
+}
+
+.cal-gca-idx {
+    font-size: 11px;
+    color: var(--text-color);
+    opacity: 0.25;
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+    width: 22px;
+}
+
+.cal-gca-title {
+    font-size: 14px;
+    color: var(--text-color);
+    opacity: 0.75;
+    text-decoration: none;
+    flex: 1;
+    transition: opacity 0.15s;
+}
+
+.cal-gca-title:hover { opacity: 1; text-decoration: underline; text-underline-offset: 2px; }
+
+.cal-gca-lc {
+    font-size: 11px;
+    color: var(--text-color);
+    opacity: 0.25;
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+}
+
+.cal-gca-expiry-note {
+    margin-top: 0.75rem;
+    font-size: 13px;
+    color: var(--text-color);
+    opacity: 0.6;
+}
+
+.cal-gca-expiry-note a {
+    color: var(--text-color);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
 
 /* Expanded log panel */
 .cal-panel {
@@ -1960,6 +2044,24 @@ nav {
     73%  { transform: rotate(-2.5deg) translateX(-1px); }
     75%  { transform: rotate(-1.5deg) translateX(0);    }
 }
+
+/* ── GCA problem list in schedule ─────────────────────────────────── */
+.sch-gca-problems {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    margin-top: 0.4rem;
+}
+
+.sch-gca-link {
+    font-size: 12px;
+    color: var(--text-color);
+    opacity: 0.5;
+    text-decoration: none;
+    transition: opacity 0.15s;
+}
+
+.sch-gca-link:hover { opacity: 0.9; text-decoration: underline; text-underline-offset: 2px; }
 
 /* ── hype / above-and-beyond cartoon ──────────────────────────────── */
 .sch-hype {
@@ -2939,3 +3041,88 @@ nav {
     text-align: center;
 }
 [data-theme="dark"] .sc-footer-text { color: #fff; }
+
+/* ── Notion Prep daily widget (daily.html) ─────────────────────────── */
+.prep-daily-widget {
+    margin-bottom: 2.5rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.15);
+}
+
+.prep-daily-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.prep-daily-open {
+    font-size: 13px;
+    color: var(--text-color);
+    opacity: 0.4;
+    text-decoration: none;
+    transition: opacity 0.15s ease;
+}
+
+.prep-daily-open:hover { opacity: 1; }
+
+.prep-daily-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.prep-daily-box {
+    width: 15px;
+    height: 15px;
+    border: 1.5px solid rgba(128, 128, 128, 0.25);
+    border-radius: 3px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.prep-daily-check.done .prep-daily-box {
+    background-color: var(--text-color);
+    border-color: var(--text-color);
+}
+
+.prep-daily-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.prep-daily-task {
+    font-size: 14px;
+    color: var(--text-color);
+    opacity: 0.75;
+    line-height: 1.4;
+    transition: opacity 0.15s ease;
+}
+
+.prep-daily-check.done .prep-daily-task {
+    opacity: 0.3;
+    text-decoration: line-through;
+    text-decoration-color: rgba(128, 128, 128, 0.35);
+}
+
+.prep-daily-sub {
+    font-size: 12px;
+    color: var(--text-color);
+    opacity: 0.4;
+    line-height: 1.4;
+}
+
+.prep-daily-sub a {
+    color: var(--text-color);
+    text-decoration: none;
+    transition: opacity 0.15s ease;
+}
+
+.prep-daily-sub a:hover { opacity: 0.65; }

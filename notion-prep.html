@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>notion prep · youdahe.com</title>
+    <link rel="icon" type="image/jpeg" href="/thumbnails/757728ea03cf11b495d92a9852a9f060.jpg">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        /* ── Notion Prep Page ─────────────────────────────────────────── */
+
+        .prep-intro {
+            margin-bottom: 2.5rem;
+        }
+
+        .prep-intro h1 {
+            font-size: 2rem;
+            font-weight: normal;
+            color: var(--text-color-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .prep-intro-sub {
+            font-size: 13px;
+            color: var(--text-color);
+            opacity: 0.45;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .prep-intro-desc {
+            font-size: 15px;
+            color: var(--text-color);
+            opacity: 0.7;
+            line-height: 1.6;
+            max-width: 560px;
+        }
+
+        /* ── Process flow ─── */
+        .prep-flow {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-bottom: 3rem;
+            align-items: center;
+        }
+
+        .prep-flow-step {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-color);
+            opacity: 0.35;
+            letter-spacing: 0.03em;
+            padding: 0.3rem 0.75rem;
+            border: 1px solid rgba(128,128,128,0.2);
+            border-radius: 99px;
+            white-space: nowrap;
+        }
+
+        .prep-flow-step.active {
+            opacity: 1;
+            border-color: var(--text-color);
+            font-weight: 600;
+        }
+
+        .prep-flow-arrow {
+            font-size: 11px;
+            color: var(--text-color);
+            opacity: 0.2;
+        }
+
+        /* ── Stages ─── */
+        .prep-stages {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .prep-stage {
+            border-top: 1px solid rgba(128,128,128,0.12);
+        }
+
+        .prep-stage:last-child {
+            border-bottom: 1px solid rgba(128,128,128,0.12);
+        }
+
+        .prep-stage-toggle {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem 0;
+            background: none;
+            border: none;
+            cursor: pointer;
+            text-align: left;
+            gap: 1rem;
+            transition: opacity 0.15s ease;
+        }
+
+        .prep-stage-toggle:hover {
+            opacity: 0.75;
+        }
+
+        .prep-stage-left {
+            display: flex;
+            align-items: baseline;
+            gap: 0.75rem;
+        }
+
+        .prep-stage-num {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-color);
+            opacity: 0.3;
+            letter-spacing: 0.08em;
+            font-variant-numeric: tabular-nums;
+            flex-shrink: 0;
+        }
+
+        .prep-stage-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-color-dark);
+        }
+
+        .prep-stage-sub {
+            font-size: 12px;
+            color: var(--text-color);
+            opacity: 0.4;
+        }
+
+        .prep-stage-right {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .prep-stage-badge {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            padding: 0.22rem 0.65rem;
+            border-radius: 99px;
+            border: 1.5px solid rgba(128,128,128,0.2);
+            color: var(--text-color);
+            opacity: 0.45;
+        }
+
+        .prep-stage-badge.focus {
+            border-color: var(--text-color);
+            opacity: 1;
+        }
+
+        .prep-chevron {
+            color: var(--text-color);
+            opacity: 0.3;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .prep-stage.open .prep-chevron {
+            transform: rotate(180deg);
+            opacity: 0.55;
+        }
+
+        .prep-stage-body {
+            display: none;
+            padding-bottom: 2rem;
+        }
+
+        .prep-stage.open .prep-stage-body {
+            display: block;
+        }
+
+        /* ── Body content ─── */
+        .prep-desc {
+            font-size: 14px;
+            color: var(--text-color);
+            opacity: 0.65;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+            max-width: 640px;
+        }
+
+        .prep-section-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-color);
+            opacity: 0.35;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.65rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Tips list */
+        .prep-tips {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 0;
+        }
+
+        .prep-tip {
+            display: flex;
+            gap: 0.65rem;
+            align-items: flex-start;
+        }
+
+        .prep-tip-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--text-color);
+            opacity: 0.3;
+            flex-shrink: 0;
+            margin-top: 0.5rem;
+        }
+
+        .prep-tip-text {
+            font-size: 14px;
+            color: var(--text-color);
+            opacity: 0.7;
+            line-height: 1.55;
+        }
+
+        .prep-tip-text strong {
+            font-weight: 600;
+            color: var(--text-color-dark);
+            opacity: 1;
+        }
+
+        /* Checklist */
+        .prep-checklist {
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+        }
+
+        .prep-check {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.65rem;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .prep-check-box {
+            width: 15px;
+            height: 15px;
+            border: 1.5px solid rgba(128,128,128,0.25);
+            border-radius: 3px;
+            flex-shrink: 0;
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.15s, border-color 0.15s;
+        }
+
+        .prep-check.done .prep-check-box {
+            background: var(--text-color);
+            border-color: var(--text-color);
+        }
+
+        .prep-check-text {
+            font-size: 14px;
+            color: var(--text-color);
+            opacity: 0.75;
+            line-height: 1.5;
+            transition: opacity 0.15s;
+        }
+
+        .prep-check.done .prep-check-text {
+            opacity: 0.3;
+            text-decoration: line-through;
+            text-decoration-color: rgba(128,128,128,0.35);
+        }
+
+        /* Code reference block */
+        .prep-code-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 0;
+        }
+
+        @media (max-width: 640px) {
+            .prep-code-grid { grid-template-columns: 1fr; }
+        }
+
+        .prep-code-block {
+            border: 1px solid rgba(128,128,128,0.15);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .prep-code-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-color);
+            opacity: 0.4;
+            padding: 0.5rem 0.85rem;
+            border-bottom: 1px solid rgba(128,128,128,0.1);
+            background: rgba(128,128,128,0.03);
+        }
+
+        .prep-code {
+            font-family: 'SF Mono', 'Fira Code', 'Roboto Mono', monospace;
+            font-size: 11.5px;
+            line-height: 1.7;
+            color: var(--text-color);
+            opacity: 0.8;
+            padding: 0.75rem 0.85rem;
+            white-space: pre;
+            overflow-x: auto;
+            margin: 0;
+        }
+
+        [data-theme="dark"] .prep-code-block {
+            background: rgba(255,255,255,0.02);
+        }
+
+        /* Resources */
+        .prep-resources {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .prep-resource {
+            display: flex;
+            align-items: baseline;
+            gap: 0.6rem;
+        }
+
+        .prep-resource-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-color-dark);
+        }
+
+        .prep-resource-link {
+            font-size: 13px;
+            color: var(--text-color);
+            opacity: 0.4;
+            text-decoration: none;
+            transition: opacity 0.15s;
+        }
+
+        .prep-resource-link:hover { opacity: 1; }
+
+        .prep-resource-desc {
+            font-size: 13px;
+            color: var(--text-color);
+            opacity: 0.4;
+        }
+
+        /* Highlight box for the main focus stage */
+        .prep-focus-banner {
+            background: rgba(128,128,128,0.04);
+            border: 1px solid rgba(128,128,128,0.15);
+            border-radius: 8px;
+            padding: 0.875rem 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 13px;
+            color: var(--text-color);
+            opacity: 0.7;
+            line-height: 1.55;
+        }
+
+        /* two-col layout for stage 05 */
+        .prep-two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        @media (max-width: 768px) {
+            .prep-two-col { grid-template-columns: 1fr; gap: 0; }
+            .prep-code-grid { grid-template-columns: 1fr; }
+
+            .prep-flow { gap: 0.3rem; }
+            .prep-flow-arrow { display: none; }
+        }
+
+        /* Progress bar */
+        .prep-progress-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .prep-progress-track {
+            flex: 1;
+            height: 2px;
+            background: rgba(128,128,128,0.12);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .prep-progress-fill {
+            height: 100%;
+            background: var(--text-color);
+            border-radius: 2px;
+            transition: width 0.4s ease;
+        }
+
+        .prep-progress-label {
+            font-size: 12px;
+            color: var(--text-color);
+            opacity: 0.35;
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* ── Module cards ─── */
+        .prep-module-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.65rem;
+        }
+
+        @media (max-width: 540px) {
+            .prep-module-grid { grid-template-columns: 1fr; }
+        }
+
+        .prep-module-card {
+            border: 1px solid rgba(128,128,128,0.15);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .prep-module-head {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.45rem 0.75rem;
+            border-bottom: 1px solid rgba(128,128,128,0.1);
+            background: rgba(128,128,128,0.03);
+        }
+
+        [data-theme="dark"] .prep-module-head {
+            background: rgba(255,255,255,0.02);
+            border-bottom-color: rgba(255,255,255,0.06);
+        }
+
+        .prep-module-num {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text-color);
+            opacity: 0.25;
+            flex-shrink: 0;
+        }
+
+        .prep-module-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-color-dark);
+            flex: 1;
+            min-width: 0;
+        }
+
+        .prep-module-time {
+            font-size: 10.5px;
+            color: var(--text-color);
+            opacity: 0.35;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .prep-module-body {
+            padding: 0.6rem 0.75rem;
+        }
+
+        .prep-module-skills {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+        }
+
+        .prep-module-skills li {
+            font-size: 12.5px;
+            color: var(--text-color);
+            opacity: 0.6;
+            line-height: 1.45;
+            padding-left: 0.8rem;
+            position: relative;
+        }
+
+        .prep-module-skills li::before {
+            content: '·';
+            position: absolute;
+            left: 0;
+            opacity: 0.4;
+        }
+
+        /* ── GCA box ─── */
+        .prep-gca-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.8rem 1rem;
+            border: 1px solid rgba(128,128,128,0.18);
+            border-radius: 8px;
+            gap: 1rem;
+        }
+
+        .prep-gca-left {
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+        }
+
+        .prep-gca-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-color-dark);
+        }
+
+        .prep-gca-expiry {
+            font-size: 12px;
+            color: var(--text-color);
+            opacity: 0.4;
+        }
+
+        .prep-gca-expiry.urgent {
+            color: #ef4444;
+            opacity: 0.85;
+            font-weight: 500;
+        }
+
+        .prep-gca-btn {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-color);
+            opacity: 0.5;
+            text-decoration: none;
+            padding: 0.35rem 0.85rem;
+            border: 1px solid rgba(128,128,128,0.2);
+            border-radius: 6px;
+            transition: opacity 0.15s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .prep-gca-btn:hover { opacity: 1; }
+
+        /* ── Problem list ─── */
+        .prep-problem-item {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 0.5rem;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .prep-problem-lc {
+            font-size: 11px;
+            color: var(--text-color);
+            opacity: 0.25;
+            text-decoration: none;
+            flex-shrink: 0;
+            transition: opacity 0.15s;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .prep-problem-lc:hover { opacity: 0.7; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-links">
+            <a href="index.html">home</a>
+            <a href="writing.html">writing</a>
+            <a href="photography.html">photography</a>
+            <a href="daily.html">daily log</a>
+        </div>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+        </button>
+    </nav>
+
+    <main class="container" style="max-width: 800px;">
+        <div class="prep-intro">
+            <h1>notion prep</h1>
+            <p class="prep-intro-sub">summer 2026 · swe internship</p>
+            <p class="prep-intro-desc">Working through each stage of the Notion internship interview process. The main focus is the debugging virtual onsite — a large TypeScript codebase, a live Notion-like editor, and logic bugs to squash.</p>
+        </div>
+
+        <!-- Process flow -->
+        <div class="prep-flow">
+            <span class="prep-flow-step">01 codesignal</span>
+            <span class="prep-flow-arrow">→</span>
+            <span class="prep-flow-step">02 phone screen</span>
+            <span class="prep-flow-arrow">→</span>
+            <span class="prep-flow-step">03 take-home</span>
+            <span class="prep-flow-arrow">→</span>
+            <span class="prep-flow-step">04 onsite 1 — algo</span>
+            <span class="prep-flow-arrow">→</span>
+            <span class="prep-flow-step active">05 onsite 2 — debug</span>
+            <span class="prep-flow-arrow">→</span>
+            <span class="prep-flow-step">06 behavioral</span>
+        </div>
+
+        <!-- Overall prep progress -->
+        <div class="prep-progress-row">
+            <div class="prep-progress-track">
+                <div class="prep-progress-fill" id="overallProgress" style="width: 0%"></div>
+            </div>
+            <span class="prep-progress-label" id="overallProgressLabel">0 / 0 tasks done</span>
+        </div>
+
+        <!-- Stages -->
+        <div class="prep-stages" id="prepStages">
+
+            <!-- 01 · CodeSignal -->
+            <div class="prep-stage" id="stage-01">
+                <button class="prep-stage-toggle" onclick="toggleStage('stage-01')">
+                    <div class="prep-stage-left">
+                        <span class="prep-stage-num">01</span>
+                        <span class="prep-stage-title">codesignal gca</span>
+                        <span class="prep-stage-sub">score 500+</span>
+                    </div>
+                    <div class="prep-stage-right">
+                        <span class="prep-stage-badge">general coding</span>
+                        <svg class="prep-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
+                </button>
+                <div class="prep-stage-body">
+                    <p class="prep-desc">4 problems · 70 minutes · scored out of 600. Each module escalates — clear M1–M3 cleanly first, then tackle M4. Code quality is scored alongside correctness.</p>
+
+                    <div class="prep-section-label">the 4 modules</div>
+                    <div class="prep-module-grid">
+                        <div class="prep-module-card">
+                            <div class="prep-module-head">
+                                <span class="prep-module-num">M1</span>
+                                <span class="prep-module-name">Basic Coding</span>
+                                <span class="prep-module-time">~10 min · 5–10 lines</span>
+                            </div>
+                            <div class="prep-module-body">
+                                <ul class="prep-module-skills">
+                                    <li>Numbers, strings, basic arrays</li>
+                                    <li>Single loop at most</li>
+                                    <li>Step-by-step instructions given</li>
+                                    <li>No algorithms or pattern-spotting</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="prep-module-card">
+                            <div class="prep-module-head">
+                                <span class="prep-module-num">M2</span>
+                                <span class="prep-module-name">Data Manipulation</span>
+                                <span class="prep-module-time">~15 min · 10–20 lines</span>
+                            </div>
+                            <div class="prep-module-body">
+                                <ul class="prep-module-skills">
+                                    <li>Split, compare, reverse strings</li>
+                                    <li>Iterate, modify, concat arrays</li>
+                                    <li>Up to 2 nested loops</li>
+                                    <li>3–5 basic concepts combined</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="prep-module-card">
+                            <div class="prep-module-head">
+                                <span class="prep-module-num">M3</span>
+                                <span class="prep-module-name">Implementation Efficiency</span>
+                                <span class="prep-module-time">~20 min · 25–40 lines</span>
+                            </div>
+                            <div class="prep-module-body">
+                                <ul class="prep-module-skills">
+                                    <li>2D arrays — traverse, transpose, pivot</li>
+                                    <li>Hashmaps with string/int keys</li>
+                                    <li>Decompose into sub-functions</li>
+                                    <li>Must meet execution time limits</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="prep-module-card">
+                            <div class="prep-module-head">
+                                <span class="prep-module-num">M4</span>
+                                <span class="prep-module-name">Problem Solving</span>
+                                <span class="prep-module-time">~30 min · 25–35 lines</span>
+                            </div>
+                            <div class="prep-module-body">
+                                <ul class="prep-module-skills">
+                                    <li>Greedy, two pointers, divide &amp; conquer</li>
+                                    <li>Hashmaps + sets for optimization</li>
+                                    <li>Discrete math fundamentals</li>
+                                    <li>No Dijkstra, Kruskal, FFT, or DP</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="prep-section-label">tips</div>
+                    <div class="prep-tips">
+                        <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text"><strong>Score M1–M3 first.</strong> Earlier modules carry more weight — a clean M1–M3 beats a half-finished M4.</p></div>
+                        <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text">CodeSignal scores <strong>code quality</strong> too — clean names, no debug cruft, readable structure.</p></div>
+                        <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text">The 70-minute window is real. Timed practice is the only way to build the right muscle for it.</p></div>
+                        <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text">M4 patterns: two pointers, sliding window, frequency hashmaps, binary search on the answer.</p></div>
+                    </div>
+
+                    <div class="prep-section-label">practice assessment</div>
+                    <div class="prep-gca-box">
+                        <div class="prep-gca-left">
+                            <span class="prep-gca-title">Practice GCA</span>
+                            <span class="prep-gca-expiry" id="gcaExpiry">expires Jun 21</span>
+                        </div>
+                        <a href="https://codesignal.com/learn/assessments?tab=pending" target="_blank" rel="noopener" class="prep-gca-btn">open →</a>
+                    </div>
+
+                    <div class="prep-section-label" style="margin-top:1.75rem">problem list <span style="font-weight:400;opacity:0.6;text-transform:none;letter-spacing:0">· 1/day outside normal leetcode</span></div>
+                    <div class="prep-checklist" id="checks-01p" data-stage="01p">
+                        <div class="prep-check" data-id="1" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <div class="prep-problem-item"><span class="prep-check-text">Find Occurrences of an Element in an Array</span><a class="prep-problem-lc" href="https://leetcode.com/problems/find-occurrences-of-an-element-in-an-array/" target="_blank" onclick="event.stopPropagation()">LC 3005</a></div>
+                        </div>
+                        <div class="prep-check" data-id="2" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <div class="prep-problem-item"><span class="prep-check-text">Spiral Matrix</span><a class="prep-problem-lc" href="https://leetcode.com/problems/spiral-matrix/" target="_blank" onclick="event.stopPropagation()">LC 54</a></div>
+                        </div>
+                        <div class="prep-check" data-id="3" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <div class="prep-problem-item"><span class="prep-check-text">Longest Consecutive Sequence</span><a class="prep-problem-lc" href="https://leetcode.com/problems/longest-consecutive-sequence/" target="_blank" onclick="event.stopPropagation()">LC 128</a></div>
+                        </div>
+                        <div class="prep-check" data-id="4" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <div class="prep-problem-item"><span class="prep-check-text">Spiral Matrix II</span><a class="prep-problem-lc" href="https://leetcode.com/problems/spiral-matrix-ii/" target="_blank" onclick="event.stopPropagation()">LC 59</a></div>
+                        </div>
+                        <div class="prep-check" data-id="5" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <div class="prep-problem-item"><span class="prep-check-text">4Sum II</span><a class="prep-problem-lc" href="https://leetcode.com/problems/4sum-ii/" target="_blank" onclick="event.stopPropagation()">LC 454</a></div>
+                        </div>
+                        <div class="prep-check" data-id="6" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <div class="prep-problem-item"><span class="prep-check-text">Rotate Image</span><a class="prep-problem-lc" href="https://leetcode.com/problems/rotate-image/" target="_blank" onclick="event.stopPropagation()">LC 48</a></div>
+                        </div>
+                        <div class="prep-check" data-id="7" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <div class="prep-problem-item"><span class="prep-check-text">Pairs of Songs with Total Durations Divisible by 60</span><a class="prep-problem-lc" href="https://leetcode.com/problems/pairs-of-songs-with-total-durations-divisible-by-60/" target="_blank" onclick="event.stopPropagation()">LC 1010</a></div>
+                        </div>
+                        <div class="prep-check" data-id="8" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <div class="prep-problem-item"><span class="prep-check-text">Diagonal Traverse</span><a class="prep-problem-lc" href="https://leetcode.com/problems/diagonal-traverse/" target="_blank" onclick="event.stopPropagation()">LC 498</a></div>
+                        </div>
+                        <div class="prep-check" data-id="9" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <div class="prep-problem-item"><span class="prep-check-text">Longest Palindrome by Concatenating Two Letter Words</span><a class="prep-problem-lc" href="https://leetcode.com/problems/longest-palindrome-by-concatenating-two-letter-words/" target="_blank" onclick="event.stopPropagation()">LC 2131</a></div>
+                        </div>
+                        <div class="prep-check" data-id="10" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <div class="prep-problem-item"><span class="prep-check-text">Reshape the Matrix</span><a class="prep-problem-lc" href="https://leetcode.com/problems/reshape-the-matrix/" target="_blank" onclick="event.stopPropagation()">LC 566</a></div>
+                        </div>
+                        <div class="prep-check" data-id="11" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <div class="prep-problem-item"><span class="prep-check-text">Array of Doubled Pairs</span><a class="prep-problem-lc" href="https://leetcode.com/problems/array-of-doubled-pairs/" target="_blank" onclick="event.stopPropagation()">LC 954</a></div>
+                        </div>
+                        <div class="prep-check" data-id="12" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <div class="prep-problem-item"><span class="prep-check-text">Toeplitz Matrix</span><a class="prep-problem-lc" href="https://leetcode.com/problems/toeplitz-matrix/" target="_blank" onclick="event.stopPropagation()">LC 766</a></div>
+                        </div>
+                        <div class="prep-check" data-id="13" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <div class="prep-problem-item"><span class="prep-check-text">3Sum With Multiplicity</span><a class="prep-problem-lc" href="https://leetcode.com/problems/3sum-with-multiplicity/" target="_blank" onclick="event.stopPropagation()">LC 923</a></div>
+                        </div>
+                        <div class="prep-check" data-id="14" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <div class="prep-problem-item"><span class="prep-check-text">Image Overlap</span><a class="prep-problem-lc" href="https://leetcode.com/problems/image-overlap/" target="_blank" onclick="event.stopPropagation()">LC 835</a></div>
+                        </div>
+                        <div class="prep-check" data-id="15" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <div class="prep-problem-item"><span class="prep-check-text">Count Number of Nice Subarrays</span><a class="prep-problem-lc" href="https://leetcode.com/problems/count-number-of-nice-subarrays/" target="_blank" onclick="event.stopPropagation()">LC 1248</a></div>
+                        </div>
+                        <div class="prep-check" data-id="16" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <div class="prep-problem-item"><span class="prep-check-text">Largest Local Values in a Matrix</span><a class="prep-problem-lc" href="https://leetcode.com/problems/largest-local-values-in-a-matrix/" target="_blank" onclick="event.stopPropagation()">LC 2373</a></div>
+                        </div>
+                        <div class="prep-check" data-id="17" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <div class="prep-problem-item"><span class="prep-check-text">K-diff Pairs in an Array</span><a class="prep-problem-lc" href="https://leetcode.com/problems/k-diff-pairs-in-an-array/" target="_blank" onclick="event.stopPropagation()">LC 532</a></div>
+                        </div>
+                        <div class="prep-check" data-id="18" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <div class="prep-problem-item"><span class="prep-check-text">Transpose Matrix</span><a class="prep-problem-lc" href="https://leetcode.com/problems/transpose-matrix/" target="_blank" onclick="event.stopPropagation()">LC 867</a></div>
+                        </div>
+                        <div class="prep-check" data-id="19" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <div class="prep-problem-item"><span class="prep-check-text">Diagonal Traverse II</span><a class="prep-problem-lc" href="https://leetcode.com/problems/diagonal-traverse-ii/" target="_blank" onclick="event.stopPropagation()">LC 1424</a></div>
+                        </div>
+                        <div class="prep-check" data-id="20" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <div class="prep-problem-item"><span class="prep-check-text">Text Justification</span><a class="prep-problem-lc" href="https://leetcode.com/problems/text-justification/" target="_blank" onclick="event.stopPropagation()">LC 68</a></div>
+                        </div>
+                        <div class="prep-check" data-id="21" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <div class="prep-problem-item"><span class="prep-check-text">Find the Number of Distinct Colors Among the Balls</span><a class="prep-problem-lc" href="https://leetcode.com/problems/find-the-number-of-distinct-colors-among-the-balls/" target="_blank" onclick="event.stopPropagation()">LC 3109</a></div>
+                        </div>
+                        <div class="prep-check" data-id="22" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <div class="prep-problem-item"><span class="prep-check-text">Count Square Submatrices with All Ones</span><a class="prep-problem-lc" href="https://leetcode.com/problems/count-square-submatrices-with-all-ones/" target="_blank" onclick="event.stopPropagation()">LC 1277</a></div>
+                        </div>
+                        <div class="prep-check" data-id="23" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <div class="prep-problem-item"><span class="prep-check-text">Minimum Number of Arrows to Burst Balloons</span><a class="prep-problem-lc" href="https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/" target="_blank" onclick="event.stopPropagation()">LC 452</a></div>
+                        </div>
+                        <div class="prep-check" data-id="24" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <div class="prep-problem-item"><span class="prep-check-text">Koko Eating Bananas</span><a class="prep-problem-lc" href="https://leetcode.com/problems/koko-eating-bananas/" target="_blank" onclick="event.stopPropagation()">LC 875</a></div>
+                        </div>
+                        <div class="prep-check" data-id="25" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <div class="prep-problem-item"><span class="prep-check-text">Design HashMap</span><a class="prep-problem-lc" href="https://leetcode.com/problems/design-hashmap/" target="_blank" onclick="event.stopPropagation()">LC 706</a></div>
+                        </div>
+                    </div>
+
+                    <div class="prep-section-label" style="margin-top:1.75rem">general prep</div>
+                    <div class="prep-checklist" id="checks-01g" data-stage="01g">
+                        <div class="prep-check" data-id="1" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">Complete the practice GCA before Jun 21</span>
+                        </div>
+                        <div class="prep-check" data-id="2" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">Do timed sessions — 70 min, no pausing — to simulate real conditions</span>
+                        </div>
+                        <div class="prep-check" data-id="3" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">Practice in the CodeSignal IDE specifically — the environment differs from LC</span>
+                        </div>
+                        <div class="prep-check" data-id="4" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">Review binary search on the answer pattern (M4 favorite)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 02 · Phone Screen -->
+            <div class="prep-stage" id="stage-02">
+                <button class="prep-stage-toggle" onclick="toggleStage('stage-02')">
+                    <div class="prep-stage-left">
+                        <span class="prep-stage-num">02</span>
+                        <span class="prep-stage-title">recruiter phone screen</span>
+                        <span class="prep-stage-sub">~30 min</span>
+                    </div>
+                    <div class="prep-stage-right">
+                        <span class="prep-stage-badge">vibe check</span>
+                        <svg class="prep-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
+                </button>
+                <div class="prep-stage-body">
+                    <p class="prep-desc">A short call with a recruiter (usually Shivani Patel or Chris). It's mostly a vibe check — confirming you're eligible, interested, and not a robot. Non-technical. If you pass, you get the take-home.</p>
+
+                    <div class="prep-section-label">tips</div>
+                    <div class="prep-tips">
+                        <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text">Be yourself. This is mostly eligibility + enthusiasm, not technical screening.</p></div>
+                        <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text">Have a clear "why Notion" — they care about cultural fit and genuine interest in the product.</p></div>
+                        <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text">Know your resume and be ready to talk briefly about past work.</p></div>
+                        <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text">Ask smart questions at the end — what teams are hiring, what the timeline looks like, etc.</p></div>
+                    </div>
+
+                    <div class="prep-section-label">prep checklist</div>
+                    <div class="prep-checklist" id="checks-02" data-stage="02">
+                        <div class="prep-check" data-id="1" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">Draft a clear "why Notion" answer (product, culture, mission)</span>
+                        </div>
+                        <div class="prep-check" data-id="2" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">Re-read your resume and be ready to walk through it in 2 min</span>
+                        </div>
+                        <div class="prep-check" data-id="3" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">Prepare 2–3 smart questions to ask the recruiter</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 03 · Take-Home -->
+            <div class="prep-stage" id="stage-03">
+                <button class="prep-stage-toggle" onclick="toggleStage('stage-03')">
+                    <div class="prep-stage-left">
+                        <span class="prep-stage-num">03</span>
+                        <span class="prep-stage-title">take-home assessment</span>
+                        <span class="prep-stage-sub">2–3 hours</span>
+                    </div>
+                    <div class="prep-stage-right">
+                        <span class="prep-stage-badge">project</span>
+                        <svg class="prep-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
+                </button>
+                <div class="prep-stage-body">
+                    <p class="prep-desc">A take-home project, usually involving the Notion API or a small feature build. Notion recreates this each year. Spend the full 2–3 hours — readability and craftsmanship matter as much as the solution.</p>
+
+                    <div class="prep-section-label">tips</div>
+                    <div class="prep-tips">
+                        <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text"><strong>Readability is everything.</strong> Clean variable names, logical decomposition, comments only where necessary.</p></div>
+                        <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text">Polish the README — make sure it's well organized, explains setup, and covers edge cases you thought about.</p></div>
+                        <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text">The short-answer questions in the README are a big deal. For "what would you improve with more time?" — actually rip apart your code and be specific about tradeoffs.</p></div>
+                        <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text">Write tests. You'll regret it if you don't.</p></div>
+                        <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text">Make it actually work — test your code before submitting.</p></div>
+                    </div>
+
+                    <div class="prep-section-label">prep checklist</div>
+                    <div class="prep-checklist" id="checks-03" data-stage="03">
+                        <div class="prep-check" data-id="1" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">Read the Notion API docs and understand the core endpoints</span>
+                        </div>
+                        <div class="prep-check" data-id="2" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">Practice writing polished READMEs with setup + short answers</span>
+                        </div>
+                        <div class="prep-check" data-id="3" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">Review code decomposition patterns — small functions, clear separation of concerns</span>
+                        </div>
+                        <div class="prep-check" data-id="4" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">Build a small personal project using the Notion API for practice</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 04 · Virtual Onsite 1 — Algo -->
+            <div class="prep-stage" id="stage-04">
+                <button class="prep-stage-toggle" onclick="toggleStage('stage-04')">
+                    <div class="prep-stage-left">
+                        <span class="prep-stage-num">04</span>
+                        <span class="prep-stage-title">virtual onsite 1 — algo</span>
+                        <span class="prep-stage-sub">45 min solve · 15 min Q&A</span>
+                    </div>
+                    <div class="prep-stage-right">
+                        <span class="prep-stage-badge">live coding</span>
+                        <svg class="prep-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
+                </button>
+                <div class="prep-stage-body">
+                    <p class="prep-desc">A live coding interview: 45 minutes to solve a problem, 15 minutes to ask your interviewer questions. Historically involves OOP / class design and time complexity optimization. Notion creates original questions each year.</p>
+
+                    <div class="prep-section-label">tips</div>
+                    <div class="prep-tips">
+                        <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text">Think about <strong>time and space complexity</strong> out loud. They want to see you reason about performance.</p></div>
+                        <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text">Start with a brute force solution, articulate why it's suboptimal, then optimize. Showing the thought process matters more than jumping straight to optimal.</p></div>
+                        <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text">Past questions have involved class implementation and binary search — practice OOP design problems.</p></div>
+                        <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text">The bar isn't just solving the problem — they care about engineering fundamentals and how you communicate tradeoffs.</p></div>
+                        <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text">Related LC problem: <em>981. Time Based Key-Value Store</em> — OOP + binary search.</p></div>
+                    </div>
+
+                    <div class="prep-section-label">prep checklist</div>
+                    <div class="prep-checklist" id="checks-04" data-stage="04">
+                        <div class="prep-check" data-id="1" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">Solve LC 981 (Time Based Key-Value Store) and variations</span>
+                        </div>
+                        <div class="prep-check" data-id="2" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">Practice 10+ OOP design problems (design a parking lot, LRU cache, etc.)</span>
+                        </div>
+                        <div class="prep-check" data-id="3" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">Practice explaining time/space complexity out loud on every problem you solve</span>
+                        </div>
+                        <div class="prep-check" data-id="4" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">Do at least 5 mock interviews (narrate your thinking out loud)</span>
+                        </div>
+                        <div class="prep-check" data-id="5" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">Review binary search patterns (lower bound, upper bound, on answer)</span>
+                        </div>
+                        <div class="prep-check" data-id="6" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">Prepare 3–5 smart questions to ask your interviewer at the end</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 05 · Virtual Onsite 2 — Debugging ← MAIN FOCUS -->
+            <div class="prep-stage open" id="stage-05">
+                <button class="prep-stage-toggle" onclick="toggleStage('stage-05')">
+                    <div class="prep-stage-left">
+                        <span class="prep-stage-num">05</span>
+                        <span class="prep-stage-title">virtual onsite 2 — debugging</span>
+                        <span class="prep-stage-sub">45 min · the main event</span>
+                    </div>
+                    <div class="prep-stage-right">
+                        <span class="prep-stage-badge focus">main focus</span>
+                        <svg class="prep-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
+                </button>
+                <div class="prep-stage-body">
+
+                    <div class="prep-focus-banner">
+                        You'll be given a large TypeScript codebase in CodeSignal that powers a scaled-down Notion page editor. You'll also have the live editor open so you can see changes in real time. Bugs will be shown one by one — your job is to navigate the codebase and fix them. All bugs are <strong>logic-based</strong> (off by one, wrong condition, etc.) — no HTML/CSS.
+                    </div>
+
+                    <div class="prep-two-col">
+                        <div>
+                            <div class="prep-section-label">what to expect</div>
+                            <div class="prep-tips">
+                                <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text">A large, multi-file TypeScript codebase you've never seen before.</p></div>
+                                <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text">A live Notion-like page editor you can interact with alongside the code.</p></div>
+                                <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text">Logic bugs only — off by one, wrong condition, missing null check, etc.</p></div>
+                                <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text">Bugs may or may not have pre-written unit tests. Ask your interviewer.</p></div>
+                                <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text">React components + backend code powering the editor.</p></div>
+                                <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text">45 minutes — time management is critical.</p></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="prep-section-label">how to approach it</div>
+                            <div class="prep-tips">
+                                <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text"><strong>Ask:</strong> "Are there unit tests for this bug, or should I just navigate the codebase?"</p></div>
+                                <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text"><strong>Clarify:</strong> current behavior vs expected behavior — spell it out before diving in.</p></div>
+                                <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text"><strong>Don't be afraid</strong> to ask what Notion concepts mean — same as on the job.</p></div>
+                                <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text"><strong>console.log freely</strong> — use your debugging tools, don't just stare.</p></div>
+                                <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text"><strong>After fixing:</strong> ask if they want unit tests or a discussion of how to prevent the bug.</p></div>
+                                <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text"><strong>Over-communicate</strong> — narrate what you're looking at and why.</p></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="prep-section-label">prep checklist</div>
+                    <div class="prep-checklist" id="checks-05" data-stage="05">
+                        <div class="prep-check" data-id="1" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">Watch a TypeScript crash course (syntax, types, generics, interfaces, utility types)</span>
+                        </div>
+                        <div class="prep-check" data-id="2" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">Read through a real large TypeScript codebase cold (Oyster/open source) and trace a feature end-to-end</span>
+                        </div>
+                        <div class="prep-check" data-id="3" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">Practice writing Jest unit tests from scratch (describe, it, expect, beforeEach, jest.fn())</span>
+                        </div>
+                        <div class="prep-check" data-id="4" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">Practice reading and extending existing Jest test suites</span>
+                        </div>
+                        <div class="prep-check" data-id="5" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">Find and fix "good first issues" in an open source TypeScript/React repo</span>
+                        </div>
+                        <div class="prep-check" data-id="6" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">Study React hooks: useState, useEffect, useCallback, useMemo, useRef</span>
+                        </div>
+                        <div class="prep-check" data-id="7" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">Study common logic bug patterns: off by one, null/undefined edge cases, array index issues, stale closure</span>
+                        </div>
+                        <div class="prep-check" data-id="8" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">Practice narrating your debugging process out loud while working through unfamiliar code</span>
+                        </div>
+                        <div class="prep-check" data-id="9" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">Set up Oyster locally and explore the frontend codebase</span>
+                        </div>
+                        <div class="prep-check" data-id="10" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">Practice the "clarify current vs expected behavior" habit before touching any code</span>
+                        </div>
+                    </div>
+
+                    <!-- TypeScript quick reference -->
+                    <div class="prep-section-label">typescript quick reference</div>
+                    <div class="prep-code-grid">
+                        <div class="prep-code-block">
+                            <div class="prep-code-label">types &amp; interfaces</div>
+                            <pre class="prep-code">// basic types
+let name: string = "youdahe"
+let count: number = 0
+let done: boolean = false
+
+// interface
+interface User {
+  id: string
+  name: string
+  age?: number   // optional
+}
+
+// type alias
+type Status = "active" | "inactive"
+
+// generic
+function wrap&lt;T&gt;(val: T): T[] {
+  return [val]
+}</pre>
+                        </div>
+                        <div class="prep-code-block">
+                            <div class="prep-code-label">utility types</div>
+                            <pre class="prep-code">// Partial — all props optional
+type P = Partial&lt;User&gt;
+
+// Pick — subset of props
+type N = Pick&lt;User, "id" | "name"&gt;
+
+// Omit — exclude props
+type O = Omit&lt;User, "age"&gt;
+
+// Record — key/value map
+type M = Record&lt;string, number&gt;
+
+// Optional chaining
+user?.address?.city
+
+// Nullish coalescing
+const name = user.name ?? "anon"
+
+// Non-null assertion
+const el = document.getElementById("x")!</pre>
+                        </div>
+                        <div class="prep-code-block">
+                            <div class="prep-code-label">common array patterns</div>
+                            <pre class="prep-code">const nums: number[] = [1, 2, 3]
+
+// map / filter / reduce
+const doubled = nums.map(n => n * 2)
+const evens = nums.filter(n => n % 2 === 0)
+const sum = nums.reduce((acc, n) => acc + n, 0)
+
+// find / findIndex
+const found = nums.find(n => n > 1)
+const idx = nums.findIndex(n => n > 1)
+
+// spread
+const copy = [...nums, 4, 5]
+
+// destructuring
+const [first, ...rest] = nums</pre>
+                        </div>
+                        <div class="prep-code-block">
+                            <div class="prep-code-label">async / error patterns</div>
+                            <pre class="prep-code">// async/await
+async function fetchUser(id: string) {
+  const res = await fetch(`/api/users/${id}`)
+  if (!res.ok) throw new Error("failed")
+  return res.json() as Promise&lt;User&gt;
+}
+
+// type guard
+function isString(v: unknown): v is string {
+  return typeof v === "string"
+}
+
+// as const
+const ROLES = ["admin", "user"] as const
+type Role = typeof ROLES[number]</pre>
+                        </div>
+                    </div>
+
+                    <!-- Jest quick reference -->
+                    <div class="prep-section-label">jest quick reference</div>
+                    <div class="prep-code-grid">
+                        <div class="prep-code-block">
+                            <div class="prep-code-label">test structure</div>
+                            <pre class="prep-code">describe("MyComponent", () => {
+  let instance: MyClass
+
+  beforeEach(() => {
+    instance = new MyClass()
+  })
+
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it("does the thing", () => {
+    const result = instance.doThing()
+    expect(result).toBe(true)
+  })
+
+  it("handles edge case", () => {
+    expect(() => instance.bad()).toThrow()
+  })
+})</pre>
+                        </div>
+                        <div class="prep-code-block">
+                            <div class="prep-code-label">common matchers</div>
+                            <pre class="prep-code">// equality
+expect(x).toBe(y)         // === (primitives)
+expect(x).toEqual(y)      // deep equality
+expect(x).not.toBe(null)
+
+// truthiness
+expect(x).toBeTruthy()
+expect(x).toBeFalsy()
+expect(x).toBeNull()
+expect(x).toBeUndefined()
+
+// arrays / strings
+expect(arr).toHaveLength(3)
+expect(arr).toContain(item)
+expect(str).toMatch(/pattern/)
+
+// numbers
+expect(n).toBeGreaterThan(0)
+expect(n).toBeLessThanOrEqual(10)</pre>
+                        </div>
+                        <div class="prep-code-block">
+                            <div class="prep-code-label">mocking</div>
+                            <pre class="prep-code">// mock a function
+const mockFn = jest.fn()
+mockFn.mockReturnValue(42)
+mockFn.mockResolvedValue({ id: "1" })
+
+expect(mockFn).toHaveBeenCalled()
+expect(mockFn).toHaveBeenCalledWith("arg")
+expect(mockFn).toHaveBeenCalledTimes(2)
+
+// mock a module
+jest.mock("../api", () => ({
+  fetchUser: jest.fn().mockResolvedValue({
+    id: "1", name: "test"
+  })
+}))
+
+// spy on method
+const spy = jest.spyOn(obj, "method")</pre>
+                        </div>
+                        <div class="prep-code-block">
+                            <div class="prep-code-label">async tests</div>
+                            <pre class="prep-code">// async/await
+it("loads data", async () => {
+  const data = await fetchUser("1")
+  expect(data.name).toBe("youdahe")
+})
+
+// resolves/rejects matchers
+it("resolves correctly", async () => {
+  await expect(fetchUser("1")).resolves
+    .toMatchObject({ id: "1" })
+})
+
+it("throws on bad id", async () => {
+  await expect(fetchUser("")).rejects
+    .toThrow("failed")
+})</pre>
+                        </div>
+                    </div>
+
+                    <!-- React hooks reference -->
+                    <div class="prep-section-label">react hooks to know</div>
+                    <div class="prep-code-grid">
+                        <div class="prep-code-block">
+                            <div class="prep-code-label">state &amp; effects</div>
+                            <pre class="prep-code">// useState
+const [count, setCount] = useState(0)
+setCount(prev => prev + 1)  // functional update
+
+// useEffect — runs after render
+useEffect(() => {
+  document.title = `Count: ${count}`
+  return () => { /* cleanup */ }
+}, [count])  // dep array controls when it fires
+
+// missing dep = stale closure bug
+// extra dep = unnecessary re-runs</pre>
+                        </div>
+                        <div class="prep-code-block">
+                            <div class="prep-code-label">memoization &amp; refs</div>
+                            <pre class="prep-code">// useCallback — memoize function ref
+const handleClick = useCallback(() => {
+  doSomething(id)
+}, [id])
+
+// useMemo — memoize computed value
+const sorted = useMemo(() =>
+  items.sort(compareFn)
+, [items])
+
+// useRef — mutable, no re-render
+const inputRef = useRef&lt;HTMLInputElement&gt;(null)
+inputRef.current?.focus()
+
+// also useful for previous value tracking</pre>
+                        </div>
+                    </div>
+
+                    <!-- Common bug patterns -->
+                    <div class="prep-section-label">common logic bug patterns</div>
+                    <div class="prep-tips">
+                        <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text"><strong>Off by one:</strong> <code style="font-family:monospace;font-size:13px">i &lt; arr.length</code> vs <code style="font-family:monospace;font-size:13px">i &lt;= arr.length</code>. Watch slice bounds, substring indices, loop ranges.</p></div>
+                        <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text"><strong>Null/undefined:</strong> Accessing a property on something that could be null. Look for <code style="font-family:monospace;font-size:13px">?.chaining</code> that should be there but isn't.</p></div>
+                        <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text"><strong>Stale closure:</strong> An async callback or event handler captures an old value of state. Fixed by using functional updates or putting the value in a ref.</p></div>
+                        <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text"><strong>Wrong comparison:</strong> <code style="font-family:monospace;font-size:13px">==</code> vs <code style="font-family:monospace;font-size:13px">===</code>, comparing objects by reference instead of value.</p></div>
+                        <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text"><strong>Missing return:</strong> A function falls through without returning a value in a branch.</p></div>
+                        <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text"><strong>Mutation side effects:</strong> Mutating an array/object directly instead of returning a new one — causes React not to re-render.</p></div>
+                        <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text"><strong>Wrong dependency array:</strong> <code style="font-family:monospace;font-size:13px">useEffect</code> or <code style="font-family:monospace;font-size:13px">useMemo</code> missing a dependency, so it runs on stale data.</p></div>
+                    </div>
+
+                    <!-- Resources -->
+                    <div class="prep-section-label">resources</div>
+                    <div class="prep-resources">
+                        <div class="prep-resource">
+                            <span class="prep-resource-title">Oyster (ColorStacks)</span>
+                            <span class="prep-resource-desc">Large TypeScript/React codebase — set up locally, find something on the frontend, trace the code</span>
+                        </div>
+                        <div class="prep-resource">
+                            <span class="prep-resource-title">TypeScript Crash Course</span>
+                            <span class="prep-resource-desc">Any 1–2 hr YouTube tutorial — just get comfortable with the syntax and common patterns</span>
+                        </div>
+                        <div class="prep-resource">
+                            <span class="prep-resource-title">Jest Docs</span>
+                            <a class="prep-resource-link" href="https://jestjs.io/docs/getting-started" target="_blank">jestjs.io/docs</a>
+                        </div>
+                        <div class="prep-resource">
+                            <span class="prep-resource-title">React Docs (Hooks)</span>
+                            <a class="prep-resource-link" href="https://react.dev/reference/react" target="_blank">react.dev/reference/react</a>
+                        </div>
+                        <div class="prep-resource">
+                            <span class="prep-resource-title">Good First Issues</span>
+                            <a class="prep-resource-link" href="https://goodfirstissue.dev/" target="_blank">goodfirstissue.dev</a>
+                            <span class="prep-resource-desc">Filter by TypeScript — fix real bugs in open source</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 06 · Behavioral -->
+            <div class="prep-stage" id="stage-06">
+                <button class="prep-stage-toggle" onclick="toggleStage('stage-06')">
+                    <div class="prep-stage-left">
+                        <span class="prep-stage-num">06</span>
+                        <span class="prep-stage-title">behavioral interview</span>
+                        <span class="prep-stage-sub">with eng manager or senior engineer</span>
+                    </div>
+                    <div class="prep-stage-right">
+                        <span class="prep-stage-badge">star method</span>
+                        <svg class="prep-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
+                </button>
+                <div class="prep-stage-body">
+                    <p class="prep-desc">A standard behavioral interview — usually 45 minutes with the eng manager of the team you'd be joining. Use the STAR method (Situation, Task, Action, Result) for every story. Notion cares about curiosity, collaboration, and shipping quality work.</p>
+
+                    <div class="prep-section-label">tips</div>
+                    <div class="prep-tips">
+                        <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text">STAR every story — Situation, Task, Action, Result. Keep it tight.</p></div>
+                        <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text">Prepare 5–6 strong stories that can flex to different questions (conflict, failure, impact, collaboration, learning).</p></div>
+                        <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text">Notion hires people who are curious and love the product — have genuine answers about why Notion specifically.</p></div>
+                        <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text">Don't be arrogant about tradeoffs — discuss them thoughtfully, not like you know better than everyone.</p></div>
+                        <div class="prep-tip"><div class="prep-tip-dot"></div><p class="prep-tip-text">Asking good questions at the end matters — shows genuine interest in the team and role.</p></div>
+                    </div>
+
+                    <div class="prep-section-label">stories to prepare</div>
+                    <div class="prep-checklist" id="checks-06" data-stage="06">
+                        <div class="prep-check" data-id="1" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">A project you're most proud of — what you built, why it mattered, what you learned</span>
+                        </div>
+                        <div class="prep-check" data-id="2" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">A time you failed or made a mistake — what happened, what you did about it</span>
+                        </div>
+                        <div class="prep-check" data-id="3" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">A time you had conflict or disagreement with someone — how you handled it</span>
+                        </div>
+                        <div class="prep-check" data-id="4" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">A time you had to learn something quickly under pressure</span>
+                        </div>
+                        <div class="prep-check" data-id="5" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">A time you pushed back on a decision or advocated for a different approach</span>
+                        </div>
+                        <div class="prep-check" data-id="6" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">Why Notion specifically — product you love, team culture, what you want to build</span>
+                        </div>
+                        <div class="prep-check" data-id="7" onclick="toggleCheck(this)">
+                            <div class="prep-check-box"><svg width="8" height="8" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="2"><polyline points="1.5,5 4,7.5 8.5,2"/></svg></div>
+                            <span class="prep-check-text">Prepare 3–5 thoughtful questions to ask the interviewer about the team / role / product</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <footer class="main-footer">
+            <div class="social-links">
+                <a href="index.html">← home</a>
+                <a href="daily.html">← daily log</a>
+            </div>
+            <p class="copyright">notion prep · summer 2026</p>
+        </footer>
+    </main>
+
+    <div class="footer-bar"></div>
+
+    <script src="script.js"></script>
+    <script>
+        const STORAGE_KEY = 'notion-prep-checks';
+
+        function getChecks() {
+            try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
+            catch { return {}; }
+        }
+
+        function saveChecks(checks) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(checks));
+        }
+
+        function toggleCheck(el) {
+            const stage = el.closest('.prep-checklist').dataset.stage;
+            const id = el.dataset.id;
+            const key = `${stage}-${id}`;
+            const checks = getChecks();
+            if (el.classList.contains('done')) {
+                el.classList.remove('done');
+                delete checks[key];
+            } else {
+                el.classList.add('done');
+                checks[key] = true;
+            }
+            saveChecks(checks);
+            updateProgress();
+        }
+
+        function toggleStage(id) {
+            document.getElementById(id).classList.toggle('open');
+        }
+
+        function updateProgress() {
+            const checks = getChecks();
+            const all = document.querySelectorAll('.prep-check');
+            const done = document.querySelectorAll('.prep-check.done').length;
+            const pct = all.length ? Math.round((done / all.length) * 100) : 0;
+            document.getElementById('overallProgress').style.width = pct + '%';
+            document.getElementById('overallProgressLabel').textContent = `${done} / ${all.length} tasks done`;
+        }
+
+        function restoreChecks() {
+            const checks = getChecks();
+            document.querySelectorAll('.prep-check').forEach(el => {
+                const stage = el.closest('.prep-checklist').dataset.stage;
+                const id = el.dataset.id;
+                const key = `${stage}-${id}`;
+                if (checks[key]) el.classList.add('done');
+            });
+            updateProgress();
+        }
+
+        // GCA expiry countdown
+        (function() {
+            const el = document.getElementById('gcaExpiry');
+            if (!el) return;
+            const expiry = new Date('2026-06-21T23:59:59');
+            const days = Math.ceil((expiry - new Date()) / 86400000);
+            if (days <= 0) {
+                el.textContent = 'practice GCA expired';
+                el.classList.add('urgent');
+            } else if (days <= 5) {
+                el.textContent = `expires in ${days} day${days === 1 ? '' : 's'} — do it now`;
+                el.classList.add('urgent');
+            } else {
+                el.textContent = `expires Jun 21 · ${days} days left`;
+            }
+        })();
+
+        // init
+        restoreChecks();
+    </script>
+</body>
+</html>
