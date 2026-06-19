@@ -19,6 +19,7 @@
         <div class="admin-tabs">
             <button id="tabPost" class="admin-tab admin-tab-active" onclick="switchTab('post')">post</button>
             <button id="tabDaily" class="admin-tab" onclick="switchTab('daily')">daily log</button>
+            <button id="tabStatus" class="admin-tab" onclick="switchTab('status')">status</button>
         </div>
 
         <!-- Post editor -->
@@ -97,6 +98,13 @@
             <h2>Daily Logs</h2>
             <div id="dailyLogList"></div>
         </div>
+
+        <!-- Status editor -->
+        <div class="admin-editor" id="editorStatus" style="display:none;">
+            <input type="text" id="statusInput" class="admin-input" placeholder="Status text (e.g. currently in Tokyo)">
+            <button id="statusSaveBtn" class="admin-btn" onclick="saveStatus()">save status</button>
+            <p id="statusSaveMsg" style="font-size:13px;color:var(--text-color-muted);margin:0;"></p>
+        </div>
     </main>
 
     <div id="gate" class="admin-gate">
@@ -131,12 +139,52 @@
 
         function switchTab(tab) {
             activeTab = tab;
-            document.getElementById('tabPost').classList.toggle('admin-tab-active', tab === 'post');
-            document.getElementById('tabDaily').classList.toggle('admin-tab-active', tab === 'daily');
+            ['post','daily','status'].forEach(t => {
+                document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('admin-tab-active', t === tab);
+            });
             document.getElementById('editorPost').style.display = tab === 'post' ? 'flex' : 'none';
             document.getElementById('editorDaily').style.display = tab === 'daily' ? 'flex' : 'none';
+            document.getElementById('editorStatus').style.display = tab === 'status' ? 'flex' : 'none';
             document.getElementById('listPost').style.display = tab === 'post' ? 'block' : 'none';
             document.getElementById('listDaily').style.display = tab === 'daily' ? 'block' : 'none';
+            if (tab === 'status') loadCurrentStatus();
+        }
+
+        async function loadCurrentStatus() {
+            try {
+                const res = await fetch('/api/status');
+                const data = await res.json();
+                document.getElementById('statusInput').value = data.text || '';
+            } catch {}
+        }
+
+        async function saveStatus() {
+            const text = document.getElementById('statusInput').value.trim();
+            if (!text) return;
+            const btn = document.getElementById('statusSaveBtn');
+            const msg = document.getElementById('statusSaveMsg');
+            btn.disabled = true;
+            btn.textContent = 'saving...';
+            try {
+                const res = await fetch('/api/status', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-admin-password': adminPassword,
+                    },
+                    body: JSON.stringify({ text }),
+                });
+                if (res.ok) {
+                    msg.textContent = 'saved!';
+                } else {
+                    msg.textContent = 'failed — check password';
+                }
+            } catch {
+                msg.textContent = 'error saving';
+            }
+            btn.disabled = false;
+            btn.textContent = 'save status';
+            setTimeout(() => { msg.textContent = ''; }, 3000);
         }
 
         // ── Post tab ──────────────────────────────────────────────────────────

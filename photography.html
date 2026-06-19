@@ -83,7 +83,92 @@
 
     <div class="footer-bar"></div>
 
+    <!-- Admin photo upload -->
+    <button id="adminPhotoBtn" class="admin-photo-btn" onclick="handleAdminPhoto()" title="Add picture">+</button>
+    <input type="file" id="adminPhotoInput" accept="image/*" style="display:none" onchange="uploadAdminPhoto(this)">
+
     <script src="script.js"></script>
+    <script src="posts.js"></script>
+    <script>
+        const PHOTO_PASSWORD_KEY = 'admin_password';
+
+        function getAdminPassword() {
+            return sessionStorage.getItem(PHOTO_PASSWORD_KEY);
+        }
+
+        function promptAdminPassword() {
+            const pw = window.prompt('Admin password:');
+            if (pw) sessionStorage.setItem(PHOTO_PASSWORD_KEY, pw);
+            return pw;
+        }
+
+        function handleAdminPhoto() {
+            let pw = getAdminPassword();
+            if (!pw) pw = promptAdminPassword();
+            if (!pw) return;
+            document.getElementById('adminPhotoInput').click();
+        }
+
+        async function uploadAdminPhoto(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const btn = document.getElementById('adminPhotoBtn');
+            btn.textContent = '...';
+            btn.disabled = true;
+
+            const pw = getAdminPassword();
+            try {
+                const url = await uploadImage(file, pw);
+                await fetch('/api/photos', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-admin-password': pw,
+                    },
+                    body: JSON.stringify({ url }),
+                });
+                addMediaToGrid(url, file.type);
+            } catch (e) {
+                if (e.message === 'unauthorized') {
+                    sessionStorage.removeItem(PHOTO_PASSWORD_KEY);
+                    alert('Wrong password.');
+                } else {
+                    alert('Upload failed.');
+                }
+            }
+
+            btn.textContent = '+';
+            btn.disabled = false;
+            input.value = '';
+        }
+
+        function addMediaToGrid(url, mimeType) {
+            const grid = document.querySelector('.photo-grid');
+            let el;
+            if (mimeType && mimeType.startsWith('video/')) {
+                el = document.createElement('video');
+                el.autoplay = true;
+                el.loop = true;
+                el.muted = true;
+                el.playsInline = true;
+                const src = document.createElement('source');
+                src.src = url;
+                src.type = 'video/mp4';
+                el.appendChild(src);
+            } else {
+                el = document.createElement('img');
+                el.src = url;
+                el.alt = 'Photography';
+                el.loading = 'lazy';
+            }
+            grid.appendChild(el);
+        }
+
+        // Load admin-uploaded photos on page load
+        fetch('/api/photos').then(r => r.json()).then(photos => {
+            photos.forEach(p => addMediaToGrid(p.url, p.url.match(/\.(mov|mp4|webm)$/i) ? 'video/mp4' : 'image/jpeg'));
+        }).catch(() => {});
+    </script>
 </body>
 </html>
 

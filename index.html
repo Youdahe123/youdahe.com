@@ -28,7 +28,7 @@
     <main class="container">
         <section class="intro">
             <h1>Hi, I'm Youdahe 🧑‍🚀</h1>
-            <p class="status"><span class="status-dot"></span>currently out of the country in japan</p>
+            <p class="status"><span class="status-dot"></span><span id="statusText">loading...</span></p>
             <p class="chat-cta">I love talking about systems and startups — <a href="https://cal.com/youdahe-asfaw-np88fc/30min" target="_blank" rel="noopener noreferrer">let's chat</a></p>
             <p>Student at Gustavus Adolphus College. I build stuff that works — currently into distributed systems and MCPs.</p>
         </section>
@@ -43,10 +43,10 @@
                         <img src="logos/libertymutual.png" alt="Liberty Mutual" class="company-logo">
                         <h3>SWE Intern</h3>
                     </div>
-                    <span class="experience-date">Present</span>
+                    <span class="experience-date">Mar 2026 – Present</span>
                 </div>
                 <p class="experience-company">Liberty Mutual Insurance</p>
-                <p class="experience-blurb">Building the infrastructure that every engineer at a Fortune 100 company ships code on.</p>
+                <p class="experience-blurb">Architecting a self-service platform for one-click retirement of legacy AIX IBM MQ brokers — migrating workloads to Kubernetes StatefulSets with PVC-backed storage, CNI-configured networking, and namespace-isolated broker topologies. Saves hundreds of thousands annually in AIX licensing overhead.</p>
             </div>
 
             <div class="experience-item">
@@ -55,34 +55,34 @@
                         <img src="logos/medica.png" alt="Medica" class="company-logo">
                         <h3>Software Engineer Intern</h3>
                     </div>
-                    <span class="experience-date">Aug 2025 – Present</span>
+                    <span class="experience-date">Jan 2026 – May 2026</span>
                 </div>
                 <p class="experience-company">Medica</p>
-                <p class="experience-blurb">Built Medica's first-ever AI onboarding assistant using vector DB and embeddings. Also built enrollment systems with Java and Spring Boot, boosting speed by 65%.</p>
+                <p class="experience-blurb">Engineered an internal RAG pipeline from scratch — document ingestion, chunking, embedding generation, and vector store indexing with hybrid sparse-dense retrieval feeding a stateful AI agent grounded against live internal knowledge. Reduced onboarding time from one week to under two days.</p>
             </div>
 
             <div class="experience-item">
                 <div class="experience-header">
                     <div class="experience-title">
                         <img src="logos/gustavus.png" alt="Gustavus Adolphus College" class="company-logo">
-                        <h3>ML Research Assistant</h3>
+                        <h3>Undergraduate Research Assistant</h3>
                     </div>
-                    <span class="experience-date">Feb – Jun 2025</span>
+                    <span class="experience-date">Jun – Aug 2025</span>
                 </div>
                 <p class="experience-company">Gustavus Adolphus College</p>
-                <p class="experience-blurb">Built an ML-powered voice-guided form-completion system, reducing completion time from 60 to 15 minutes for visually impaired users.</p>
+                <p class="experience-blurb">Built VLM inference infrastructure for visually impaired users. Invited to present at Macksey Symposium (Johns Hopkins), PRISM Symposium (UChicago), URS (UMN), and Undergraduate Research Day at the Capitol.</p>
             </div>
 
             <div class="experience-item">
                 <div class="experience-header">
                     <div class="experience-title">
-                        <img src="logos/huggingface.png" alt="Hugging Face" class="company-logo">
-                        <h3>ML Researcher</h3>
+                        <img src="logos/docere.png" alt="Docere" class="company-logo" onerror="this.style.display='none'">
+                        <h3>Head of Engineering</h3>
                     </div>
-                    <span class="experience-date">Sep 2024 – Jan 2025</span>
+                    <span class="experience-date">Apr 2025 – Present</span>
                 </div>
-                <p class="experience-company">Hugging Face</p>
-                <p class="experience-blurb">Ran LLM benchmarks across 10+ model configs and improved reproducible evaluation workflows through open-source contributions.</p>
+                <p class="experience-company">Docere</p>
+                <p class="experience-blurb">Built and scaled the backend for an LMS-integrated memory layer serving thousands of students — LTI 1.3 pipelines for Moodle and Canvas, hierarchical memory graphs with weighted concept nodes, and a RAG serving layer for low-latency natural language interfaces. Raised $20K+.</p>
             </div>
 
             <div class="experience-item">
@@ -94,7 +94,7 @@
                     <span class="experience-date">Aug 2023 – Aug 2024</span>
                 </div>
                 <p class="experience-company">Medtronic</p>
-                <p class="experience-blurb">Worked on the Touch Surgery ecosystem. Replaced manual Excel processes with Go and SQL pipelines, cutting data processing time by 50% for 8+ R&D teams.</p>
+                <p class="experience-blurb">Built distributed data pipelines across the Touch Surgery ecosystem — ingesting surgical video feeds, instrument telemetry, and case metadata into ETL pipelines powering AI-driven performance insights across surgical workflow, instrument detection, and phase classification.</p>
             </div>
         </section>
 
@@ -201,6 +201,14 @@
 
     <script src="script.js"></script>
     <script>
+        fetch('/api/status').then(r => r.json()).then(d => {
+            const el = document.getElementById('statusText');
+            if (el && d.text) el.textContent = d.text;
+        }).catch(() => {
+            const el = document.getElementById('statusText');
+            if (el) el.textContent = 'open to chatting about systems and startups';
+        });
+
         function openDemo() {
             document.getElementById('demoOverlay').classList.add('active');
         }
