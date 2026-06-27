@@ -36,6 +36,7 @@ export default async function handler(req, res) {
     await put(blobKey, JSON.stringify({ count: newCount }), {
       contentType: 'application/json',
       access: 'public',
+      addRandomSuffix: false,
     });
 
     return res.status(200).json({ count: newCount });
