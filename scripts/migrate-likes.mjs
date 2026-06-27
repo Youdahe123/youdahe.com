@@ -13,70 +13,59 @@ async function migrateLikes() {
 
   console.log(`Found ${allBlobs.length} total blobs under likes/\n`);
 
-  const canonical = new Map(); // postId -> { blob, count }
-  const orphaned  = new Map(); // postId -> blob[]
-
+  // Group ALL blobs by pathname (multiple blobs can share the same pathname
+  // when addRandomSuffix:true was used — uniqueness was in CDN URL, not path)
+  const byPathname = new Map(); // pathname -> blob[]
   for (const blob of allBlobs) {
-    // pathname example: "likes/lrtz4a2b.json" or "likes/lrtz4a2b-abc123de.json"
-    const filename = blob.pathname.replace(/^likes\//, '').replace(/\.json$/, '');
+    const key = blob.pathname;
+    if (!byPathname.has(key)) byPathname.set(key, []);
+    byPathname.get(key).push(blob);
+  }
 
-    // Post IDs are pure base36 (no hyphens). Any hyphen means a Vercel-appended suffix.
-    const orphanMatch   = filename.match(/^([a-z0-9]+)-[a-zA-Z0-9]+$/i);
-    const canonicalMatch = filename.match(/^([a-z0-9]+)$/i);
+  let fixed = 0;
 
-    if (orphanMatch) {
-      const postId = orphanMatch[1];
-      if (!orphaned.has(postId)) orphaned.set(postId, []);
-      orphaned.get(postId).push(blob);
-    } else if (canonicalMatch) {
-      const postId = canonicalMatch[1];
-      const res  = await fetch(blob.url);
-      const data = await res.json();
-      canonical.set(postId, { blob, count: data.count || 0 });
-    } else {
-      console.log(`  Skipping unrecognized blob: ${blob.pathname}`);
+  for (const [pathname, blobs] of byPathname) {
+    // Extract postId from "likes/<postId>.json"
+    const postId = pathname.replace(/^likes\//, '').replace(/\.json$/, '');
+
+    // Read max count found across all blob versions
+    let maxCount = 0;
+    for (const blob of blobs) {
+      try {
+        const data = await fetch(blob.url).then(r => r.json());
+        maxCount = Math.max(maxCount, data.count || 0);
+      } catch { /* ignore unreadable blobs */ }
     }
-  }
 
-  console.log(`Canonical blobs found:       ${canonical.size}`);
-  console.log(`Posts with orphaned blobs:   ${orphaned.size}`);
+    // True count: at minimum, the number of blobs (each write = 1 like)
+    // but if some writes correctly accumulated, respect that higher number
+    const trueCount = Math.max(blobs.length, maxCount);
 
-  const allPostIds = new Set([...canonical.keys(), ...orphaned.keys()]);
+    console.log(`Post ${postId}`);
+    console.log(`  blob copies : ${blobs.length}`);
+    console.log(`  max count   : ${maxCount}`);
+    console.log(`  true count  : ${trueCount}`);
 
-  if (allPostIds.size === 0) {
-    console.log('\nNothing to migrate.');
-    return;
-  }
-
-  for (const postId of allPostIds) {
-    const canonicalData  = canonical.get(postId);
-    const orphanedBlobs  = orphaned.get(postId) || [];
-    const currentCount   = canonicalData?.count || 0;
-    const orphanedCount  = orphanedBlobs.length;
-    const totalCount     = currentCount + orphanedCount;
-
-    console.log(`\nPost ${postId}`);
-    console.log(`  canonical count : ${currentCount}`);
-    console.log(`  orphaned blobs  : ${orphanedCount} (each = 1 like)`);
-    console.log(`  total           : ${totalCount}`);
-
-    if (orphanedCount === 0) {
-      console.log('  nothing to do');
+    if (blobs.length <= 1 && maxCount === trueCount) {
+      console.log('  ok — nothing to fix\n');
       continue;
     }
 
-    await put(`likes/${postId}.json`, JSON.stringify({ count: totalCount }), {
+    // Write correct count to canonical path, overwriting all old versions
+    await put(`likes/${postId}.json`, JSON.stringify({ count: trueCount }), {
       contentType: 'application/json',
       access: 'public',
       addRandomSuffix: false,
+      allowOverwrite: true,
     });
-    console.log(`  wrote count=${totalCount} to likes/${postId}.json`);
 
-    await del(orphanedBlobs.map(b => b.url));
-    console.log(`  deleted ${orphanedBlobs.length} orphaned blob(s)`);
+    // Delete all old blob copies (the put above created the new canonical one)
+    await del(blobs.map(b => b.url));
+    console.log(`  fixed: wrote count=${trueCount}, deleted ${blobs.length} old copies\n`);
+    fixed++;
   }
 
-  console.log('\nDone.');
+  console.log(`Done. Fixed ${fixed} post(s).`);
 }
 
 migrateLikes().catch(err => { console.error(err); process.exit(1); });
