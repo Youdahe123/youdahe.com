@@ -1,17 +1,6 @@
-import { put, list, del } from '@vercel/blob';
-import crypto from 'crypto';
+import { readJSON, writeJSON } from './_lib/store.js';
 
-const ALLOWED_ORIGIN = 'https://youdahe.com';
-const MAX_FIELD_LEN  = 20_000;
-
-function checkAuth(provided) {
-  const expected = process.env.ADMIN_PASSWORD;
-  if (!provided || !expected) return false;
-  try {
-    const a = Buffer.from(provided), b = Buffer.from(expected);
-    return a.length === b.length && crypto.timingSafeEqual(a, b);
-  } catch { return false; }
-}
+const MAX_FIELD_LEN = 20_000;
 
 function isValidId(id) {
   return typeof id === 'string' && /^[a-z0-9]+$/i.test(id) && id.length <= 24;
@@ -23,32 +12,18 @@ function sanitizeField(v) {
 }
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', ALLOWED_ORIGIN);
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-admin-password');
-
-  if (req.method === 'OPTIONS') return res.status(200).end();
-
-  if (!checkAuth(req.headers['x-admin-password'])) {
-    return res.status(401).json({ error: 'unauthorized' });
-  }
-
   if (req.method === 'GET') {
-    try {
-      const { blobs } = await list({ prefix: 'daily/' });
-      const logs = await Promise.all(blobs.map(b => fetch(b.url).then(r => r.json())));
-      logs.sort((a, b) => new Date(b.date) - new Date(a.date));
-      return res.status(200).json(logs);
-    } catch {
-      return res.status(200).json([]);
-    }
+    const logs = await readJSON('daily.json', []);
+    logs.sort((a, b) => new Date(b.date) - new Date(a.date));
+    return res.status(200).json(logs);
   }
 
   if (req.method === 'POST') {
     const { date, libertyMutual, medica, neetcode, youdaheDB, containerRuntime, sysDesign, startup, wins, blockers } = req.body;
 
-    const id  = Date.now().toString(36);
-    const log = {
+    const logs = await readJSON('daily.json', []);
+    const id   = Date.now().toString(36);
+    const log  = {
       id,
       date: date || new Date().toISOString(),
       libertyMutual:    sanitizeField(libertyMutual),
@@ -62,10 +37,8 @@ export default async function handler(req, res) {
       blockers:         sanitizeField(blockers),
     };
 
-    await put(`daily/${id}.json`, JSON.stringify(log), {
-      contentType: 'application/json',
-      access: 'public',
-    });
+    logs.push(log);
+    await writeJSON('daily.json', logs);
 
     return res.status(201).json(log);
   }
@@ -77,8 +50,8 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'invalid id' });
     }
 
-    const { blobs } = await list({ prefix: `daily/${id}.json` });
-    for (const blob of blobs) await del(blob.url);
+    const logs = await readJSON('daily.json', []);
+    await writeJSON('daily.json', logs.filter(l => l.id !== id));
 
     return res.status(200).json({ deleted: id });
   }

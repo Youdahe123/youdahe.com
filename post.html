@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>post · youdahe.com</title>
-    <link rel="icon" type="image/jpeg" href="/thumbnails/757728ea03cf11b495d92a9852a9f060.jpg">
+    <link rel="icon" type="image/jpeg" href="thumbnails/757728ea03cf11b495d92a9852a9f060.jpg">
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -54,8 +54,6 @@
 
             document.title = `${post.title} · youdahe.com`;
             const body = renderPostContent(post.content);
-            const likeCount = await getLikes(id);
-            const liked = localStorage.getItem(`liked_${id}`) === 'true';
 
             container.innerHTML = `
                 <a href="writing.html" class="post-back">back</a>
@@ -63,75 +61,30 @@
                 <h1 class="post-full-title">${post.title}</h1>
                 <div class="post-body">${body}</div>
 
-                <div class="post-actions">
-                    <button class="like-btn ${liked ? 'liked' : ''}" id="likeBtn" onclick="handleLike('${id}')">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="${liked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
-                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                        </svg>
-                        <span id="likeCount">${likeCount}</span>
-                    </button>
-                </div>
-
-                <div class="comments-section">
-                    <h3 class="comments-title">Comments</h3>
-                    <div id="commentsList" class="comments-list"></div>
-                    <form class="comment-form" onsubmit="handleComment(event, '${id}')">
-                        <input type="text" id="commentName" class="comment-input" placeholder="Your name" required>
-                        <textarea id="commentText" class="comment-textarea" placeholder="Leave a comment..." required></textarea>
-                        <button type="submit" class="admin-btn">post comment</button>
-                    </form>
-                </div>
+                <div class="giscus-comments"></div>
             `;
 
-            loadComments(id);
+            loadGiscus();
         })();
 
-        async function handleLike(postId) {
-            if (localStorage.getItem(`liked_${postId}`) === 'true') return;
-            localStorage.setItem(`liked_${postId}`, 'true');
-            const count = await likePost(postId);
-            document.getElementById('likeCount').textContent = count;
-            const btn = document.getElementById('likeBtn');
-            btn.classList.add('liked');
-            btn.querySelector('svg').setAttribute('fill', 'currentColor');
-        }
-
-        async function loadComments(postId) {
-            const comments = await getComments(postId);
-            const list = document.getElementById('commentsList');
-
-            if (comments.length === 0) {
-                list.innerHTML = '<p class="comments-empty">No comments yet.</p>';
-                return;
-            }
-
-            list.innerHTML = comments.map(c => `
-                <div class="comment-item">
-                    <div class="comment-header">
-                        <strong class="comment-name">${c.name}</strong>
-                        <span class="comment-date">${new Date(c.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                    </div>
-                    <p class="comment-text">${c.text}</p>
-                </div>
-            `).join('');
-        }
-
-        async function handleComment(e, postId) {
-            e.preventDefault();
-            const name = document.getElementById('commentName').value.trim();
-            const text = document.getElementById('commentText').value.trim();
-            if (!name || !text) return;
-
-            const btn = e.target.querySelector('button');
-            btn.disabled = true;
-            btn.textContent = 'posting...';
-
-            await addComment(postId, name, text);
-            document.getElementById('commentName').value = '';
-            document.getElementById('commentText').value = '';
-            btn.disabled = false;
-            btn.textContent = 'post comment';
-            await loadComments(postId);
+        // Comments + reactions are handled by giscus (GitHub Discussions) —
+        // see https://giscus.app. Config values below come from that page
+        // once Discussions is enabled on the repo.
+        function loadGiscus() {
+            const script = document.createElement('script');
+            script.src = 'https://giscus.app/client.js';
+            script.setAttribute('data-repo', 'Youdahe123/youdahe.com');
+            script.setAttribute('data-repo-id', 'GISCUS_REPO_ID');
+            script.setAttribute('data-category', 'Comments');
+            script.setAttribute('data-category-id', 'GISCUS_CATEGORY_ID');
+            script.setAttribute('data-mapping', 'pathname');
+            script.setAttribute('data-reactions-enabled', '1');
+            script.setAttribute('data-emit-metadata', '0');
+            script.setAttribute('data-input-position', 'top');
+            script.setAttribute('data-theme', 'preferred_color_scheme');
+            script.setAttribute('crossorigin', 'anonymous');
+            script.async = true;
+            document.querySelector('.giscus-comments').appendChild(script);
         }
     </script>
 </body>

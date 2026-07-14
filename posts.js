@@ -1,32 +1,30 @@
-// Shared posts API client — used by admin.html, writing.html, and post.html
-const POSTS_API = '/api/posts';
+// Shared posts API client — used by admin.html, writing.html, and post.html.
+// GETs read the static build (/data/posts.json, served by GitHub Pages);
+// writes go through the local-only /api server (server.js, run via `npm run dev`).
+const POSTS_DATA = 'data/posts.json';
+const POSTS_API  = '/api/posts';
 
 async function getPosts() {
     try {
-        const res = await fetch(POSTS_API);
-        return await res.json();
+        const res = await fetch(POSTS_DATA);
+        const posts = await res.json();
+        return posts.sort((a, b) => new Date(b.date) - new Date(a.date));
     } catch {
         return [];
     }
 }
 
-async function addPost(title, content, preview, password, date) {
+async function addPost(title, content, preview, date) {
     const res = await fetch(POSTS_API, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'x-admin-password': password,
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title, content, preview, date }),
     });
     return res.json();
 }
 
-async function deletePost(id, password) {
-    await fetch(`${POSTS_API}?id=${id}`, {
-        method: 'DELETE',
-        headers: { 'x-admin-password': password },
-    });
+async function deletePost(id) {
+    await fetch(`${POSTS_API}?id=${id}`, { method: 'DELETE' });
 }
 
 async function getPost(id) {
@@ -34,52 +32,17 @@ async function getPost(id) {
     return posts.find(p => p.id === id) || null;
 }
 
-async function uploadImage(file, password) {
+async function uploadImage(file) {
     const res = await fetch('/api/upload', {
         method: 'POST',
         headers: {
             'Content-Type': file.type,
             'x-filename': file.name,
-            'x-admin-password': password,
         },
         body: file,
     });
     const data = await res.json();
     return data.url;
-}
-
-async function getComments(postId) {
-    try {
-        const res = await fetch(`/api/comments?postId=${postId}`);
-        return await res.json();
-    } catch {
-        return [];
-    }
-}
-
-async function addComment(postId, name, text) {
-    const res = await fetch(`/api/comments?postId=${postId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, text }),
-    });
-    return res.json();
-}
-
-async function getLikes(postId) {
-    try {
-        const res = await fetch(`/api/likes?postId=${postId}`);
-        const data = await res.json();
-        return data.count || 0;
-    } catch {
-        return 0;
-    }
-}
-
-async function likePost(postId) {
-    const res = await fetch(`/api/likes?postId=${postId}`, { method: 'POST' });
-    const data = await res.json();
-    return data.count || 0;
 }
 
 function renderPostContent(content) {

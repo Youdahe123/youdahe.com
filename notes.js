@@ -1,10 +1,9 @@
+// Local-only — talks to server.js (`npm run dev`), never deployed.
 const NOTES_API = '/api/notes';
 
-async function getNotes(password) {
+async function getNotes() {
     try {
-        const res = await fetch(NOTES_API, {
-            headers: { 'x-admin-password': password },
-        });
+        const res = await fetch(NOTES_API);
         if (!res.ok) return [];
         return await res.json();
     } catch {
@@ -12,21 +11,15 @@ async function getNotes(password) {
     }
 }
 
-async function saveNote(note, password) {
+async function saveNote(note) {
     const res = await fetch(NOTES_API, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'x-admin-password': password,
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(note),
     });
     return res.json();
 }
 
-async function deleteNote(id, password) {
-    await fetch(`${NOTES_API}?id=${id}`, {
-        method: 'DELETE',
-        headers: { 'x-admin-password': password },
-    });
+async function deleteNote(id) {
+    await fetch(`${NOTES_API}?id=${id}`, { method: 'DELETE' });
 }

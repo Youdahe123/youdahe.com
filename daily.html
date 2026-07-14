@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>daily log · youdahe.com</title>
-    <link rel="icon" type="image/jpeg" href="/thumbnails/757728ea03cf11b495d92a9852a9f060.jpg">
+    <link rel="icon" type="image/jpeg" href="thumbnails/757728ea03cf11b495d92a9852a9f060.jpg">
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,16 +26,8 @@
         </button>
     </nav>
 
-    <!-- password gate -->
-    <div id="gate" class="admin-gate">
-        <div class="daily-gate-inner">
-            <input type="password" id="passwordInput" class="admin-password" placeholder="password" autofocus>
-            <p id="gateError" class="daily-gate-error"></p>
-        </div>
-    </div>
-
     <!-- main content -->
-    <main class="container" id="logFeed" style="display:none;">
+    <main class="container" id="logFeed">
         <section>
             <h1 class="writing-title">Daily Log</h1>
             <p class="writing-subtitle">Summer 2026</p>
@@ -293,7 +285,7 @@
         const GOALS = [
             {
                 track: 'Liberty Mutual',
-                logo: '/logos/libertymutual.png',
+                logo: 'logos/libertymutual.png',
                 items: [
                     'Ship at least one production infrastructure change',
                     'Understand the full deployment and monitoring pipeline',
@@ -303,7 +295,7 @@
             },
             {
                 track: 'Medica',
-                logo: '/logos/medica.png',
+                logo: 'logos/medica.png',
                 items: [
                     'Own and ship one API integration end-to-end',
                     'Write technical documentation for at least one API',
@@ -426,8 +418,8 @@
 
         // ── sections — NeetCode handled automatically from GitHub
         const SECTIONS = [
-            { key: 'libertyMutual',    label: 'Liberty Mutual',   logo: '/logos/libertymutual.png' },
-            { key: 'medica',           label: 'Medica',            logo: '/logos/medica.png' },
+            { key: 'libertyMutual',    label: 'Liberty Mutual',   logo: 'logos/libertymutual.png' },
+            { key: 'medica',           label: 'Medica',            logo: 'logos/medica.png' },
             { key: 'youdaheDB',        label: 'youdaheDB',        logo: null },
             { key: 'containerRuntime', label: 'container-runtime', logo: null },
             { key: 'sysDesign',        label: 'Sys Design',        logo: null },
@@ -449,22 +441,13 @@
         let calMonth   = new Date().getMonth();
         let selected   = null;
 
-        // ── auth ─────────────────────────────────────────────────────────────
-
-        async function unlock(password) {
-            const err = document.getElementById('gateError');
-            err.textContent = '';
-            const logs = await getDailyLogs(password);
-            if (logs === null) { err.textContent = 'wrong password'; return; }
-            sessionStorage.setItem('daily_pw', password);
-            showFeed(logs);
-        }
+        // ── load ─────────────────────────────────────────────────────────────
+        // This page only runs locally via `npm run dev` (server.js) — it is
+        // never part of the GitHub Pages deploy, so no password gate is needed.
 
         function showFeed(logs) {
             allLogs = logs;
             dateMap = buildDateMap(logs);
-            document.getElementById('gate').style.display    = 'none';
-            document.getElementById('logFeed').style.display = 'block';
             renderQuote();
             renderSchedule();
             renderCalendar();
@@ -476,12 +459,7 @@
             initNotionPrep();
         }
 
-        document.getElementById('passwordInput').addEventListener('keydown', e => {
-            if (e.key === 'Enter') unlock(e.target.value);
-        });
-
-        const saved = sessionStorage.getItem('daily_pw');
-        if (saved) getDailyLogs(saved).then(logs => { if (Array.isArray(logs)) showFeed(logs); });
+        getDailyLogs().then(showFeed);
 
         // ── helpers ───────────────────────────────────────────────────────────
 
@@ -956,8 +934,7 @@
         let noteTagData  = 'general';
 
         async function loadNotes() {
-            const pw = sessionStorage.getItem('daily_pw');
-            allNotes = await getNotes(pw);
+            allNotes = await getNotes();
             renderNotesWidget();
         }
 
@@ -1071,13 +1048,12 @@
         async function flushSave() {
             saveTimer = null;
             if (!activeNoteId) return;
-            const pw      = sessionStorage.getItem('daily_pw');
             const updated = await saveNote({
                 id:    activeNoteId,
                 title: document.getElementById('notesTitleInput').value,
                 body:  document.getElementById('notesBodyInput').value,
                 tag:   noteTagData,
-            }, pw);
+            });
             const idx = allNotes.findIndex(n => n.id === activeNoteId);
             if (idx >= 0) allNotes[idx] = updated;
             document.getElementById('notesSaveStatus').textContent = 'saved';
@@ -1090,8 +1066,7 @@
 
         async function newNote() {
             if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; await flushSave(); }
-            const pw   = sessionStorage.getItem('daily_pw');
-            const note = await saveNote({ title: '', body: '', tag: 'general' }, pw);
+            const note = await saveNote({ title: '', body: '', tag: 'general' });
             allNotes.unshift(note);
             activeNoteId = note.id;
             noteTagData  = 'general';
@@ -1107,8 +1082,7 @@
             if (!activeNoteId || !confirm('Delete this note?')) return;
             clearTimeout(saveTimer);
             saveTimer = null;
-            const pw = sessionStorage.getItem('daily_pw');
-            await deleteNote(activeNoteId, pw);
+            await deleteNote(activeNoteId);
             allNotes     = allNotes.filter(n => n.id !== activeNoteId);
             activeNoteId = null;
             noteTagData  = 'general';

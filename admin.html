@@ -20,6 +20,7 @@
             <button id="tabPost" class="admin-tab admin-tab-active" onclick="switchTab('post')">post</button>
             <button id="tabDaily" class="admin-tab" onclick="switchTab('daily')">daily log</button>
             <button id="tabStatus" class="admin-tab" onclick="switchTab('status')">status</button>
+            <button id="tabPhotos" class="admin-tab" onclick="switchTab('photos')">photos</button>
         </div>
 
         <!-- Post editor -->
@@ -47,7 +48,7 @@
 
             <div class="daily-section">
                 <div class="daily-section-label">
-                    <img src="/logos/libertymutual.png" class="daily-logo" alt="Liberty Mutual">
+                    <img src="logos/libertymutual.png" class="daily-logo" alt="Liberty Mutual">
                     <span>Liberty Mutual</span>
                 </div>
                 <textarea id="dailyLM" class="admin-textarea daily-textarea" placeholder="What did you work on today?"></textarea>
@@ -55,7 +56,7 @@
 
             <div class="daily-section">
                 <div class="daily-section-label">
-                    <img src="/logos/medica.png" class="daily-logo" alt="Medica">
+                    <img src="logos/medica.png" class="daily-logo" alt="Medica">
                     <span>Medica</span>
                 </div>
                 <textarea id="dailyMedica" class="admin-textarea daily-textarea" placeholder="What did you work on today?"></textarea>
@@ -105,49 +106,47 @@
             <button id="statusSaveBtn" class="admin-btn" onclick="saveStatus()">save status</button>
             <p id="statusSaveMsg" style="font-size:13px;color:var(--text-color-muted);margin:0;"></p>
         </div>
-    </main>
 
-    <div id="gate" class="admin-gate">
-        <input type="password" id="passwordInput" class="admin-password" placeholder="password" autofocus>
-    </div>
+        <!-- Photos tab -->
+        <div class="admin-editor" id="editorPhotos" style="display:none;">
+            <button type="button" class="admin-toolbar-btn" onclick="document.getElementById('photoUpload').click()">+ add photo</button>
+            <input type="file" id="photoUpload" accept="image/*" style="display:none" onchange="handlePhotoUpload(this)">
+            <span id="photoUploadStatus" class="admin-upload-status"></span>
+        </div>
+
+        <div class="admin-posts" id="listPhotos" style="display:none;">
+            <h2>Photos</h2>
+            <div id="photoList"></div>
+        </div>
+    </main>
 
     <script src="script.js"></script>
     <script src="posts.js"></script>
     <script src="daily.js"></script>
     <script>
-        let adminPassword = '';
+        // This page (and everything it calls under /api/*) only runs locally
+        // via `npm run dev` — it is never part of the GitHub Pages deploy.
+        // Git push access is the auth boundary, so there's no password gate.
         let activeTab = 'post';
 
-        document.getElementById('passwordInput').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                adminPassword = e.target.value;
-                sessionStorage.setItem('admin_password', adminPassword);
-                document.getElementById('gate').style.display = 'none';
-                document.getElementById('admin').style.display = 'block';
-                renderPosts();
-                renderDailyLogs();
-            }
-        });
-
-        if (sessionStorage.getItem('admin_password')) {
-            adminPassword = sessionStorage.getItem('admin_password');
-            document.getElementById('gate').style.display = 'none';
-            document.getElementById('admin').style.display = 'block';
-            renderPosts();
-            renderDailyLogs();
-        }
+        document.getElementById('admin').style.display = 'block';
+        renderPosts();
+        renderDailyLogs();
 
         function switchTab(tab) {
             activeTab = tab;
-            ['post','daily','status'].forEach(t => {
+            ['post','daily','status','photos'].forEach(t => {
                 document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1)).classList.toggle('admin-tab-active', t === tab);
             });
             document.getElementById('editorPost').style.display = tab === 'post' ? 'flex' : 'none';
             document.getElementById('editorDaily').style.display = tab === 'daily' ? 'flex' : 'none';
             document.getElementById('editorStatus').style.display = tab === 'status' ? 'flex' : 'none';
+            document.getElementById('editorPhotos').style.display = tab === 'photos' ? 'flex' : 'none';
             document.getElementById('listPost').style.display = tab === 'post' ? 'block' : 'none';
             document.getElementById('listDaily').style.display = tab === 'daily' ? 'block' : 'none';
+            document.getElementById('listPhotos').style.display = tab === 'photos' ? 'block' : 'none';
             if (tab === 'status') loadCurrentStatus();
+            if (tab === 'photos') renderPhotos();
         }
 
         async function loadCurrentStatus() {
@@ -168,16 +167,13 @@
             try {
                 const res = await fetch('/api/status', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-admin-password': adminPassword,
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ text }),
                 });
                 if (res.ok) {
                     msg.textContent = 'saved!';
                 } else {
-                    msg.textContent = 'failed — check password';
+                    msg.textContent = 'failed to save';
                 }
             } catch {
                 msg.textContent = 'error saving';
@@ -218,7 +214,7 @@
             if (!title || !content) return;
 
             const date = dateVal ? new Date(dateVal + 'T12:00:00').toISOString() : undefined;
-            await addPost(title, content, preview, adminPassword, date);
+            await addPost(title, content, preview, date);
 
             document.getElementById('postTitle').value = '';
             document.getElementById('postContent').value = '';
@@ -235,7 +231,7 @@
             status.textContent = 'uploading...';
 
             try {
-                const url = await uploadImage(file, adminPassword);
+                const url = await uploadImage(file);
                 const textarea = document.getElementById('postContent');
                 const pos = textarea.selectionStart;
                 const text = textarea.value;
@@ -252,8 +248,61 @@
 
         async function deleteAndRefresh(id) {
             if (!confirm('Delete this post?')) return;
-            await deletePost(id, adminPassword);
+            await deletePost(id);
             await renderPosts();
+        }
+
+        // ── Photos tab ────────────────────────────────────────────────────────
+
+        async function renderPhotos() {
+            const res = await fetch('/api/photos');
+            const photos = await res.json();
+            const container = document.getElementById('photoList');
+
+            if (photos.length === 0) {
+                container.innerHTML = '<p class="admin-empty">No photos yet.</p>';
+                return;
+            }
+
+            container.innerHTML = photos.map(p => `
+                <div class="admin-post-item">
+                    <div>
+                        <span class="admin-post-date">${new Date(p.addedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                        <strong class="admin-post-title">${p.url}</strong>
+                    </div>
+                    <button class="admin-delete" onclick="deletePhotoAndRefresh('${p.id}')">delete</button>
+                </div>
+            `).join('');
+        }
+
+        async function handlePhotoUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const status = document.getElementById('photoUploadStatus');
+            status.textContent = 'uploading...';
+
+            try {
+                const url = await uploadImage(file);
+                await fetch('/api/photos', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url }),
+                });
+                status.textContent = 'uploaded!';
+                await renderPhotos();
+            } catch {
+                status.textContent = 'upload failed';
+            }
+
+            input.value = '';
+            setTimeout(() => { status.textContent = ''; }, 2000);
+        }
+
+        async function deletePhotoAndRefresh(id) {
+            if (!confirm('Delete this photo?')) return;
+            await fetch(`/api/photos?id=${id}`, { method: 'DELETE' });
+            await renderPhotos();
         }
 
         // ── Daily log tab ─────────────────────────────────────────────────────
@@ -282,7 +331,7 @@
                 blockers: document.getElementById('dailyBlockers').value.trim(),
             };
 
-            await addDailyLog(fields, adminPassword);
+            await addDailyLog(fields);
 
             ['dailyLM','dailyMedica','dailyYoudaheDB','dailyContainer','dailySysDesign','dailyStartup','dailyWins','dailyBlockers'].forEach(id => {
                 document.getElementById(id).value = '';
@@ -296,7 +345,7 @@
         }
 
         async function renderDailyLogs() {
-            const logs = await getDailyLogs(adminPassword);
+            const logs = await getDailyLogs();
             const container = document.getElementById('dailyLogList');
 
             if (logs.length === 0) {
@@ -307,8 +356,8 @@
             container.innerHTML = logs.map(log => {
                 const dateStr = new Date(log.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
                 const sections = [
-                    { label: 'Liberty Mutual', logo: '/logos/libertymutual.png', value: log.libertyMutual },
-                    { label: 'Medica', logo: '/logos/medica.png', value: log.medica },
+                    { label: 'Liberty Mutual', logo: 'logos/libertymutual.png', value: log.libertyMutual },
+                    { label: 'Medica', logo: 'logos/medica.png', value: log.medica },
                     { label: 'youdaheDB', logo: null, value: log.youdaheDB },
                     { label: 'container-runtime', logo: null, value: log.containerRuntime },
                     { label: 'Sys Design', logo: null, value: log.sysDesign },
@@ -340,7 +389,7 @@
 
         async function deleteDailyAndRefresh(id) {
             if (!confirm('Delete this log?')) return;
-            await deleteDailyLog(id, adminPassword);
+            await deleteDailyLog(id);
             await renderDailyLogs();
         }
     </script>
