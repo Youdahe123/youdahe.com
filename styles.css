@@ -3216,12 +3216,11 @@ nav {
 }
 
 .recruiter-title {
-    font-family: 'Dancing Script', cursive;
-    font-size: 3.2rem;
+    font-size: 2rem;
     font-weight: 700;
     color: var(--text-color-dark);
-    line-height: 1;
-    margin-bottom: 0.6rem;
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
 }
 
 .recruiter-subtitle {
