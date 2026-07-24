@@ -18,11 +18,20 @@ if (themeToggle) {
     });
 }
 
-// Easter egg: Ctrl+Shift+Y opens admin
+// Easter egg: Ctrl+Shift+Y opens the blog/content admin
 document.addEventListener('keydown', (e) => {
     if (e.ctrlKey && e.shiftKey && e.key === 'Y') {
         e.preventDefault();
         window.location.href = 'admin.html';
+    }
+});
+
+// Hidden shortcut: Cmd+Y opens the password-protected admin portal, and
+// only that — nothing else runs on this combo.
+document.addEventListener('keydown', (e) => {
+    if (e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && e.key.toLowerCase() === 'y') {
+        e.preventDefault();
+        window.location.href = 'admin-portal.html';
     }
 });
 

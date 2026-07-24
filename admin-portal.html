@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>admin portal</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <main class="container admin-container">
+        <div class="admin-header">
+            <h1>admin portal</h1>
+            <a href="index.html" class="admin-back">back to site</a>
+        </div>
+
+        <div id="gate" class="portal-gate">
+            <p class="portal-hint">This is a local-only tool — it runs when you're on <code>npm run dev</code> and does nothing on the public deployed site.</p>
+            <form id="gateForm" class="admin-editor" autocomplete="off">
+                <input type="password" id="passwordInput" class="admin-input" placeholder="Password" autocomplete="current-password" required>
+                <button type="submit" class="admin-btn" id="unlockBtn">unlock</button>
+                <p id="gateError" class="portal-error" hidden></p>
+            </form>
+        </div>
+
+        <div id="dashboard" class="portal-dashboard" hidden>
+            <p class="portal-hint">Unlocked. Jump to a tool:</p>
+            <div class="portal-links">
+                <a href="admin.html" class="admin-btn portal-link">blog / content admin</a>
+                <a href="daily.html" class="admin-btn portal-link">daily log</a>
+                <a href="recruiter.html" class="admin-btn portal-link">recruiter page</a>
+            </div>
+            <button id="logoutBtn" class="admin-back portal-logout">log out</button>
+        </div>
+    </main>
+
+    <div class="footer-bar"></div>
+
+    <script>
+        const gate = document.getElementById('gate');
+        const dashboard = document.getElementById('dashboard');
+        const gateForm = document.getElementById('gateForm');
+        const passwordInput = document.getElementById('passwordInput');
+        const gateError = document.getElementById('gateError');
+        const unlockBtn = document.getElementById('unlockBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        function showDashboard() {
+            gate.hidden = true;
+            dashboard.hidden = false;
+        }
+
+        function showGate() {
+            gate.hidden = false;
+            dashboard.hidden = true;
+        }
+
+        async function checkSession() {
+            try {
+                const res = await fetch('/api/admin-auth', { method: 'GET' });
+                const data = await res.json();
+                if (data.authenticated) showDashboard();
+                else showGate();
+            } catch {
+                showGate();
+            }
+        }
+
+        gateForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            gateError.hidden = true;
+            unlockBtn.disabled = true;
+
+            try {
+                const res = await fetch('/api/admin-auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: passwordInput.value }),
+                });
+
+                passwordInput.value = '';
+
+                if (res.ok) {
+                    showDashboard();
+                } else {
+                    const data = await res.json().catch(() => ({}));
+                    gateError.textContent = res.status === 429
+                        ? 'too many attempts — try again shortly'
+                        : 'incorrect password';
+                    gateError.hidden = false;
+                }
+            } catch {
+                gateError.textContent = 'could not reach the local admin server — is it running?';
+                gateError.hidden = false;
+            } finally {
+                unlockBtn.disabled = false;
+            }
+        });
+
+        logoutBtn.addEventListener('click', async () => {
+            await fetch('/api/admin-auth', { method: 'DELETE' }).catch(() => {});
+            showGate();
+        });
+
+        checkSession();
+    </script>
+</body>
+</html>

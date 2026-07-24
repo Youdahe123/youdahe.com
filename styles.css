@@ -3156,3 +3156,330 @@ nav {
 }
 
 .prep-daily-sub a:hover { opacity: 0.65; }
+
+/* Admin portal */
+.portal-hint {
+    font-size: 13px;
+    opacity: 0.55;
+    line-height: 1.6;
+    margin-bottom: 1.25rem;
+}
+
+.portal-error {
+    font-size: 13px;
+    color: #d33;
+}
+
+[data-theme="dark"] .portal-error {
+    color: #f77;
+}
+
+.portal-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+}
+
+.portal-link {
+    text-align: center;
+    text-decoration: none;
+    display: block;
+}
+
+.portal-logout {
+    background: none;
+    border: none;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+/* Recruiter CTA (index) — plain sentence, no box */
+.recruiter-cta {
+    font-size: 14px;
+    line-height: 1.6;
+    opacity: 0.85;
+    margin-bottom: 3rem;
+}
+
+.recruiter-cta-link {
+    font-size: 15px;
+}
+
+/* Recruiter page */
+.recruiter-container {
+    max-width: 760px;
+}
+
+.recruiter-intro {
+    margin-bottom: 2.5rem;
+}
+
+.recruiter-title {
+    font-family: 'Dancing Script', cursive;
+    font-size: 3.2rem;
+    font-weight: 700;
+    color: var(--text-color-dark);
+    line-height: 1;
+    margin-bottom: 0.6rem;
+}
+
+.recruiter-subtitle {
+    font-size: 14px;
+    opacity: 0.65;
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+}
+
+.status-line {
+    font-size: 13.5px;
+    opacity: 0.85;
+    line-height: 1.6;
+}
+
+.status-line .status-dot {
+    display: inline-block;
+    margin-right: 0.4rem;
+    transform: translateY(-1px);
+}
+
+.recruiter-section {
+    margin-bottom: 2.25rem;
+}
+
+.recruiter-section h2 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-color-dark);
+    margin-bottom: 0.6rem;
+}
+
+.recruiter-lede {
+    font-size: 13.5px;
+    opacity: 0.65;
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+}
+
+/* Colored inline highlights, in the spirit of a plain-text bio page */
+.hl {
+    font-weight: 600;
+}
+
+a.hl {
+    text-decoration: underline;
+    text-decoration-color: currentColor;
+    text-underline-offset: 2px;
+    transition: opacity 0.15s ease;
+}
+
+a.hl:hover {
+    opacity: 0.65;
+}
+
+.hl-blue    { color: #3b82f6; }
+.hl-green   { color: #16a34a; }
+.hl-orange  { color: #f97316; }
+.hl-pink    { color: #ec4899; }
+.hl-purple  { color: #a855f7; }
+.hl-teal    { color: #0d9488; }
+.hl-red     { color: #ef4444; }
+.hl-amber   { color: #d97706; }
+.hl-cyan    { color: #0891b2; }
+.hl-indigo  { color: #6366f1; }
+
+[data-theme="dark"] .hl-green  { color: #4ade80; }
+[data-theme="dark"] .hl-teal   { color: #2dd4bf; }
+[data-theme="dark"] .hl-red    { color: #f87171; }
+[data-theme="dark"] .hl-amber  { color: #fbbf24; }
+[data-theme="dark"] .hl-cyan   { color: #22d3ee; }
+[data-theme="dark"] .hl-indigo { color: #818cf8; }
+
+/* Target roles: plain prose, not cards */
+.target-list p {
+    font-size: 13.5px;
+    line-height: 1.65;
+    opacity: 0.85;
+    margin-bottom: 0.75rem;
+}
+
+.target-list strong {
+    font-weight: 700;
+    opacity: 1;
+}
+
+/* Quotes: plain left-border blocks, no boxes */
+.quote-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+}
+
+.quote-item {
+    border-left: 3px solid;
+    padding-left: 0.9rem;
+}
+
+.quote-purple { border-left-color: #a855f7; }
+.quote-teal   { border-left-color: #0d9488; }
+.quote-blue   { border-left-color: #3b82f6; }
+.quote-pink   { border-left-color: #ec4899; }
+
+.quote-item p {
+    font-size: 13px;
+    line-height: 1.55;
+    font-style: italic;
+    opacity: 0.85;
+    margin-bottom: 0.3rem;
+}
+
+.quote-item cite {
+    font-size: 12px;
+    font-style: normal;
+    opacity: 0.55;
+}
+
+/* Experience accordion: flat rows, no boxes */
+.exp-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.exp-item {
+    border-bottom: 1px solid rgba(128, 128, 128, 0.18);
+}
+
+.exp-item:last-child {
+    border-bottom: none;
+}
+
+.exp-item summary {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    padding: 0.75rem 0;
+    cursor: pointer;
+    list-style: none;
+}
+
+.exp-item summary::-webkit-details-marker {
+    display: none;
+}
+
+.exp-item summary::after {
+    content: '+';
+    font-size: 16px;
+    opacity: 0.4;
+    margin-left: auto;
+}
+
+.exp-item[open] summary::after {
+    content: '\2212';
+}
+
+.exp-title {
+    font-size: 14px;
+}
+
+.exp-meta {
+    font-size: 12px;
+    opacity: 0.5;
+}
+
+.exp-item p {
+    font-size: 12.5px;
+    line-height: 1.55;
+    opacity: 0.7;
+    padding-bottom: 0.85rem;
+}
+
+/* Skills */
+.skills-compact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.skills-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.skills-label {
+    font-size: 11.5px;
+    font-weight: 600;
+    opacity: 0.5;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    width: 85px;
+    flex-shrink: 0;
+    padding-top: 0.2rem;
+}
+
+.skills-footnote {
+    font-size: 12px;
+    opacity: 0.5;
+    margin-top: 0.9rem;
+}
+
+.recruiter-links a {
+    gap: 0.4rem;
+    font-size: 13.5px;
+}
+
+/* FAQ accordion: flat rows, no boxes */
+.faq-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.faq-item {
+    border-bottom: 1px solid rgba(128, 128, 128, 0.18);
+}
+
+.faq-item:last-child {
+    border-bottom: none;
+}
+
+.faq-item summary {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--text-color-dark);
+    padding: 0.75rem 0;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.faq-item summary::-webkit-details-marker {
+    display: none;
+}
+
+.faq-item summary::after {
+    content: '+';
+    font-size: 16px;
+    opacity: 0.4;
+}
+
+.faq-item[open] summary::after {
+    content: '\2212';
+}
+
+.faq-item p {
+    font-size: 12.5px;
+    opacity: 0.65;
+    line-height: 1.55;
+    padding-bottom: 0.85rem;
+}
+
+@media (max-width: 640px) {
+    .skills-label {
+        width: auto;
+    }
+}
