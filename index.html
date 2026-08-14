@@ -6,205 +6,127 @@
     <title>youdahe.com</title>
     <link rel="icon" type="image/jpeg" href="thumbnails/757728ea03cf11b495d92a9852a9f060.jpg">
     <link rel="stylesheet" href="styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <nav>
-        <div class="nav-links">
-            <a href="index.html">home</a>
-            <a href="writing.html">writing</a>
-            <a href="photography.html">photography</a>
-            <a href="daily.html">daily log</a>
-        </div>
-        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-            </svg>
-        </button>
-    </nav>
-
-    <main class="container">
-        <section class="intro">
-            <h1>Hi, I'm Youdahe 🧑‍🚀</h1>
-            <p class="status"><span class="status-dot"></span><span id="statusText">loading...</span></p>
-            <p class="chat-cta">I love talking about systems and startups — <a href="https://cal.com/youdahe-asfaw-np88fc/30min" target="_blank" rel="noopener noreferrer">let's chat</a></p>
-            <p>Student at Minnesota State University, Mankato. I build stuff that works — currently into distributed systems and MCPs.</p>
-        </section>
-
-        <p class="recruiter-cta">
-            <a href="recruiter.html" class="hl hl-orange recruiter-cta-link">Click here for your recruiter or someone looking to hire</a> — backend/infra-leaning SWE intern, four internships in, currently building platform tooling at Liberty Mutual.
-        </p>
-
-        <div class="two-col">
-        <section class="experience">
-            <h2>Experience</h2>
-
-            <div class="experience-item">
-                <div class="experience-header">
-                    <div class="experience-title">
-                        <img src="logos/nmdp.png" alt="NMDP" class="company-logo">
-                        <h3>Member of Technical Staff</h3>
-                    </div>
-                    <span class="experience-date">Jun 2026 – Present</span>
-                </div>
-                <p class="experience-company">NMDP</p>
-                <p class="experience-blurb">Stem Cell Data Infrastructure + Agentic Research Systems (incoming fall 2026)</p>
-            </div>
-
-            <div class="experience-item">
-                <div class="experience-header">
-                    <div class="experience-title">
-                        <img src="logos/libertymutual.png" alt="Liberty Mutual" class="company-logo">
-                        <h3>Software Engineer Intern</h3>
-                    </div>
-                    <span class="experience-date">Mar 2026 – Present</span>
-                </div>
-                <p class="experience-company">Liberty Mutual Insurance</p>
-                <p class="experience-blurb">Enterprise Middleware Modernization + Kubernetes Orchestration</p>
-            </div>
-
-            <div class="experience-item">
-                <div class="experience-header">
-                    <div class="experience-title">
-                        <img src="logos/medica.png" alt="Medica" class="company-logo">
-                        <h3>Software Engineer Intern</h3>
-                    </div>
-                    <span class="experience-date">Jan 2026 – May 2026</span>
-                </div>
-                <p class="experience-company">Medica</p>
-                <p class="experience-blurb">Payer Data Platforms + Enterprise Knowledge Retrieval</p>
-            </div>
-
-            <div class="experience-item">
-                <div class="experience-header">
-                    <div class="experience-title">
-                        <img src="logos/gustavus.png" alt="Minnesota State University, Mankato" class="company-logo">
-                        <h3>Undergraduate Research Assistant — Academic Year Research</h3>
-                    </div>
-                    <span class="experience-date">Aug 2025 – Jan 2026</span>
-                </div>
-                <p class="experience-company">Minnesota State University, Mankato</p>
-                <p class="experience-blurb">Cross-Lingual Extension of Agentic Document Intelligence Systems. Extended the form-completion system built during FYRE with a cross-lingual capability, generalizing the underlying layout-to-field inference to operate independent of source language rather than being constrained to a single linguistic domain. Presented the resulting system and its accessibility implications at the Macksey Symposium (Johns Hopkins), PRISM (University of Chicago), URS (University of Minnesota), and Undergraduate Research Day at the Capitol (Minnesota), under advisement of Dr. Guarionex Salivia and Dr. Flint Million.</p>
-            </div>
-
-            <div class="experience-item">
-                <div class="experience-header">
-                    <div class="experience-title">
-                        <img src="logos/gustavus.png" alt="Minnesota State University, Mankato" class="company-logo">
-                        <h3>Undergraduate Research Assistant — FYRE</h3>
-                    </div>
-                    <span class="experience-date">Jun 2025 – Aug 2025</span>
-                </div>
-                <p class="experience-company">Minnesota State University, Mankato</p>
-                <p class="experience-blurb">Agentic Document Layout Inference + Voice-Conditioned Form Completion. Selected as the only researcher admitted into the program from the full applicant pool. Designed a voice-conditioned form-completion pipeline that resolved field semantics from joint textual, spatial, and visual document structure rather than plain-text heuristics alone, reducing average completion time from 60 to 15 minutes. Built the inference layer responsible for mapping recognized layout regions to their corresponding form fields under partial or noisy input conditions, then coupled this output to a voice-driven interaction loop enabling visually impaired users to complete and verify submissions audibly rather than visually. Extended the system to auto-generate finalized outputs as formatted print documents or structured emails, removing the manual transcription step entirely.</p>
-            </div>
-
-            <div class="experience-item">
-                <div class="experience-header">
-                    <div class="experience-title">
-                        <img src="logos/medtronic.png" alt="Medtronic" class="company-logo">
-                        <h3>Software Engineer Intern</h3>
-                    </div>
-                    <span class="experience-date">Aug 2023 – Aug 2024</span>
-                </div>
-                <p class="experience-company">Medtronic</p>
-                <p class="experience-blurb">surgical telemetry + datapipelines</p>
-            </div>
-        </section>
-
-        <section class="projects">
-            <h2>Projects</h2>
-
-            <div class="project-item">
-                <div class="project-header">
-                    <h3>docere</h3>
-                    <div class="project-links">
-                        <a href="pdf/docere_technical_report.pdf" target="_blank" class="project-link-text">report</a>
-                        <span class="project-link-sep">·</span>
-                        <button class="project-link-text" onclick="openDemo()">demo</button>
-                    </div>
-                </div>
-                <div class="project-tags">
-                    <span class="tag">Python</span>
-                    <span class="tag">FastAPI</span>
-                    <span class="tag">React</span>
-                    <span class="tag">PostgreSQL</span>
-                    <span class="tag">Qdrant</span>
-                    <span class="tag">Redis</span>
-                    <span class="tag">Claude</span>
-                    <span class="tag">LangGraph</span>
-                </div>
-                <p class="project-desc">Persistent semantic memory system — long-term context and recall for AI agents.</p>
-            </div>
-
-            <div class="project-item">
-                <div class="project-header">
-                    <h3>distributed db engine</h3>
-                    <a href="pdf/project1_distributed_database.pdf" target="_blank" class="project-link-text">report</a>
-                </div>
-                <div class="project-tags">
-                    <span class="tag">Rust</span>
-                    <span class="tag">Raft</span>
-                    <span class="tag">CRDTs</span>
-                </div>
-                <p class="project-desc">Multi-region database with LSM-tree storage, Raft consensus, configurable consistency, and automatic sharding.</p>
-            </div>
-
-            <div class="project-item">
-                <div class="project-header">
-                    <h3>container runtime</h3>
-                    <a href="pdf/project2_container_platform.pdf" target="_blank" class="project-link-text">report</a>
-                </div>
-                <div class="project-tags">
-                    <span class="tag">Go</span>
-                    <span class="tag">Linux</span>
-                    <span class="tag">Networking</span>
-                </div>
-                <p class="project-desc">Container runtime and orchestrator from scratch — namespaces, cgroups, overlay fs, scheduler, and service mesh.</p>
-            </div>
-
-            <div class="project-item">
-                <div class="project-header">
-                    <h3>event streaming platform</h3>
-                    <a href="pdf/project3_event_streaming.pdf" target="_blank" class="project-link-text">report</a>
-                </div>
-                <div class="project-tags">
-                    <span class="tag">Go</span>
-                    <span class="tag">Kafka</span>
-                    <span class="tag">Stream Processing</span>
-                </div>
-                <p class="project-desc">Globally distributed commit log with exactly-once semantics, tiered storage, and stateful stream processing.</p>
-            </div>
-        </section>
+    <main class="container home-container">
+        <div class="title">
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                </svg>
+            </button>
+            <h1 class="nostyle"><a class="name" href="index.html">Youdahe Asfaw</a></h1>
+            <a class="extra" href="writing.html">Writing</a>
+            <a class="extra" href="photography.html">Photography</a>
+            <a class="extra" href="recruiter.html">For Recruiters</a>
+            <a class="extra" href="Youdahe_Asfaw_SoftwareEngineer.pdf" target="_blank" rel="noopener noreferrer">Resume</a>
+            <a class="extra" href="https://github.com/Youdahe123" target="_blank" rel="noopener noreferrer">Github</a>
         </div>
 
-        <footer class="main-footer">
-            <div class="social-links">
-                <a href="https://github.com/Youdahe123" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                    </svg>
-                </a>
-                <a href="https://www.linkedin.com/in/youdaheasfaw/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                    </svg>
-                </a>
-                <a href="mailto:youdaheasfaw@gmail.com" aria-label="Email">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                        <polyline points="22,6 12,13 2,6"></polyline>
-                    </svg>
-                </a>
-                <a href="youdaheFall (1).pdf" target="_blank" rel="noopener noreferrer" class="resume-link">resume</a>
+        <p class="status"><span class="status-dot"></span><span id="statusText">loading...</span></p>
+
+        <blockquote>
+            I love talking about systems and startups &mdash; <a href="https://cal.com/youdahe-asfaw-np88fc/30min" target="_blank" rel="noopener noreferrer">let's chat</a>. Student at Minnesota State University, Mankato, currently into distributed systems and MCPs.
+        </blockquote>
+
+        <h1>About Me</h1>
+        <p>I build stuff that works. Four internships in (Medtronic, Medica, Liberty Mutual, NMDP), plus research work in agentic document intelligence at MNSU Mankato. Backend/infra-leaning, currently building platform tooling at Liberty Mutual.</p>
+        <p>If you're a recruiter or hiring manager, <a href="recruiter.html">here's the recruiter-focused version</a> of this page &mdash; sourced quotes, mapped skills, and what I'm looking for next.</p>
+
+        <h1>Projects</h1>
+
+        <div class="item">
+            <h3>docere</h3>
+            <div class="tags">Python &middot; FastAPI &middot; React &middot; PostgreSQL &middot; Qdrant &middot; Redis &middot; Claude &middot; LangGraph</div>
+            <p>Persistent semantic memory system &mdash; long-term context and recall for AI agents.
+                <a href="pdf/docere_technical_report.pdf" target="_blank" class="project-link-text">report</a>
+                &middot;
+                <button class="project-link-text" onclick="openDemo()">demo</button>
+            </p>
+        </div>
+
+        <div class="item">
+            <h3>distributed db engine</h3>
+            <div class="tags">Rust &middot; Raft &middot; CRDTs</div>
+            <p>Multi-region database with LSM-tree storage, Raft consensus, configurable consistency, and automatic sharding.
+                <a href="pdf/project1_distributed_database.pdf" target="_blank" class="project-link-text">report</a>
+            </p>
+        </div>
+
+        <div class="item">
+            <h3>container runtime</h3>
+            <div class="tags">Go &middot; Linux &middot; Networking</div>
+            <p>Container runtime and orchestrator from scratch &mdash; namespaces, cgroups, overlay fs, scheduler, and service mesh.
+                <a href="pdf/project2_container_platform.pdf" target="_blank" class="project-link-text">report</a>
+            </p>
+        </div>
+
+        <div class="item">
+            <h3>event streaming platform</h3>
+            <div class="tags">Go &middot; Kafka &middot; Stream Processing</div>
+            <p>Globally distributed commit log with exactly-once semantics, tiered storage, and stateful stream processing.
+                <a href="pdf/project3_event_streaming.pdf" target="_blank" class="project-link-text">report</a>
+            </p>
+        </div>
+
+        <h1>Experience</h1>
+
+        <h2>Member of Technical Staff &mdash; NMDP</h2>
+        <p class="role-meta">Jun 2026 &ndash; Present</p>
+        <ul class="role-list">
+            <li>Stem Cell Data Infrastructure + Agentic Research Systems (incoming fall 2026).</li>
+        </ul>
+
+        <h2>Software Engineer Intern &mdash; Liberty Mutual Insurance</h2>
+        <p class="role-meta">Mar 2026 &ndash; Present</p>
+        <ul class="role-list">
+            <li>Enterprise Middleware Modernization + Kubernetes Orchestration.</li>
+        </ul>
+
+        <h2>Software Engineer Intern &mdash; Medica</h2>
+        <p class="role-meta">Jan 2026 &ndash; May 2026</p>
+        <ul class="role-list">
+            <li>Payer Data Platforms + Enterprise Knowledge Retrieval.</li>
+        </ul>
+
+        <h2>Undergraduate Research Assistant &mdash; Minnesota State University, Mankato</h2>
+        <p class="role-meta">Aug 2025 &ndash; Jan 2026</p>
+        <ul class="role-list">
+            <li>Cross-Lingual Extension of Agentic Document Intelligence Systems. Extended the form-completion system built during FYRE with a cross-lingual capability, generalizing layout-to-field inference to operate independent of source language.</li>
+            <li>Presented the resulting system and its accessibility implications at the Macksey Symposium (Johns Hopkins), PRISM (University of Chicago), URS (University of Minnesota), and Undergraduate Research Day at the Capitol (Minnesota), under advisement of Dr. Guarionex Salivia and Dr. Flint Million.</li>
+        </ul>
+
+        <h2>Undergraduate Research Assistant &mdash; FYRE, Minnesota State University, Mankato</h2>
+        <p class="role-meta">Jun 2025 &ndash; Aug 2025</p>
+        <ul class="role-list">
+            <li>Agentic Document Layout Inference + Voice-Conditioned Form Completion. Selected as the only researcher admitted into the program from the full applicant pool.</li>
+            <li>Designed a voice-conditioned form-completion pipeline resolving field semantics from joint textual, spatial, and visual document structure, reducing average completion time from 60 to 15 minutes.</li>
+            <li>Built the inference layer mapping recognized layout regions to form fields under partial or noisy input, coupled to a voice-driven interaction loop for visually impaired users.</li>
+        </ul>
+
+        <h2>Software Engineer Intern &mdash; Medtronic</h2>
+        <p class="role-meta">Aug 2023 &ndash; Aug 2024</p>
+        <ul class="role-list">
+            <li>Surgical telemetry + data pipelines.</li>
+        </ul>
+
+        <h1>Recent Writing</h1>
+        <ul class="posts" id="recentPosts">
+            <li>loading&hellip;</li>
+        </ul>
+
+        <div class="site-footer">
+            <div>
+                Youdahe Asfaw<br>
+                Software Engineer
             </div>
-            <p class="copyright">updated 03/03/2026</p>
-        </footer>
+            <div>
+                <a href="https://github.com/Youdahe123" target="_blank" rel="noopener noreferrer">github.com/Youdahe123</a><br>
+                <a href="https://www.linkedin.com/in/youdaheasfaw/" target="_blank" rel="noopener noreferrer">linkedin.com/in/youdaheasfaw</a><br>
+                <a href="mailto:youdaheasfaw@gmail.com">youdaheasfaw@gmail.com</a>
+            </div>
+        </div>
     </main>
-
-    <div class="footer-bar"></div>
 
     <div class="demo-overlay" id="demoOverlay" onclick="closeDemo(event)">
         <div class="demo-modal">
@@ -216,6 +138,7 @@
     </div>
 
     <script src="script.js"></script>
+    <script src="posts.js"></script>
     <script>
         fetch('data/status.json').then(r => r.json()).then(d => {
             const el = document.getElementById('statusText');
@@ -234,6 +157,18 @@
                 document.getElementById('demoVideo').pause();
             }
         }
+
+        getPosts().then(posts => {
+            const list = document.getElementById('recentPosts');
+            if (!posts.length) { list.innerHTML = '<li>nothing yet</li>'; return; }
+            list.innerHTML = posts.slice(0, 8).map(p => {
+                const d = new Date(p.date);
+                const dateStr = d.toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' });
+                return `<li><span class="post-date-sm">${dateStr}</span> &raquo; <a href="post.html?id=${p.id}">${p.title}</a></li>`;
+            }).join('');
+        }).catch(() => {
+            document.getElementById('recentPosts').innerHTML = '<li>couldn\'t load posts</li>';
+        });
     </script>
 </body>
 </html>
