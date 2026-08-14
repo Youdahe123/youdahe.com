@@ -674,6 +674,14 @@ ul.posts .post-date-sm {
     margin-bottom: 4rem;
 }
 
+.photo-intro {
+    font-size: 15px;
+    color: var(--muted-color, var(--text-color));
+    opacity: 0.75;
+    margin: 0 0 1.75rem;
+    max-width: 46ch;
+}
+
 .photo-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
