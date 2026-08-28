@@ -1,4 +1,4 @@
-// Local-only — talks to server.js (`npm run dev`), never deployed.
+// Local-only: talks to server.js (`npm run dev`), never deployed.
 const NOTES_API = '/api/notes';
 
 async function getNotes() {

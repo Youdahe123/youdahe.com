@@ -105,7 +105,7 @@ h2::before {
     color: #999;
     font-size: 13px;
     text-decoration: none;
-    margin-left: 0.9rem;
+    margin-left: 0.75rem;
 }
 
 .title .extra:hover {
@@ -115,6 +115,15 @@ h2::before {
 
 .title .theme-toggle {
     float: right;
+}
+
+.title .avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    object-fit: cover;
+    vertical-align: middle;
+    margin-right: 0.5rem;
 }
 
 /* thume.ca-style blockquote */
@@ -173,8 +182,152 @@ nav {
 }
 
 .home-container {
-    max-width: 640px;
+    max-width: 920px;
     padding: 0 2rem 4rem 4rem;
+}
+
+/* keep prose at a readable measure even though the page is wide */
+.home-container .prose {
+    max-width: 640px;
+}
+
+.home-container .prose > p {
+    margin-bottom: 0.7rem;
+}
+
+.item .project-links {
+    margin-top: 0.35rem;
+    font-size: 13px;
+}
+
+/* dated news feed, most recent first */
+.news {
+    list-style: none;
+    margin: 0.6rem 0 0.5rem;
+}
+
+.news li {
+    display: grid;
+    grid-template-columns: 5.5rem 1fr;
+    gap: 0.5rem;
+    font-size: 13.5px;
+    line-height: 1.6;
+    margin-bottom: 0.7rem;
+}
+
+.news .news-date {
+    color: #999;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12px;
+    padding-top: 0.15rem;
+    white-space: nowrap;
+}
+
+.news .news-body {
+    opacity: 0.9;
+}
+
+/* the one worth stopping on */
+.news-featured {
+    border-left: 3px solid #ffd100;
+    padding-left: 0.85rem;
+    margin-left: calc(-0.85rem - 3px);
+}
+
+@media (max-width: 520px) {
+    .news li {
+        grid-template-columns: 1fr;
+        gap: 0.1rem;
+    }
+}
+
+/* experience (left) / projects (right) */
+.work-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 1rem 3.5rem;
+    align-items: start;
+    margin-top: 0.5rem;
+}
+
+.work-col {
+    min-width: 0;
+}
+
+.work-col > h1 {
+    margin-top: 1.6rem;
+}
+
+.exp {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 0.7rem;
+    margin: 1.1rem 0 1.35rem;
+}
+
+.exp-logo {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    padding: 2px;
+    margin-top: 1px;
+}
+
+/* full-bleed marks fill their own tile */
+.exp-logo--bleed {
+    padding: 0;
+    overflow: hidden;
+}
+
+[data-theme="dark"] .exp-logo {
+    border-color: #222;
+}
+
+.exp-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.75rem;
+}
+
+.exp-org {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.exp-when {
+    color: #999;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.exp-role {
+    color: #999;
+    font-size: 12.5px;
+}
+
+.exp .role-list {
+    margin-top: 0.35rem;
+}
+
+.exp .role-list li {
+    font-size: 13px;
+}
+
+@media (max-width: 860px) {
+    .home-container {
+        max-width: 640px;
+        padding-left: 2.5rem;
+    }
+
+    .work-grid {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
 }
 
 .two-col {
@@ -838,6 +991,17 @@ ul.posts .post-date-sm {
     margin-bottom: 1.25rem;
 }
 
+.post-body .post-h2 {
+    font-size: 17px;
+    font-weight: 700;
+    margin: 2.25rem 0 0.9rem;
+}
+
+/* no "+" gutter marker inside article bodies */
+.post-body .post-h2::before {
+    content: none;
+}
+
 .writing-loading,
 .writing-empty {
     font-size: 15px;
@@ -1181,7 +1345,7 @@ ul.posts .post-date-sm {
     opacity: 0.5;
 }
 
-/* Daily log page — gate */
+/* Daily log page: gate */
 .daily-gate-inner {
     display: flex;
     flex-direction: column;
@@ -1592,7 +1756,7 @@ ul.posts .post-date-sm {
     border-top: 1px solid rgba(128, 128, 128, 0.15);
 }
 
-/* Goals column (inside two-col grid — no top border) */
+/* Goals column (inside two-col grid, no top border) */
 .goals-col {
     min-width: 0;
 }
@@ -2095,7 +2259,7 @@ ul.posts .post-date-sm {
     font-style: italic;
 }
 
-/* timeline container — the vertical line lives here */
+/* timeline container: the vertical line lives here */
 .sch-list {
     position: relative;
     display: flex;
@@ -2173,7 +2337,7 @@ ul.posts .post-date-sm {
 .sch-item.past .sch-label { opacity: 0.2;  }
 .sch-item.past .sch-detail { opacity: 0.15; }
 
-/* current item — filled dot, bolder label */
+/* current item: filled dot, bolder label */
 .sch-item.current .sch-dot {
     background: var(--text-color);
     border-color: var(--text-color);
@@ -2897,7 +3061,7 @@ ul.posts .post-date-sm {
 
 
 /* ═══════════════════════════════════════════════════════════════════
-   SUMMARY CARD MODAL  —  neobrutalist b&w
+   SUMMARY CARD MODAL  ::  neobrutalist b&w
 ═══════════════════════════════════════════════════════════════════ */
 
 .summary-overlay {
@@ -3047,7 +3211,7 @@ ul.posts .post-date-sm {
 }
 [data-theme="dark"] .sc-season { color: #fff; }
 
-/* perf badge — b&w sticker */
+/* perf badge: b&w sticker */
 .sc-perf {
     font-size: 9px;
     font-weight: 800;
@@ -3398,7 +3562,7 @@ ul.posts .post-date-sm {
     cursor: pointer;
 }
 
-/* Recruiter CTA (index) — plain sentence, no box */
+/* Recruiter CTA (index): plain sentence, no box */
 .recruiter-cta {
     font-size: 14px;
     line-height: 1.6;

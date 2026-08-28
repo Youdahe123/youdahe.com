@@ -5,7 +5,7 @@ const SESSION_TTL_MS = 2 * 60 * 60 * 1000; // 2 hours
 const MAX_ATTEMPTS = 5;
 const LOCKOUT_MS = 30 * 1000;
 
-// In-memory only — resets on server restart, which is fine for a
+// In-memory only; resets on server restart, which is fine for a
 // local-only admin tool with a single operator.
 const sessions = new Map();       // token -> expiresAt
 const failedAttempts = new Map(); // ip -> { count, lockUntil }

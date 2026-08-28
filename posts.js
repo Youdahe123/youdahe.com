@@ -1,4 +1,4 @@
-// Shared posts API client — used by admin.html, writing.html, and post.html.
+// Shared posts API client, used by admin.html, writing.html, and post.html.
 // GETs read the static build (/data/posts.json, served by GitHub Pages);
 // writes go through the local-only /api server (server.js, run via `npm run dev`).
 const POSTS_DATA = 'data/posts.json';
@@ -50,6 +50,11 @@ function renderPostContent(content) {
         const imgMatch = line.trim().match(/^\{\{img:(.+?)\}\}$/);
         if (imgMatch) {
             return `<img src="${imgMatch[1]}" alt="Post image" class="post-image">`;
+        }
+        // `## text` on its own line becomes a section heading
+        const headingMatch = line.trim().match(/^##\s+(.+)$/);
+        if (headingMatch) {
+            return `<h2 class="post-h2">${headingMatch[1]}</h2>`;
         }
         return `<p>${line}</p>`;
     }).join('');

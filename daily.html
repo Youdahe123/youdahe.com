@@ -47,7 +47,7 @@
                     <div class="gym-hours-closures">
                         <div class="gym-hours-closure">
                             <span class="gym-hours-closure-date">Sat May 23 – Mon May 25</span>
-                            <span class="gym-hours-closure-reason">Closed — Memorial Day</span>
+                            <span class="gym-hours-closure-reason">Closed: Memorial Day</span>
                         </div>
                         <div class="gym-hours-closure">
                             <span class="gym-hours-closure-date">Wed May 27</span>
@@ -55,7 +55,7 @@
                         </div>
                         <div class="gym-hours-closure">
                             <span class="gym-hours-closure-date">Fri June 19</span>
-                            <span class="gym-hours-closure-reason">Closed — Juneteenth</span>
+                            <span class="gym-hours-closure-reason">Closed: Juneteenth</span>
                         </div>
                     </div>
                 </div>
@@ -80,7 +80,7 @@
             <div class="nc-widget">
                 <div class="nc-header">
                     <span class="nc-label">NeetCode 150</span>
-                    <span class="nc-count" id="ncCount">—</span>
+                    <span class="nc-count" id="ncCount">&hellip;</span>
                 </div>
                 <div class="nc-bar-track">
                     <div class="nc-bar-fill" id="ncFill" style="width:0%"></div>
@@ -242,14 +242,14 @@
             { text: "The world isn't perfect. But it's there for us, doing the best it can. That's what makes it so damn beautiful.", source: "Roy Mustang · FMA" },
             { text: "Power isn't determined by your size, but the size of your heart and dreams.", source: "Monkey D. Luffy · One Piece" },
             { text: "No matter how deep the night, it always turns to day, eventually.", source: "Brook · One Piece" },
-            { text: "Even if I'm scared, even if I want to give up — I'll keep moving forward.", source: "Izuku Midoriya · MHA" },
+            { text: "Even if I'm scared, even if I want to give up, I'll keep moving forward.", source: "Izuku Midoriya · MHA" },
             { text: "Go beyond. Plus Ultra.", source: "All Might · MHA" },
             { text: "The only one who can beat me is me.", source: "Tobio Kageyama · Haikyuu" },
             { text: "Believe in the me that believes in you.", source: "Kamina · TTGL" },
             { text: "Who the hell do you think I am?", source: "Kamina · TTGL" },
             { text: "The only thing we're allowed to do is believe that we won't regret the choice we made.", source: "Levi Ackerman · AOT" },
             { text: "A person who cannot sacrifice anything, cannot change anything.", source: "Armin Arlert · AOT" },
-            { text: "On that day, mankind received a grim reminder — that complacency will get you nowhere.", source: "Attack on Titan" },
+            { text: "On that day, mankind received a grim reminder: that complacency will get you nowhere.", source: "Attack on Titan" },
             { text: "When you give up, that's when the game ends.", source: "Ichigo Kurosaki · Bleach" },
             { text: "The moment you think of giving up, think of the reason why you held on so long.", source: "Natsu Dragneel · Fairy Tail" },
             { text: "People become stronger because they have memories they can't forget.", source: "Tsunade · Naruto" },
@@ -274,7 +274,7 @@
             const q    = QUOTES[seed % QUOTES.length];
             document.getElementById('dailyQuote').innerHTML = `
                 <p class="daily-quote-text">"${q.text}"</p>
-                <span class="daily-quote-source">— ${q.source}</span>`;
+                <span class="daily-quote-source">${q.source}</span>`;
         }
 
         // ── goals ─────────────────────────────────────────────────────────────
@@ -312,7 +312,7 @@
                 track: 'youdaheDB',
                 logo: null,
                 items: [
-                    'Implement a working storage engine (B-tree or LSM — pick one)',
+                    'Implement a working storage engine (B-tree or LSM, pick one)',
                     'Support basic CRUD with a custom query interface',
                     'Handle at least one real concurrency scenario correctly',
                     'Write a technical blog post about the design decisions',
@@ -352,7 +352,7 @@
                     'Stick to the 3-day split × 2 + Day 7 hard cardio every week',
                     'Hit 10,000 steps every day',
                     'Sleep 8 hours consistently',
-                    'Stay in slight deficit — ~1,800 cal/day, high protein',
+                    'Stay in slight deficit: ~1,800 cal/day, high protein',
                     'Get outside for at least 20 minutes every day',
                     'Keep at least one social commitment per week',
                     'Take one fully offline day per week',
@@ -413,7 +413,7 @@
             }).join('');
         }
 
-        // ── sections — NeetCode handled automatically from GitHub
+        // ── sections: NeetCode handled automatically from GitHub
         const SECTIONS = [
             { key: 'libertyMutual',    label: 'Liberty Mutual',   logo: 'logos/libertymutual.png' },
             { key: 'medica',           label: 'Medica',            logo: 'logos/medica.png' },
@@ -439,7 +439,7 @@
         let selected   = null;
 
         // ── load ─────────────────────────────────────────────────────────────
-        // This page only runs locally via `npm run dev` (server.js) — it is
+        // This page only runs locally via `npm run dev` (server.js); it is
         // never part of the GitHub Pages deploy, so no password gate is needed.
 
         function showFeed(logs) {
@@ -478,7 +478,7 @@
             return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
         }
 
-        // ── NeetCode progress (tree API — total unique folders) ───────────────
+        // ── NeetCode progress (tree API: total unique folders) ───────────────
 
         async function loadNeetcodeProgress() {
             const TOTAL = 150;
@@ -499,7 +499,7 @@
             }
         }
 
-        // ── NeetCode commit dates (commits API — which days had submissions) ──
+        // ── NeetCode commit dates (commits API: which days had submissions) ──
 
         async function loadNeetcodeCommits() {
             try {
@@ -726,21 +726,21 @@
             { t: [8,  0], label: 'Breakfast & Get Ready', detail: 'Protein + yogurt · prep for the day' },
             { t: [9,  0], label: 'Work',                   detail: 'Liberty Mutual · in person or remote' },
             { t: [17, 0], label: 'LeetCode & Rust DB',    detail: '5–7 pm · NeetCode problems + youdaheDB', key: 'leetrust' },
-            { t: [19, 0], label: 'Chill',                  detail: 'Wind down — rest of the evening is yours' },
+            { t: [19, 0], label: 'Chill',                  detail: 'Wind down, rest of the evening is yours' },
         ];
 
         // ── saturday schedule ─────────────────────────────────────────────────
         const SATURDAY_SCHEDULE = [
             { t: [11, 0], label: 'Gym',                   detail: 'Opens 11 am · train till ~2 pm (after June 13)' },
             { t: [14, 0], label: 'LeetCode & Rust DB',    detail: 'NeetCode problems + youdaheDB', key: 'leetrust' },
-            { t: [17, 0], label: 'Chill',                  detail: 'Rest — recharge for the week ahead' },
+            { t: [17, 0], label: 'Chill',                  detail: 'Rest, recharge for the week ahead' },
         ];
 
         // ── sunday schedule ───────────────────────────────────────────────────
         const SUNDAY_SCHEDULE = [
             { t: [11, 0], label: 'Gym',                   detail: 'Opens 11 am · train till ~2 pm (after June 13)' },
             { t: [14, 0], label: 'LeetCode & Rust DB',    detail: 'NeetCode problems + youdaheDB', key: 'leetrust' },
-            { t: [17, 0], label: 'Plan the week',         detail: 'Coordinate with roommate — meals, logistics, goals for the week' },
+            { t: [17, 0], label: 'Plan the week',         detail: 'Coordinate with roommate: meals, logistics, goals for the week' },
         ];
 
         const DAY_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
@@ -1146,7 +1146,7 @@
                 }
             }
 
-            // NeetCode placeholder — will be filled in async below
+            // NeetCode placeholder, filled in async below
             if (hasNc) {
                 html += `<div id="ncDayBlock">
                     <div class="daily-entry-label nc-day-label"><span>NeetCode</span></div>
@@ -1154,7 +1154,7 @@
                 </div>`;
             }
 
-            // Rust commits — messages already in memory, render immediately
+            // Rust commits: messages already in memory, render immediately
             if (hasRust) {
                 const commits = rustDateMap[key];
                 html += `<div class="rust-day-block">
@@ -1188,7 +1188,7 @@
                             <span class="cal-gca-lc">LC ${p.lc}</span>
                         </div>`;
                     }).join('')}
-                    ${isGcaExpiry ? `<div class="cal-gca-expiry-note">⚠ practice GCA expires today — <a href="https://codesignal.com/learn/assessments?tab=pending" target="_blank">take it now →</a></div>` : ''}
+                    ${isGcaExpiry ? `<div class="cal-gca-expiry-note">⚠ practice GCA expires today, <a href="https://codesignal.com/learn/assessments?tab=pending" target="_blank">take it now →</a></div>` : ''}
                 </div>`;
             }
 
@@ -1349,7 +1349,7 @@
                 <div class="sc-notes-row">
                     <div class="sc-notes-head">notes</div>
                     <div class="sc-notes" id="scNotesArea" contenteditable="true"
-                         data-placeholder="add anything extra — workout, wins, what you learned…"
+                         data-placeholder="add anything extra: workout, wins, what you learned…"
                          oninput="flushSummaryNotes()"></div>
                 </div>
                 <div class="sc-footer-text">youdahe.com · daily log · ${d.getFullYear()}</div>
@@ -1359,7 +1359,7 @@
             const notesEl = document.getElementById('scNotesArea');
             if (notesEl) notesEl.textContent = getSummaryNotes(key);
 
-            // async: fill leetcode — show problem name chips, no code blocks
+            // async: fill leetcode, show problem name chips, no code blocks
             if (ncShas.length) {
                 const problems = await fetchNeetcodeForDay(key);
                 const lcBody   = document.getElementById('scLcBody');

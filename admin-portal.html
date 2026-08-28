@@ -15,7 +15,7 @@
         </div>
 
         <div id="gate" class="portal-gate">
-            <p class="portal-hint">This is a local-only tool — it runs when you're on <code>npm run dev</code> and does nothing on the public deployed site.</p>
+            <p class="portal-hint">This is a local-only tool. It runs when you're on <code>npm run dev</code> and does nothing on the public deployed site.</p>
             <form id="gateForm" class="admin-editor" autocomplete="off">
                 <input type="password" id="passwordInput" class="admin-input" placeholder="Password" autocomplete="current-password" required>
                 <button type="submit" class="admin-btn" id="unlockBtn">unlock</button>
@@ -85,12 +85,12 @@
                 } else {
                     const data = await res.json().catch(() => ({}));
                     gateError.textContent = res.status === 429
-                        ? 'too many attempts — try again shortly'
+                        ? 'too many attempts, try again shortly'
                         : 'incorrect password';
                     gateError.hidden = false;
                 }
             } catch {
-                gateError.textContent = 'could not reach the local admin server — is it running?';
+                gateError.textContent = 'could not reach the local admin server. is it running?';
                 gateError.hidden = false;
             } finally {
                 unlockBtn.disabled = false;

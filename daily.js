@@ -1,4 +1,4 @@
-// Local-only — talks to server.js (`npm run dev`), never deployed.
+// Local-only: talks to server.js (`npm run dev`), never deployed.
 const DAILY_API = '/api/daily';
 
 async function getDailyLogs() {

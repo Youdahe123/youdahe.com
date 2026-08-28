@@ -27,7 +27,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 // Hidden shortcut: Cmd+Y opens the password-protected admin portal, and
-// only that — nothing else runs on this combo.
+// only that; nothing else runs on this combo.
 document.addEventListener('keydown', (e) => {
     if (e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && e.key.toLowerCase() === 'y') {
         e.preventDefault();
