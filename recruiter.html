@@ -37,9 +37,9 @@
             <div class="target-list">
                 <p><strong>SWE Intern roles</strong>: four internships so far (<span class="hl hl-blue">Medtronic</span>, <span class="hl hl-green">Medica</span>, <span class="hl hl-orange">Liberty Mutual</span>, <span class="hl hl-pink">NMDP</span>). I'm comfortable finding my footing in an unfamiliar codebase and shipping something useful within a summer.</p>
 
-                <p><strong>Backend engineering</strong>: the Kubernetes-native migration for <span class="hl hl-orange">Liberty Mutual</span>'s messaging infra, plus <span class="hl hl-indigo">youdaheDB</span>, a Rust LSM-tree key-value store I built from WAL to SSTable flush, <a href="https://news.algorythm.org/p/building-a-distributed-database-from" target="_blank" rel="noopener noreferrer" class="hl hl-indigo">written up in <em>Algorythm</em></a> at the invitation of its founder, Esco Obong, a senior engineer formerly at Uber, for a community of 20k+ Black software engineers.</p>
+                <p><strong>Backend engineering</strong>: the on-prem to Kubernetes migration at <span class="hl hl-orange">Liberty Mutual</span>, plus <span class="hl hl-indigo">youdaheDB</span>, a Rust LSM-tree key-value store I built from WAL to SSTable flush, <a href="https://news.algorythm.org/p/building-a-distributed-database-from" target="_blank" rel="noopener noreferrer" class="hl hl-indigo">written up in <em>Algorythm</em></a> at the invitation of its founder, Esco Obong, a senior engineer formerly at Uber, for a community of 20k+ Black software engineers.</p>
 
-                <p><strong>ML engineering (research)</strong>: document-intelligence research at <span class="hl hl-purple">Gustavus Adolphus College</span>, presented at four national symposia, plus <span class="hl hl-green">Medica</span>'s RAG pipeline and <a href="pdf/docere_technical_report.pdf" target="_blank" class="hl hl-teal">Docere</a>'s bandit-driven tutoring engine.</p>
+                <p><strong>ML engineering (research)</strong>: document-intelligence research at <span class="hl hl-purple">Gustavus Adolphus College</span>, presented at four national symposia, plus <span class="hl hl-green">Medica</span>'s RAG pipeline and <a href="pdf/docere_technical_report.pdf" target="_blank" class="hl hl-teal">Docere</a>'s bandit-driven tutoring engine. Research is the one I'm always looking to get back into, so point me at it.</p>
 
                 <p><strong>Infra &amp; distributed systems</strong>: Raft consensus and CRDTs in a <a href="pdf/project1_distributed_database.pdf" target="_blank" class="hl hl-red">multi-region database</a>, a <a href="pdf/project2_container_platform.pdf" target="_blank" class="hl hl-amber">container runtime</a> with its own scheduler, and a <a href="pdf/project3_event_streaming.pdf" target="_blank" class="hl hl-cyan">Kafka-style event log</a> with exactly-once semantics. All built from scratch, mostly because I wanted to understand how they really work.</p>
             </div>
@@ -78,17 +78,17 @@
             <div class="exp-list">
                 <details class="exp-item">
                     <summary><span class="exp-title hl hl-pink">NMDP</span><span class="exp-meta">SWE Intern · Aug–Nov 2026</span></summary>
-                    <p>Stem cell data infrastructure + agentic research systems @ CIBMTR: agentic systems on top of a critical biomedical registry.</p>
+                    <p>Data platform team supporting the donor&ndash;patient matching infrastructure.</p>
                 </details>
 
                 <details class="exp-item">
                     <summary><span class="exp-title hl hl-orange">Liberty Mutual</span><span class="exp-meta">SWE Intern · May–Aug 2026</span></summary>
-                    <p>Kubernetes-native migration off legacy AIX/MQ brokers: StatefulSets, PVC-backed storage, CNI pod networking. Saved hundreds of thousands annually in infra overhead.</p>
+                    <p>Built an internal self-service app automating AIX node retirement for the REX platform team, cutting decommission time from 2&ndash;3 weeks to 1 day and retiring 15+ nodes. Also supported the on-prem to Kubernetes migration: StatefulSets, PVC-backed storage, CNI-configured pod networking.</p>
                 </details>
 
                 <details class="exp-item">
                     <summary><span class="exp-title hl hl-green">Medica</span><span class="exp-meta">SWE Intern · Jan–May 2026</span></summary>
-                    <p>RAG pipeline from scratch: ingestion, embeddings, hybrid retrieval, reranking. Cut onboarding time from a week to under two days.</p>
+                    <p>Shipped a document ingestion pipeline to production over 50K+ internal documents: chunking, embedding generation, and vector indexing with metadata filtering, at 95% precision and recall on a held-out eval set. Hybrid sparse-dense retrieval and reranking cut onboarding task time from a week to 2 days in QA.</p>
                 </details>
 
                 <details class="exp-item">
@@ -98,7 +98,7 @@
 
                 <details class="exp-item">
                     <summary><span class="exp-title hl hl-blue">Medtronic</span><span class="exp-meta">SWE Intern · Aug 2023–Aug 2024</span></summary>
-                    <p>Distributed ETL pipelines across PostgreSQL/.NET for surgical video + telemetry. 30% efficiency gain on $2.5M+ in tracked R&D.</p>
+                    <p>Core ingestion for a centralized data platform consolidating 500K+ entries from fragmented legacy sources: Excel inventories, YAML configs, device telemetry, event logs, MP4 diagnostics. Added record-level validation and logging to surface failed and incomplete ingestions automatically.</p>
                 </details>
             </div>
         </section>
@@ -109,19 +109,19 @@
                 <div class="skills-row">
                     <span class="skills-label">Languages</span>
                     <div class="project-tags">
-                        <span class="tag">Python</span><span class="tag">TypeScript</span><span class="tag">Java</span><span class="tag">JavaScript</span><span class="tag">HTML/CSS</span><span class="tag">Go</span><span class="tag">Rust</span>
+                        <span class="tag">Python</span><span class="tag">TypeScript</span><span class="tag">Go</span><span class="tag">Rust</span><span class="tag">Java</span><span class="tag">JavaScript</span><span class="tag">SQL</span>
                     </div>
                 </div>
                 <div class="skills-row">
                     <span class="skills-label">Frameworks</span>
                     <div class="project-tags">
-                        <span class="tag">FastAPI</span><span class="tag">LangChain</span><span class="tag">Tesseract.js</span><span class="tag">React.js</span><span class="tag">Express</span><span class="tag">GraphQL</span><span class="tag">Spring</span><span class="tag">Three.js</span>
+                        <span class="tag">FastAPI</span><span class="tag">React</span><span class="tag">LangChain/LangGraph</span><span class="tag">Express</span>
                     </div>
                 </div>
                 <div class="skills-row">
                     <span class="skills-label">Tools</span>
                     <div class="project-tags">
-                        <span class="tag">Git</span><span class="tag">Selenium</span><span class="tag">Postman</span><span class="tag">Node.js</span><span class="tag">Jenkins</span><span class="tag">MongoDB</span><span class="tag">Docker</span><span class="tag">AWS</span><span class="tag">SQL (MySQL)</span><span class="tag">Kubernetes</span><span class="tag">Cassandra</span><span class="tag">Ansible</span>
+                        <span class="tag">Docker</span><span class="tag">Kubernetes</span><span class="tag">AWS</span><span class="tag">PostgreSQL</span><span class="tag">Redis</span><span class="tag">Qdrant</span><span class="tag">Prometheus/Grafana</span><span class="tag">Git</span>
                     </div>
                 </div>
             </div>
@@ -180,7 +180,7 @@
                 </details>
                 <details class="faq-item">
                     <summary>What kind of roles are you looking for?</summary>
-                    <p>Distributed systems, backend, and platform/infra engineering. There's more detail in "What I'm looking for" above, with links to the projects behind each one.</p>
+                    <p>Distributed systems, backend, and platform/infra engineering. I'm also always looking to do research, so that counts too. There's more detail in "What I'm looking for" above, with links to the projects behind each one.</p>
                 </details>
                 <details class="faq-item">
                     <summary>Internship or full-time?</summary>
